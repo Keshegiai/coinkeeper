@@ -1,0 +1,56 @@
+/* src/components/DateRangeFilter.module.css */
+.filterContainer {
+    display: flex;
+    flex-wrap: wrap; /* Для переноса на маленьких экранах */
+    align-items: flex-end;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.03);
+    margin-bottom: 1.5rem;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.inputGroup label {
+    font-size: 0.875rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+.dateInput {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: #fff;
+    min-width: 150px; /* Чтобы инпуты не были слишком узкими */
+}
+.dateInput:focus {
+    outline: none;
+    border-color: #4F46E5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+
+.applyButton {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #4F46E5;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    /* height: fit-content; */ /* Можно убрать если выравнивание по flex-end работает */
+}
+
+.applyButton:hover {
+    background-color: #4338ca;
+}

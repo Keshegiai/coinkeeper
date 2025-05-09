@@ -10,10 +10,11 @@ import CashFlowPage from './pages/CashFlowPage';
 
 function App() {
     const [transactions, setTransactions] = useState([
-        // ... примеры транзакций ...
         { id: 't1', type: 'expense', amount: 699.99, category: {id: 'cat1', name: 'Техника'}, date: '2025-05-01', comment: 'iPhone 12 Pro' },
         { id: 't2', type: 'expense', amount: 29.00, category: {id: 'cat2', name: 'Подписки'}, date: '2025-05-03', comment: 'Youtube Premium' },
         { id: 't3', type: 'income', amount: 1200, category: {id: 'cat3', name: 'Зарплата'}, date: '2025-05-05', comment: 'Аванс' },
+        { id: 't4', type: 'expense', amount: 50.00, category: {id: 'cat4', name: 'Продукты'}, date: '2025-04-28', comment: 'Супермаркет' },
+        { id: 't5', type: 'income', amount: 200.00, category: {id: 'cat6', name: 'Фриланс'}, date: '2025-04-25', comment: 'Проект X' },
     ]);
 
     const [categories, setCategories] = useState([
@@ -22,6 +23,7 @@ function App() {
         { id: 'cat3', name: 'Зарплата' },
         { id: 'cat4', name: 'Продукты' },
         { id: 'cat5', name: 'Транспорт' },
+        { id: 'cat6', name: 'Фриланс' },
     ]);
 
     const addTransaction = (transaction) => {
@@ -111,15 +113,15 @@ function App() {
                             addTransaction={addTransaction}
                             deleteTransaction={deleteTransaction}
                             updateTransaction={updateTransaction}
-                            addCategory={addCategory} // addCategory уже передается
+                            addCategory={addCategory}
                         />
                     }
                 />
-                <Route path="operations" element={<OperationsPage />} />
-                <Route path="cashflow" element={<CashFlowPage />} />
+                <Route path="operations" element={<OperationsPage transactions={transactions} categories={categories} />} /> {/* Также можно передать сюда */}
+                <Route path="cashflow" element={<CashFlowPage transactions={transactions} />} /> {/* <--- ПЕРЕДАЕМ TRANSACTIONS */}
                 <Route
                     path="settings"
-                    element={ // <--- Передаем props в SettingsPage
+                    element={
                         <SettingsPage
                             categories={categories}
                             addCategory={addCategory}

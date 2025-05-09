@@ -1,0 +1,17 @@
+/* src/components/charts/CustomLineChart.module.css */
+.chartWrapper {
+    width: 100%;
+    /* Высота задается инлайн-стилем через проп chartHeight */
+}
+
+.noDataPlaceholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F9FAFB;
+    border-radius: 8px;
+    color: #9CA3AF;
+    border: 1px dashed #E5E7EB;
+    font-size: 0.9rem;
+    width: 100%;
+}

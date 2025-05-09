@@ -52,7 +52,17 @@
     cursor: pointer;
 }
 
-.chartPlaceholderSummary {
+.chartPlaceholderSummary { /* Этот класс мы заменяем на chartContainerForSummary */
+    /* ... его стили можно удалить или переименовать ... */
+}
+
+.chartContainerForSummary { /* Новый класс */
+    height: 280px; /* Высота для графика на главной странице */
+    width: 100%;   /* График должен занимать всю ширину контейнера */
+    margin-top: 1rem; /* Небольшой отступ сверху от контролов */
+}
+
+.noDataPlaceholder { /* Стиль для сообщения об отсутствии данных */
     height: 280px;
     display: flex;
     align-items: center;
@@ -64,8 +74,10 @@
     font-size: 0.9rem;
 }
 
+
 @media (max-width: 768px) {
-    .chartPlaceholderSummary {
-        height: 200px;
+    .chartContainerForSummary, .noDataPlaceholder {
+        height: 220px; /* Уменьшаем высоту графика на мобильных */
     }
+    /* ... остальные медиа-запросы ... */
 }
