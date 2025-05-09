@@ -1,13 +1,13 @@
 .app-header {
-    background-color: #FFFFFF;
-    padding: 0 1.5rem; /* Убрал вертикальный padding, высота будет через height */
+    background-color: #FFFFFF; /* Белый фон хедера */
+    padding: 0 2rem; /* Горизонтальные отступы, как в HomePage.css .content */
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     box-sizing: border-box;
-    height: 70px; /* Фиксированная высота хедера */
-    border-bottom: 1px solid #E5E7EB; /* Тонкая граница снизу для отделения */
+    height: 70px;
+    border-bottom: 1px solid #F3F4F6; /* Очень светлая граница, как в дизайне */
 }
 
 .header-left {
@@ -17,14 +17,14 @@
 .header-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem; /* Уменьшил немного gap для более плотного вида */
 }
 
 .header-icon-button {
     background: none;
     border: none;
     cursor: pointer;
-    color: #6B7280;
+    color: #6B7280; /* Серый цвет иконок */
     padding: 0.5rem;
     border-radius: 50%;
     display: inline-flex;
@@ -35,54 +35,52 @@
 }
 
 .header-icon-button:hover {
-    color: #374151;
-    background-color: #F3F4F6;
+    color: #111827; /* Темнее при наведении */
+    background-color: #F3F4F6; /* Легкий фон при наведении */
 }
 
 .notification-badge {
     position: absolute;
-    top: 4px; /* Скорректировано для лучшего вида */
-    right: 4px; /* Скорректировано */
-    background-color: #EF4444;
+    top: 5px;
+    right: 5px;
+    background-color: #EF4444; /* Красный цвет для уведомлений */
     color: white;
-    font-size: 0.65rem;
+    font-size: 0.6rem; /* Маленький шрифт */
     font-weight: bold;
-    width: 16px;
-    height: 16px;
+    width: 14px; /* Меньше размер */
+    height: 14px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #FFFFFF; /* Маленькая белая обводка для значка */
+    border: 1.5px solid #FFFFFF;
 }
 
-.user-profile {
+.user-profile-container {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    color: #374151;
+    gap: 0.6rem; /* Отступ между аватаром, именем и стрелкой */
+    padding: 0.35rem 0.5rem; /* Небольшой паддинг для всего блока */
+    border-radius: 8px;
     cursor: pointer;
-    padding: 0.5rem; /* Добавил немного padding для кликабельности */
-    border-radius: 6px;
     transition: background-color 0.2s ease;
 }
 
-.user-profile:hover {
+.user-profile-container:hover {
     background-color: #F3F4F6;
 }
 
-.user-profile .user-avatar-icon {
-    color: #4B5563; /* Цвет иконки аватара */
+.user-profile-container .user-avatar-icon {
+    color: #4B5563;
 }
 
-.user-profile .user-info {
-    display: flex;
-    flex-direction: column;
-    text-align: left; /* Выравнивание текста по левому краю */
+.user-profile-container .user-name {
+    font-weight: 500; /* Средняя насыщенность */
+    font-size: 0.875rem; /* 14px */
+    color: #374151;
 }
 
-.user-profile .user-name {
-    font-weight: 600;
-    font-size: 0.9rem;
-    line-height: 1.2;
+/* Стили для кнопки выпадающего списка, если она отдельно от текста */
+.user-profile-dropdown {
+    padding: 0.25rem; /* Маленький паддинг для стрелки */
 }

@@ -1,68 +1,200 @@
 /* src/pages/HomePage.css */
 
-.page-content-wrapper {
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Основная колонка шире правой */
+    gap: 1.5rem; /* Отступ между колонками */
+    width: 100%;
+}
+
+.main-column {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* Пространство между элементами: заголовком, параграфом, секциями */
+    gap: 1.5rem; /* Отступ между секциями в основной колонке */
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Отступ между секциями в правой колонке */
 }
 
 .page-main-title {
-    font-size: 1.75rem; /* Размер основного заголовка страницы */
+    font-size: 1.8rem; /* 28px */
     font-weight: 700;
     color: #111827;
-    margin: 0; /* Убираем стандартные отступы, полагаемся на gap родителя */
-}
-
-/* Стили для параграфа на странице, если нужно */
-.page-content-wrapper p {
-    font-size: 1rem;
-    color: #4B5563;
-    line-height: 1.6;
     margin: 0;
 }
 
-/* Стили для будущих секций и виджетов (раскомментируй, когда будешь добавлять) */
-/*
+/* ---- Summary Cards ---- */
+.summary-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Адаптивные карточки */
+    gap: 1rem;
+}
+
+.summary-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 1.25rem; /* 20px */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.summary-card-icon {
+    width: 40px;  /* Размер контейнера иконки */
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.summary-card-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-card-title {
+    font-size: 0.875rem; /* 14px */
+    color: #6B7280; /* Серый текст */
+    margin-bottom: 0.25rem;
+}
+
+.summary-card-amount {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 600;
+    color: #111827;
+}
+
+/* ---- General Dashboard Section Styling ---- */
 .dashboard-section {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1.5rem;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 1.5rem; /* 24px */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem; /* Отступ от заголовка секции до контента */
 }
 
 .section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1F2937;
-  margin-top: 0;
-  margin-bottom: 1rem;
+    font-size: 1.125rem; /* 18px */
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
 }
 
-.widgets-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+.section-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4F46E5; /* Пример фиолетового для ссылок (подбери по вкусу) */
+    text-decoration: none;
+}
+.section-link:hover {
+    text-decoration: underline;
 }
 
-.widget-card {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+/* ---- Cash Flow Section Specifics ---- */
+.cash-flow-section .section-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
-.widget-card h3 {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #6B7280;
-  margin: 0 0 0.5rem 0;
+.cash-flow-legend {
+    font-size: 0.875rem;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+}
+.cash-flow-legend::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.35rem;
+}
+.cash-flow-legend.income::before {
+    background-color: #34D399; /* Зеленый для Income */
+}
+.cash-flow-legend.expenses::before {
+    background-color: #A0A3BD; /* Серо-голубой для Expenses, как на графике */
 }
 
-.widget-card .widget-amount {
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0;
+.time-filter-dropdown {
+    font-size: 0.875rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    background-color: #FFFFFF;
+    color: #374151;
 }
-*/
+
+.chart-placeholder {
+    height: 250px; /* Примерная высота для графика */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F9FAFB; /* Легкий фон для заглушки */
+    border-radius: 8px;
+    color: #9CA3AF;
+    border: 1px dashed #E5E7EB;
+}
+
+/* ---- Placeholders for other sections ---- */
+.transactions-list-placeholder,
+.wallet-card-placeholder,
+.recent-transactions-list-placeholder {
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F9FAFB;
+    border-radius: 8px;
+    color: #9CA3AF;
+    border: 1px dashed #E5E7EB;
+    padding: 1rem;
+}
+
+
+/* Адаптивность для меньших экранов (если правая колонка должна уходить вниз) */
+@media (max-width: 1024px) { /* Примерный breakpoint */
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Одна колонка */
+    }
+    .right-column {
+        margin-top: 1.5rem; /* Добавляем отступ, если она идет после основной */
+    }
+}
+
+@media (max-width: 768px) {
+    .summary-cards-container {
+        grid-template-columns: 1fr; /* Карточки по одной в ряд на маленьких экранах */
+    }
+    .cash-flow-section .section-controls {
+        flex-direction: column; /* Фильтры графика в столбец */
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .page-main-title {
+        font-size: 1.5rem;
+    }
+    .section-title {
+        font-size: 1rem;
+    }
+    .content { /* Уменьшаем паддинги на мобильных для .content из MainLayout.css */
+        padding: 1rem;
+    }
+    .app-header { /* Уменьшаем паддинги на мобильных для хедера */
+        padding: 0 1rem;
+    }
+}

@@ -1,29 +1,28 @@
 import React from 'react';
 import './Header.css';
-import { LuSearch, LuBell } from "react-icons/lu";
-import { FaUserCircle } from "react-icons/fa";
+import { LuSearch, LuBell, LuChevronDown } from "react-icons/lu"; // LuChevronDown для выпадающего списка
+import { FaUserCircle } from "react-icons/fa"; // Используем эту иконку пользователя
 
 const Header = () => {
     return (
         <header className="app-header">
             <div className="header-left">
-                {/* Можно добавить что-то сюда, если понадобится, например, хлебные крошки */}
+                {/* Здесь может быть, например, название текущей страницы или хлебные крошки, если понадобится */}
             </div>
             <div className="header-right">
-                <button className="header-icon-button">
-                    <LuSearch size={22} />
+                <button className="header-icon-button" aria-label="Search">
+                    <LuSearch size={20} /> {/* Размер иконки */}
                 </button>
-                <button className="header-icon-button">
-                    <LuBell size={22} />
-                    <span className="notification-badge">3</span> {/* Пример значка уведомления */}
+                <button className="header-icon-button" aria-label="Notifications">
+                    <LuBell size={20} />
+                    <span className="notification-badge">3</span>
                 </button>
-                <div className="user-profile">
-                    <FaUserCircle size={32} className="user-avatar-icon" />
-                    <div className="user-info">
-                        <span className="user-name">Максим Кириевски</span> {/* Пример из референса */}
-                        {/* <span className="user-role">Admin</span> */}
-                    </div>
-                    {/* Здесь можно добавить выпадающее меню по клику */}
+                <div className="user-profile-container">
+                    <FaUserCircle size={28} className="user-avatar-icon" /> {/* Размер аватара */}
+                    <span className="user-name">Maksim Kirievski</span> {/* Имя из скриншота */}
+                    <button className="header-icon-button user-profile-dropdown" aria-label="User menu">
+                        <LuChevronDown size={18} />
+                    </button>
                 </div>
             </div>
         </header>
