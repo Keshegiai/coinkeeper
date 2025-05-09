@@ -1,0 +1,115 @@
+/* src/pages/SettingsPage.module.css */
+.settingsSection {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.03);
+    margin-bottom: 1.5rem; /* Используем общий отступ из HomePage.module.css или определяем свой */
+}
+
+.sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.addCategoryForm {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.categoryInput {
+    flex-grow: 1;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+.categoryInput:focus {
+    outline: none;
+    border-color: #4F46E5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.addButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #4F46E5;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.addButton:hover {
+    background-color: #4338ca;
+}
+
+.categoryList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.categoryItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 0; /* Меньше отступы, если внутри .settingsSection уже есть padding */
+    border-bottom: 1px solid #f3f4f6;
+}
+.categoryItem:last-child {
+    border-bottom: none;
+}
+
+.categoryName {
+    font-size: 0.95rem;
+    color: #111827;
+}
+
+.categoryActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.actionButton {
+    background: none;
+    border: none; /* Убрал границу для более чистого вида, можно вернуть */
+    color: #6b7280;
+    padding: 0.4rem; /* Немного увеличил для удобства */
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+}
+.actionButton:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+.deleteButton:hover {
+    color: #ef4444; /* Красный при наведении на удаление */
+    background-color: #fee2e2;
+}
+.cancelButton:hover {
+    background-color: #e5e7eb;
+}
+
+.editForm {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+.editForm .categoryInput { /* Специфичный стиль для инпута в режиме редактирования */
+    margin-right: auto; /* Занимает все доступное место */
+}
