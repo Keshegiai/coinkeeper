@@ -1,0 +1,79 @@
+.app-sidebar {
+    width: 260px;
+    background-color: #1E2235; /* Темно-синий/фиолетовый из референса (подбери точнее) */
+    color: #A0A3BD; /* Светлый серо-голубой текст */
+    padding: 1.5rem 1rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    transition: width 0.3s ease; /* Для возможной анимации сворачивания */
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Пространство между иконкой и текстом */
+    padding: 0 0.5rem; /* Небольшой отступ внутри хедера сайдбара */
+    margin-bottom: 2rem;
+}
+
+.sidebar-header .logo-icon {
+    color: #7F56D9; /* Фиолетовый цвет для иконки логотипа */
+}
+
+.sidebar-header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #FFFFFF; /* Белый для заголовка */
+}
+
+.sidebar-nav {
+    flex-grow: 1; /* Занимает все доступное пространство, отодвигая нижние элементы вниз */
+}
+
+.sidebar-nav ul li a,
+.sidebar-bottom ul li a {
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1rem; /* Отступы как в референсе */
+    margin-bottom: 0.5rem; /* Пространство между пунктами */
+    border-radius: 8px; /* Скругление углов */
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-nav ul li a .nav-icon,
+.sidebar-bottom ul li a .nav-icon {
+    margin-right: 0.85rem;
+    display: inline-flex; /* Для правильного выравнивания иконки */
+    align-items: center;
+}
+
+.sidebar-nav ul li a:hover {
+    background-color: #2a2e45; /* Немного светлее фон при наведении */
+    color: #FFFFFF;
+}
+
+.sidebar-nav ul li a.active {
+    background-color: #7F56D9; /* Яркий фиолетовый для активного элемента */
+    color: #FFFFFF; /* Белый текст для активного элемента */
+    font-weight: 600;
+}
+
+.sidebar-nav ul li a.active .nav-icon {
+    color: #FFFFFF; /* Иконка тоже белая */
+}
+
+.sidebar-bottom {
+    margin-top: auto; /* Прижимает этот блок к низу */
+    padding-top: 1rem; /* Отступ сверху перед нижними элементами */
+    border-top: 1px solid #2a2e45; /* Разделитель */
+}
+
+.sidebar-bottom ul li a:hover {
+    background-color: #2a2e45;
+    color: #FFFFFF;
+}

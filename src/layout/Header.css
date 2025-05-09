@@ -1,0 +1,79 @@
+.app-header {
+    background-color: #FFFFFF; /* Белый фон хедера */
+    padding: 0.8rem 1.5rem; /* Вертикальные и горизонтальные отступы */
+    /* border-bottom: 1px solid #E5E7EB; Убрал рамку, чтобы было чище, как в референсе */
+    display: flex;
+    justify-content: space-between; /* Разносит левую и правую часть */
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    height: 70px; /* Фиксированная высота хедера */
+}
+
+.header-left {
+    /* Для элементов слева, если будут */
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Пространство между иконками и профилем */
+}
+
+.header-icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6B7280; /* Серый цвет для иконок */
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Для позиционирования badge */
+}
+
+.header-icon-button:hover {
+    color: #374151; /* Темнее при наведении */
+    background-color: #F3F4F6; /* Легкий фон при наведении */
+}
+
+.notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: #EF4444; /* Красный для уведомлений */
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #374151;
+    cursor: pointer; /* Для будущего дропдауна */
+}
+
+.user-profile .user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right; /* Если нужно имя справа от аватара */
+}
+
+.user-profile .user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* .user-profile .user-role {
+  font-size: 0.8rem;
+  color: #6B7280;
+} */

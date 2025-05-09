@@ -1,0 +1,23 @@
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: #F9FAFB; /* Общий фон, если вдруг Sidebar не на всю высоту */
+}
+
+.main-content-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    /* overflow-y: auto; Убрал отсюда, чтобы скролл был на .content если нужно */
+    /* background-color: #FFFFFF;  Зададим фон на .content */
+}
+
+.content {
+    padding: 1.5rem 2rem; /* Отступы для основного контента */
+    flex-grow: 1;
+    overflow-y: auto; /* Скролл для контента, если он превышает высоту */
+    background-color: #FFFFFF; /* Белый фон для контентной части, как в референсе */
+    /* Можно добавить box-shadow как в референсе на карточках, но это уже к внутренним элементам */
+}
