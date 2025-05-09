@@ -1,0 +1,86 @@
+/* src/layout/Header.module.css */
+.appHeader {
+    background-color: #FFFFFF;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    height: 70px;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.headerLeft {
+    /* Стили для левой части хедера */
+}
+
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.headerIconButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6B7280;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.headerIconButton:hover {
+    color: #111827;
+    background-color: #F3F4F6;
+}
+
+.notificationBadge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #EF4444;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: bold;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #FFFFFF;
+}
+
+.userProfileContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.userProfileContainer:hover {
+    background-color: #F3F4F6;
+}
+
+.userAvatarIcon {
+    color: #4B5563;
+}
+
+.userName {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.userProfileDropdown { /* Этот класс применяется к headerIconButton */
+    padding: 0.25rem;
+}

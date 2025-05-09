@@ -1,0 +1,71 @@
+/* src/components/CashFlowSummary.module.css */
+.cashFlowSummarySection { /* Используется как дополнительный класс к .dashboardSection */
+    /* Специфичные стили могут быть здесь, если .dashboardSection будет глобальным или из другого модуля */
+}
+
+/* Если .dashboardSection тоже должен стать модульным, его нужно импортировать из HomePage.module.css */
+/* и применять оба класса в CashFlowSummary.jsx */
+
+.sectionHeader { /* Если этот класс должен быть уникальным для этого модуля */
+    /* Если он берется из HomePage.module.css, то импортировать оттуда */
+    margin-bottom: 1.5rem;
+    /* Предположим, .sectionHeader и .sectionTitle будут общими, импортируемыми из HomePage.module.css */
+}
+
+.sectionControls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cashFlowLegend {
+    font-size: 0.875rem;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.legendDot { /* Был .cash-flow-legend .legend-dot, теперь отдельный класс */
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.income .legendDot { /* .cash-flow-legend.income .legend-dot -> .income .legendDot */
+    background-color: #34D399;
+}
+
+.expenses .legendDot { /* .cash-flow-legend.expenses .legend-dot -> .expenses .legendDot */
+    background-color: #A0A3BD;
+}
+
+.timeFilterDropdown {
+    font-size: 0.875rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    background-color: #FFFFFF;
+    color: #374151;
+    cursor: pointer;
+}
+
+.chartPlaceholderSummary {
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F9FAFB;
+    border-radius: 8px;
+    color: #9CA3AF;
+    border: 1px dashed #E5E7EB;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .chartPlaceholderSummary {
+        height: 200px;
+    }
+}

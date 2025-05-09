@@ -2,15 +2,15 @@ import React from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { Outlet } from 'react-router-dom';
-import './MainLayout.css';
+import styles from './MainLayout.module.css'; // <--- ИЗМЕНЕНИЕ ИМПОРТА
 
 const MainLayout = () => {
     return (
-        <div className="app-container">
-            <Sidebar />
-            <div className="main-content-area">
-                <Header />
-                <main className="content">
+        <div className={styles.appContainer}> {/* <--- ИСПОЛЬЗОВАНИЕ СТИЛЕЙ */}
+            <Sidebar /> {/* Sidebar использует свои модульные стили */}
+            <div className={styles.mainContentArea}>
+                <Header /> {/* Header использует свои модульные стили */}
+                <main className={styles.content}>
                     <Outlet />
                 </main>
             </div>

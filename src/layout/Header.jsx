@@ -1,26 +1,25 @@
 import React from 'react';
-import './Header.css';
-import { LuSearch, LuBell, LuChevronDown } from "react-icons/lu"; // LuChevronDown для выпадающего списка
-import { FaUserCircle } from "react-icons/fa"; // Используем эту иконку пользователя
+import styles from './Header.module.css'; // <--- ИЗМЕНЕНИЕ ИМПОРТА
+import { LuSearch, LuBell, LuChevronDown } from "react-icons/lu";
+import { FaUserCircle } from "react-icons/fa";
 
 const Header = () => {
     return (
-        <header className="app-header">
-            <div className="header-left">
-                {/* Здесь может быть, например, название текущей страницы или хлебные крошки, если понадобится */}
+        <header className={styles.appHeader}> {/* <--- ИСПОЛЬЗОВАНИЕ СТИЛЕЙ */}
+            <div className={styles.headerLeft}>
             </div>
-            <div className="header-right">
-                <button className="header-icon-button" aria-label="Search">
-                    <LuSearch size={20} /> {/* Размер иконки */}
+            <div className={styles.headerRight}>
+                <button className={styles.headerIconButton} aria-label="Search">
+                    <LuSearch size={20} />
                 </button>
-                <button className="header-icon-button" aria-label="Notifications">
+                <button className={styles.headerIconButton} aria-label="Notifications">
                     <LuBell size={20} />
-                    <span className="notification-badge">3</span>
+                    <span className={styles.notificationBadge}>3</span>
                 </button>
-                <div className="user-profile-container">
-                    <FaUserCircle size={28} className="user-avatar-icon" /> {/* Размер аватара */}
-                    <span className="user-name">Maksim Kirievski</span> {/* Имя из скриншота */}
-                    <button className="header-icon-button user-profile-dropdown" aria-label="User menu">
+                <div className={styles.userProfileContainer}>
+                    <FaUserCircle size={28} className={styles.userAvatarIcon} />
+                    <span className={styles.userName}>Maksim Kirievski</span>
+                    <button className={`${styles.headerIconButton} ${styles.userProfileDropdown}`} aria-label="User menu"> {/* <--- Несколько классов */}
                         <LuChevronDown size={18} />
                     </button>
                 </div>

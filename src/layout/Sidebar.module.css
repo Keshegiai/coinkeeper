@@ -1,0 +1,80 @@
+/* src/layout/Sidebar.module.css */
+.appSidebar {
+    width: 260px;
+    background-color: #1E2235;
+    color: #A0A3BD;
+    padding: 1.5rem 1rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    transition: width 0.3s ease;
+    flex-shrink: 0;
+}
+
+.sidebarHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.logoIcon {
+    color: #7F56D9;
+}
+
+/* Стили для h1 внутри .sidebarHeader остаются доступными через этот селектор */
+.sidebarHeader h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.sidebarNav {
+    flex-grow: 1;
+}
+
+.sidebarBottom {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #2a2e45;
+}
+
+/* Базовые стили для ссылок NavLink */
+.navLink {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.6rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #A0A3BD; /* Цвет неактивных ссылок */
+    text-decoration: none; /* Убираем подчеркивание по умолчанию */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navLink:hover {
+    background-color: #2a2e45;
+    color: #FFFFFF;
+}
+
+/* Стиль для активной ссылки NavLink */
+.active {
+    background-color: #7F56D9;
+    color: #FFFFFF;
+    /* Можно добавить другие стили для активного состояния, если нужно, например, font-weight */
+}
+
+.navIcon {
+    margin-right: 1rem;
+    display: inline-flex; /* Важно для правильного выравнивания иконки */
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.active .navIcon {
+  color: #FFFFFF;
+}

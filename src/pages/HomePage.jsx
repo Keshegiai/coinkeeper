@@ -1,90 +1,61 @@
 import React from 'react';
-import './HomePage.css';
-// import SummaryCard from '../components/SummaryCard'; // Закомментировано, т.к. пока не создавали отдельно
-// import CashFlowSection from '../components/CashFlowSection';
-// import LastTransactionsSection from '../components/LastTransactionsSection';
-// import WalletSection from '../components/WalletSection';
-// import RecentTransactionsList from '../components/RecentTransactionsList';
+import styles from './HomePage.module.css'; // Импорт CSS-модуля для HomePage
+import CashFlowSummary from '../components/CashFlowSummary'; // CashFlowSummary использует свои модульные стили
 
-// Иконки для карточек и других элементов
+// Иконки (убедись, что все импортированы и работают)
 import { FaWallet } from 'react-icons/fa';
-// Заменяем проблемные иконки:
-import { LuPiggyBank, LuTrendingUp } from 'react-icons/lu'; // LuTrendingUp вместо LuArrowUpRightFromCircle
-import { FiMoreHorizontal } from 'react-icons/fi';      // FiMoreHorizontal вместо LuMoreHorizontal
-
+import { LuPiggyBank, LuTrendingUp } from 'react-icons/lu'; // Предполагаем, что эти иконки рабочие
+import { FiMoreHorizontal } from 'react-icons/fi';       // Предполагаем, что эта иконка рабочая
 
 const HomePage = () => {
     const summaryData = [
         { title: 'Cash balance', amount: '$3240.21', icon: <FaWallet />, iconBg: '#1F2937', iconColor: '#FFFFFF' },
-        // Используем LuTrendingUp для "Total spent"
         { title: 'Total spent', amount: '$250.80', icon: <LuTrendingUp />, iconBg: '#E5E7EB', iconColor: '#4B5563' },
         { title: 'Savings', amount: '$810.32', icon: <LuPiggyBank />, iconBg: '#E5E7EB', iconColor: '#4B5563' },
     ];
 
     return (
-        <div className="dashboard-grid"> {/* Основная сетка страницы */}
-            {/* Левая (основная) колонка */}
-            <div className="main-column">
-                <h1 className="page-main-title">Your dashboard</h1>
+        <div className={styles.dashboardGrid}>
+            <div className={styles.mainColumn}>
+                <h1 className={styles.pageMainTitle}>Your dashboard</h1>
 
-                <section className="summary-cards-container">
+                <section className={styles.summaryCardsContainer}>
                     {summaryData.map(card => (
-                        <div className="summary-card" key={card.title}>
-                            <div className="summary-card-icon" style={{ backgroundColor: card.iconBg, color: card.iconColor }}>
+                        <div className={styles.summaryCard} key={card.title}>
+                            <div className={styles.summaryCardIcon} style={{ backgroundColor: card.iconBg, color: card.iconColor }}>
                                 {React.cloneElement(card.icon, { size: 20 })}
                             </div>
-                            <div className="summary-card-info">
-                                <span className="summary-card-title">{card.title}</span>
-                                <span className="summary-card-amount">{card.amount}</span>
+                            <div className={styles.summaryCardInfo}>
+                                <span className={styles.summaryCardTitle}>{card.title}</span>
+                                <span className={styles.summaryCardAmount}>{card.amount}</span>
                             </div>
                         </div>
                     ))}
                 </section>
 
-                <section className="dashboard-section cash-flow-section">
-                    <div className="section-header">
-                        <h2 className="section-title">Your cash flow</h2>
-                        <div className="section-controls">
-                            <span className="cash-flow-legend income">Income</span>
-                            <span className="cash-flow-legend expenses">Expenses</span>
-                            <select className="time-filter-dropdown">
-                                <option>Last week</option>
-                                <option>Last month</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="chart-placeholder">Cash Flow Chart Placeholder</div>
-                </section>
+                <CashFlowSummary />
 
-                <section className="dashboard-section last-transactions-section">
-                    <div className="section-header">
-                        <h2 className="section-title">Last Transactions</h2>
-                        <a href="#" className="section-link">Check All &gt;</a>
+                <section className={styles.dashboardSection}>
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>Last Transactions</h2>
+                        <a href="#" className={styles.sectionLink}>Check All &gt;</a>
                     </div>
-                    <div className="transactions-list-placeholder">Last Transactions List Placeholder</div>
+                    <div className={styles.transactionsListPlaceholder}>Last Transactions List Placeholder</div>
                 </section>
             </div>
 
-            {/* Правая колонка */}
-            <aside className="right-column">
-                <section className="dashboard-section wallet-section">
-                    <div className="section-header">
-                        <h2 className="section-title">Wallet</h2>
-                        <button className="header-icon-button" aria-label="Wallet options">
-                            {/* Используем FiMoreHorizontal для опций кошелька */}
+            <aside className={styles.rightColumn}>
+                <section className={styles.dashboardSection}>
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>Wallet</h2>
+                        {/* Используем новый класс .optionsButton из HomePage.module.css */}
+                        <button className={styles.optionsButton} aria-label="Wallet options">
                             <FiMoreHorizontal size={20}/>
                         </button>
                     </div>
-                    <div className="wallet-card-placeholder">Wallet Card Placeholder</div>
+                    <div className={styles.walletCardPlaceholder}>Wallet Card Placeholder</div>
                 </section>
-
-                <section className="dashboard-section recent-transactions-alt-section">
-                    <div className="section-header">
-                        <h2 className="section-title">Recent transactions</h2>
-                        <a href="#" className="section-link">Check All &gt;</a>
-                    </div>
-                    <div className="recent-transactions-list-placeholder">Recent Transactions List Placeholder</div>
-                </section>
+                {/* Секция "Recent transactions" была удалена по твоему запросу */}
             </aside>
         </div>
     );

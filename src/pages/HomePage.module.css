@@ -1,0 +1,165 @@
+/* src/pages/HomePage.module.css */
+.dashboardGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.mainColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.pageMainTitle {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.pageContentWrapper { /* Используется другими страницами-заглушками */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.pageContentWrapper p {
+    font-size: 1rem;
+    color: #4B5563;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.summaryCardsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.summaryCard {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.summaryCardIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.summaryCardInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.summaryCardTitle {
+    font-size: 0.875rem;
+    color: #6B7280;
+    margin-bottom: 0.25rem;
+}
+
+.summaryCardAmount {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Общие стили для секций, которые можно импортировать в другие компоненты */
+.dashboardSection {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.sectionTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.sectionLink {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4F46E5;
+    text-decoration: none;
+}
+.sectionLink:hover {
+    text-decoration: underline;
+}
+
+.chartPlaceholder,
+.transactionsListPlaceholder,
+.walletCardPlaceholder {
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F9FAFB;
+    border-radius: 8px;
+    color: #9CA3AF;
+    border: 1px dashed #E5E7EB;
+    padding: 1rem;
+}
+
+@media (max-width: 1024px) {
+    .dashboardGrid {
+        grid-template-columns: 1fr;
+    }
+    .rightColumn {
+        margin-top: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .summaryCardsContainer {
+        grid-template-columns: 1fr;
+    }
+    .pageMainTitle {
+        font-size: 1.5rem;
+    }
+    .sectionTitle {
+        font-size: 1rem;
+    }
+}
+
+.optionsButton { /* Новый класс для кнопки опций */
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6B7280; /* Используем цвет из Header для консистентности */
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease; /* Добавим transition */
+}
+.optionsButton:hover {
+    background-color: #F3F4F6;
+    color: #111827;
+}

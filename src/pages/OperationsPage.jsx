@@ -1,5 +1,5 @@
 import React from 'react';
-import './HomePage.css'; // Используем те же стили для общих элементов
+import './HomePage.module.css'; // Используем те же стили для общих элементов
 
 const OperationsPage = () => {
     return (
