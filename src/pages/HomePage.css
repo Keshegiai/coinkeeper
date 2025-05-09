@@ -1,65 +1,68 @@
 /* src/pages/HomePage.css */
 
-.homepage-content {
-    /* Этот класс оборачивает все содержимое главной страницы. */
-    /* Можно добавить flex-контейнер, если элементы будут располагаться в строку или колонку с определенными отступами */
+.page-content-wrapper {
     display: flex;
-    flex-direction: column; /* Располагаем элементы в колонку: заголовок, потом параграф и т.д. */
-    gap: 1rem; /* Пространство между дочерними элементами, например, между заголовком и следующим блоком */
+    flex-direction: column;
+    gap: 1.5rem; /* Пространство между элементами: заголовком, параграфом, секциями */
 }
 
-.page-title {
-    font-size: 1.8rem; /* Размер шрифта для основного заголовка страницы, как "Your dashboard" в референсе */
-    font-weight: 700;   /* Насыщенность шрифта (600 или 700 обычно хорошо смотрятся для заголовков) */
-    color: #111827;     /* Темный цвет текста для заголовка */
-    margin-top: 0;      /* Убираем стандартный верхний отступ у h1, если он не нужен */
-    margin-bottom: 0.5rem; /* Небольшой отступ снизу от заголовка до следующего элемента */
-    /* Если вы используете 'gap' в .homepage-content, margin-bottom может быть не нужен или его можно уменьшить */
+.page-main-title {
+    font-size: 1.75rem; /* Размер основного заголовка страницы */
+    font-weight: 700;
+    color: #111827;
+    margin: 0; /* Убираем стандартные отступы, полагаемся на gap родителя */
 }
 
-/* Стили для параграфа, если нужно */
-.homepage-content p {
+/* Стили для параграфа на странице, если нужно */
+.page-content-wrapper p {
     font-size: 1rem;
-    color: #4B5563; /* Немного светлее, чем заголовок */
+    color: #4B5563;
     line-height: 1.6;
-    margin-top: 0;
+    margin: 0;
 }
 
-/* ЗАГОТОВКИ ДЛЯ БУДУЩИХ ЭЛЕМЕНТОВ ДЭШБОРДА:
-  Когда мы начнем добавлять карточки, графики и другие секции,
-  мы можем использовать следующие классы или создать новые.
-*/
-
-/* Например, для секций дэшборда */
+/* Стили для будущих секций и виджетов (раскомментируй, когда будешь добавлять) */
+/*
 .dashboard-section {
-    background-color: #ffffff; /* Белый фон для карточек/секций */
-    padding: 1.5rem;           /* Внутренние отступы */
-    border-radius: 12px;       /* Скругленные углы, как в референсе */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Легкая тень для объема */
-    margin-bottom: 1.5rem;     /* Отступ между секциями */
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
 }
 
-.dashboard-section-title {
-    font-size: 1.25rem; /* Заголовок внутри секции */
-    font-weight: 600;
-    color: #1F2937;
-    margin-top: 0;
-    margin-bottom: 1rem;
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1F2937;
+  margin-top: 0;
+  margin-bottom: 1rem;
 }
 
-/* Для сетки карточек (как "Cash balance", "Total spent", "Savings") */
 .widgets-grid {
-    display: grid;
-    /* Адаптивные колонки: минимум 250px, максимум 1fr (равное распределение) */
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem; /* Пространство между карточками */
-    margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
 }
 
 .widget-card {
-    background-color: #ffffff;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    /* Сюда можно будет добавить стили для иконок, сумм, названий внутри карточки */
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
+
+.widget-card h3 {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6B7280;
+  margin: 0 0 0.5rem 0;
+}
+
+.widget-card .widget-amount {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+*/

@@ -1,44 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
-// Пример иконок из react-icons (выбери подходящие)
-import { LuLayoutDashboard, LuFileText, LuSettings, LuLifeBuoy, LuLogOut } from "react-icons/lu"; // Пример
-import { FaCoins } from "react-icons/fa"; // Иконка для лого
+import { LuLayoutDashboard, LuFileText, LuSettings, LuLifeBuoy, LuLogOut } from "react-icons/lu";
+import { FaCoins } from "react-icons/fa"; // Или другая иконка для лого
 
 const Sidebar = () => {
-    const [activeItem, setActiveItem] = useState('Главная'); // Пример активного элемента
-
     const menuItems = [
-        { id: 'Главная', name: 'Главная', icon: <LuLayoutDashboard size={20} /> },
-        { id: 'Операции', name: 'Операции', icon: <LuFileText size={20} /> },
-        // Добавь другие пункты меню по аналогии с референсом
-        // { name: 'Invoices', icon: <SomeIcon /> },
-        // { name: 'Your funds', icon: <SomeIcon /> },
-        { id: 'Настройки', name: 'Настройки', icon: <LuSettings size={20} /> },
+        { name: 'Главная', icon: <LuLayoutDashboard size={20} />, path: '/' },
+        { name: 'Операции', icon: <LuFileText size={20} />, path: '/operations' },
+        { name: 'Настройки', icon: <LuSettings size={20} />, path: '/settings' },
     ];
 
     const bottomMenuItems = [
-        { id: 'Поддержка', name: 'Поддержка', icon: <LuLifeBuoy size={20} /> },
-        { id: 'Выйти', name: 'Выйти', icon: <LuLogOut size={20} /> },
+        { name: 'Поддержка', icon: <LuLifeBuoy size={20} />, path: '/support' },
+        { name: 'Выйти', icon: <LuLogOut size={20} />, path: '/logout' },
     ];
 
     return (
         <aside className="app-sidebar">
             <div className="sidebar-header">
-                <FaCoins size={30} className="logo-icon" />
+                <FaCoins size={28} className="logo-icon" /> {/* Размер лого иконки */}
                 <h1>Coinkeeper</h1>
             </div>
             <nav className="sidebar-nav">
                 <ul>
                     {menuItems.map((item) => (
-                        <li key={item.id}>
-                            <a
-                                href="#" // Замени на Link из react-router-dom в будущем
-                                className={activeItem === item.id ? 'active' : ''}
-                                onClick={() => setActiveItem(item.id)}
+                        <li key={item.name}>
+                            <NavLink
+                                to={item.path}
+                                className={({ isActive }) => (isActive ? 'active' : '')}
                             >
                                 <span className="nav-icon">{item.icon}</span>
                                 {item.name}
-                            </a>
+                            </NavLink>
                         </li>
                     ))}
                 </ul>
@@ -46,14 +40,14 @@ const Sidebar = () => {
             <div className="sidebar-bottom">
                 <ul>
                     {bottomMenuItems.map((item) => (
-                        <li key={item.id}>
-                            <a
-                                href="#"
-                                onClick={() => setActiveItem(item.id)} // Можно не менять активный для нижних
+                        <li key={item.name}>
+                            <NavLink
+                                to={item.path}
+                                className={({ isActive }) => (isActive ? 'active-bottom-item' : '')} // Можно использовать другой класс для активного состояния нижних, если нужно
                             >
                                 <span className="nav-icon">{item.icon}</span>
                                 {item.name}
-                            </a>
+                            </NavLink>
                         </li>
                     ))}
                 </ul>

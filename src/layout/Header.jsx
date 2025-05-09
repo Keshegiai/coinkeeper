@@ -1,6 +1,7 @@
 import React from 'react';
 import './Header.css';
-import { LuSearch, LuBell, LuUserCircle2 } from "react-icons/lu"; // Иконки
+import { LuSearch, LuBell } from "react-icons/lu";
+import { FaUserCircle } from "react-icons/fa";
 
 const Header = () => {
     return (
@@ -17,7 +18,7 @@ const Header = () => {
                     <span className="notification-badge">3</span> {/* Пример значка уведомления */}
                 </button>
                 <div className="user-profile">
-                    <LuUserCircle2 size={32} /> {/* Или img для аватара */}
+                    <FaUserCircle size={32} className="user-avatar-icon" />
                     <div className="user-info">
                         <span className="user-name">Максим Кириевски</span> {/* Пример из референса */}
                         {/* <span className="user-role">Admin</span> */}
