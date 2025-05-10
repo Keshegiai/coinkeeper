@@ -1,12 +1,22 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import homePageStyles from './HomePage.module.css';
 import styles from './CashFlowPage.module.css';
 import DateRangeFilter from '../components/DateRangeFilter';
 import CustomLineChart from '../components/charts/CustomLineChart';
-// import { PieChart, Pie, Cell, Tooltip, Legend as PieLegend } from 'recharts'; // Если будешь добавлять PieChart
+
 
 const CashFlowPage = ({ transactions = [] }) => {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const getInitialDateRange = () => {
+        const urlStartDate = searchParams.get('startDate');
+        const urlEndDate = searchParams.get('endDate');
+
+        if (urlStartDate && urlEndDate) {
+            return { startDate: urlStartDate, endDate: urlEndDate };
+        }
+
         const savedRange = localStorage.getItem('cashFlowDateRange');
         if (savedRange) {
             try {
@@ -28,7 +38,10 @@ const CashFlowPage = ({ transactions = [] }) => {
 
     useEffect(() => {
         localStorage.setItem('cashFlowDateRange', JSON.stringify(dateRange));
-    }, [dateRange]);
+        if (dateRange.startDate && dateRange.endDate) {
+            setSearchParams({ startDate: dateRange.startDate, endDate: dateRange.endDate }, { replace: true });
+        }
+    }, [dateRange, setSearchParams]);
 
     const filteredTransactions = useMemo(() => {
         if (!dateRange.startDate || !dateRange.endDate) {
@@ -46,8 +59,10 @@ const CashFlowPage = ({ transactions = [] }) => {
     }, [transactions, dateRange]);
 
     const lineChartData = useMemo(() => {
-        if (!filteredTransactions.length) return [];
+        if (!filteredTransactions || filteredTransactions.length === 0) return [];
+
         const dailyData = {};
+
         filteredTransactions.forEach(t => {
             const date = t.date;
             if (!dailyData[date]) {
@@ -59,6 +74,7 @@ const CashFlowPage = ({ transactions = [] }) => {
                 dailyData[date].expenses += t.amount;
             }
         });
+
         return Object.entries(dailyData)
             .map(([date, values]) => ({
                 date,
@@ -68,6 +84,7 @@ const CashFlowPage = ({ transactions = [] }) => {
     }, [filteredTransactions]);
 
     const processPieChartData = (type) => {
+        if (!filteredTransactions || filteredTransactions.length === 0) return [];
         const relevantTransactions = filteredTransactions.filter(t => t.type === type);
         const dataMap = relevantTransactions.reduce((acc, transaction) => {
             const categoryName = transaction.category?.name || 'Без категории';
@@ -90,7 +107,11 @@ const CashFlowPage = ({ transactions = [] }) => {
                 <h1 className={homePageStyles.pageMainTitle}>Аналитика Денежного Потока</h1>
             </div>
 
-            <DateRangeFilter onFilterApply={handleFilterApply} initialStartDate={dateRange.startDate} initialEndDate={dateRange.endDate} />
+            <DateRangeFilter
+                onFilterApply={handleFilterApply}
+                initialStartDate={dateRange.startDate}
+                initialEndDate={dateRange.endDate}
+            />
 
             <section className={`${styles.chartSection} ${styles.lineChartSectionCustom}`}>
                 <h2 className={styles.chartTitle}>Динамика доходов и расходов</h2>

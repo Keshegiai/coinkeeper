@@ -36,7 +36,7 @@ function App() {
                 api.getTransactionsAPI(),
             ]);
             setCategories(fetchedCategories || []);
-            setTransactions(fetchedTransactions || []);
+            setTransactions(sortTransactions(fetchedTransactions || []));
         } catch (err) {
             console.error("Fetch data error:", err);
             setError(err.message || 'Не удалось загрузить данные');
@@ -203,7 +203,19 @@ function App() {
                         />
                     }
                 />
-                <Route path="operations" element={<OperationsPage transactions={transactions} categories={categories} />} />
+                <Route
+                    path="operations"
+                    element={
+                        <OperationsPage
+                            transactions={transactions}
+                            categories={categories}
+                            addTransaction={addTransaction}
+                            deleteTransaction={deleteTransaction}
+                            updateTransaction={updateTransaction}
+                            addCategory={addCategory}
+                        />
+                    }
+                />
                 <Route path="cashflow" element={<CashFlowPage transactions={transactions} />} />
                 <Route
                     path="settings"
