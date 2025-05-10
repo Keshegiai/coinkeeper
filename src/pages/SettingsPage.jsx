@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import homePageStyles from './HomePage.module.css';
 import styles from './SettingsPage.module.css';
-import { LuTrash2, LuCheck, LuX } from 'react-icons/lu';
+import { LuTrash2, LuCheck, LuX, LuSearch } from 'react-icons/lu';
 import { FiEdit3, FiPlusCircle } from 'react-icons/fi';
 
 const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory }) => {
     const [newCategoryName, setNewCategoryName] = useState('');
     const [newCategoryColor, setNewCategoryColor] = useState('#808080');
-
     const [editingCategory, setEditingCategory] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const handleAddCategory = async (e) => {
         e.preventDefault();
@@ -32,7 +32,7 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
             id: category.id,
             name: category.name,
             color: category.color || '#808080',
-            icon: category.icon // Сохраняем иконку, если она есть, но не даем редактировать
+            icon: category.icon
         });
     };
 
@@ -48,7 +48,7 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
         const categoryDataToUpdate = {
             name: editingCategory.name.trim(),
             color: editingCategory.color || "#808080",
-            icon: editingCategory.icon // Передаем существующую иконку, т.к. не редактируем ее здесь
+            icon: editingCategory.icon
         };
         const success = await updateCategory(editingCategory.id, categoryDataToUpdate);
         if (success) {
@@ -59,6 +59,17 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
     const handleEditFieldChange = (field, value) => {
         setEditingCategory(prev => ({ ...prev, [field]: value }));
     };
+
+    const filteredCategories = useMemo(() => {
+        if (!categories) return [];
+        if (!searchTerm.trim()) {
+            return categories;
+        }
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return categories.filter(category =>
+            category.name.toLowerCase().includes(lowerSearchTerm)
+        );
+    }, [categories, searchTerm]);
 
     return (
         <div className={homePageStyles.pageContentWrapper}>
@@ -92,10 +103,22 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
             </section>
 
             <section className={styles.settingsSection}>
-                <h2 className={styles.sectionTitle}>Существующие категории</h2>
-                {categories && categories.length > 0 ? (
+                <div className={styles.sectionHeaderWithFilter}>
+                    <h2 className={styles.sectionTitle}>Существующие категории</h2>
+                    <div className={styles.filterInputWrapper}>
+                        <LuSearch className={styles.filterInputIcon} size={16} />
+                        <input
+                            type="text"
+                            placeholder="Поиск категорий..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className={styles.filterInput}
+                        />
+                    </div>
+                </div>
+                {filteredCategories && filteredCategories.length > 0 ? (
                     <ul className={styles.categoryList}>
-                        {categories.map(category => (
+                        {filteredCategories.map(category => (
                             <li key={category.id} className={styles.categoryItem}>
                                 {editingCategory && editingCategory.id === category.id ? (
                                     <div className={styles.editForm}>
@@ -124,14 +147,12 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
                                 ) : (
                                     <>
                                         <div className={styles.categoryInfo}>
-                      <span
-                          className={styles.categoryIconPreview}
-                          style={{ backgroundColor: category.color || '#cccccc' }}
-                          title={`Цвет: ${category.color || 'не задан'}`}
-                      >
-                        {/* Если иконка все еще есть в данных, можно ее как-то отобразить или первую букву имени */}
-                          {/* category.icon ? <DynamicIcon name={category.icon} /> : category.name.charAt(0).toUpperCase() */}
-                      </span>
+                                            <span
+                                                className={styles.categoryIconPreview}
+                                                style={{ backgroundColor: category.color || '#cccccc' }}
+                                                title={`Цвет: ${category.color || 'не задан'}`}
+                                            >
+                                            </span>
                                             <span className={styles.categoryName}>{category.name}</span>
                                         </div>
                                         <div className={styles.categoryActions}>
@@ -148,7 +169,9 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
                         ))}
                     </ul>
                 ) : (
-                    <p className={styles.noCategoriesMessage}>Категорий пока нет. Добавьте первую!</p>
+                    <p className={styles.noCategoriesMessage}>
+                        {searchTerm ? 'Категории по вашему запросу не найдены.' : 'Категорий пока нет. Добавьте первую!'}
+                    </p>
                 )}
             </section>
         </div>

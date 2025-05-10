@@ -1,4 +1,3 @@
-// src/components/charts/CustomLineChart.jsx
 import React from 'react';
 import {
     ResponsiveContainer,
@@ -10,15 +9,13 @@ import {
     Tooltip,
     Legend,
 } from 'recharts';
-import styles from './CustomLineChart.module.css'; // Создадим этот файл для возможных стилей контейнера
+import styles from './CustomLineChart.module.css';
 
-// Цвета для линий графика (согласуем с легендой в CashFlowSummary)
-const INCOME_COLOR = '#34D399';  // Зеленый/бирюзовый
-const EXPENSES_COLOR = '#A0A3BD'; // Серо-голубой (как на скриншоте для линии расходов)
-// Если хочешь более явный красный для расходов: const EXPENSES_COLOR = '#ef4444';
+const INCOME_COLOR = '#34D399';
+const EXPENSES_COLOR = '#A0A3BD';
 
-const CustomLineChart = ({ data, chartHeight = 300 }) => { // Принимаем данные и высоту как props
-                                                           // Форматтер для оси Y (K для тысяч, M для миллионов)
+
+const CustomLineChart = ({ data, chartHeight = 300 }) => {
     const yAxisFormatter = (value) => {
         if (value === 0) return '0';
         if (Math.abs(value) >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
@@ -26,21 +23,18 @@ const CustomLineChart = ({ data, chartHeight = 300 }) => { // Принимаем
         return value.toString();
     };
 
-    // Форматтер для даты на оси X (например, "14 Июл")
     const xAxisDateFormatter = (dateString) => {
         try {
-            // Проверяем, является ли dateString валидной датой перед форматированием
             const date = new Date(dateString);
             if (isNaN(date.getTime())) {
-                return dateString; // Возвращаем исходную строку, если это не дата (например, 'Jul 14')
+                return dateString;
             }
             return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
         } catch (error) {
-            return dateString; // Возвращаем исходную строку в случае ошибки
+            return dateString;
         }
     };
 
-    // Форматтер для метки во всплывающей подсказке (Tooltip)
     const tooltipLabelFormatter = (label) => {
         try {
             const date = new Date(label);
@@ -68,23 +62,23 @@ const CustomLineChart = ({ data, chartHeight = 300 }) => { // Принимаем
                     data={data}
                     margin={{
                         top: 5,
-                        right: 25, // Немного места справа
-                        left: -20, // Сдвигаем YAxis немного влево, если текст длинный
-                        bottom: 30, // Больше места снизу для наклоненных дат
+                        right: 25,
+                        left: -20,
+                        bottom: 30,
                     }}
                 >
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
                     <XAxis
                         dataKey="date"
                         tickFormatter={xAxisDateFormatter}
-                        fontSize={11} // Чуть меньше шрифт для оси
+                        fontSize={11}
                         stroke="#6b7280"
                         axisLine={false}
                         tickLine={false}
-                        angle={-35} // Наклоняем подписи дат
-                        textAnchor="end" // Выравнивание наклоненных подписей
-                        dy={10} // Сдвиг вниз для наклоненных подписей
-                        interval="preserveStartEnd" // Показываем первую и последнюю метку, остальные Recharts может пропускать
+                        angle={-35}
+                        textAnchor="end"
+                        dy={10}
+                        interval="preserveStartEnd"
                     />
                     <YAxis
                         tickFormatter={yAxisFormatter}
@@ -92,7 +86,7 @@ const CustomLineChart = ({ data, chartHeight = 300 }) => { // Принимаем
                         stroke="#6b7280"
                         axisLine={false}
                         tickLine={false}
-                        width={50} // Явно задаем ширину оси Y
+                        width={50}
                     />
                     <Tooltip
                         contentStyle={{

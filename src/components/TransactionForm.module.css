@@ -30,14 +30,13 @@
 }
 
 .toggleButton.activeExpense {
-    background-color: #fee2e2; /* Светло-красный для расхода */
+    background-color: #fee2e2;
     color: #c01515;
 }
 .toggleButton.activeIncome {
-    background-color: #d1fae5; /* Светло-зеленый для дохода */
+    background-color: #d1fae5;
     color: #057839;
 }
-
 
 .formGroup {
     display: flex;
@@ -53,9 +52,7 @@
 
 .formGroup input[type="number"],
 .formGroup input[type="date"],
-.formGroup select,
-.formGroup textarea,
-.newCategoryGroup input[type="text"] {
+.formGroup textarea {
     width: 100%;
     padding: 0.65rem 0.75rem;
     border: 1px solid #d1d5db;
@@ -64,31 +61,126 @@
     box-sizing: border-box;
     background-color: #fff;
 }
+
 .formGroup input:focus,
-.formGroup select:focus,
 .formGroup textarea:focus {
     outline: none;
-    border-color: #4F46E5; /* Акцентный цвет при фокусе */
+    border-color: #4F46E5;
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
 
-.newCategoryGroup {
+.toggleNewCategoryButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    color: #4F46E5;
+    background-color: transparent;
+    border: 1px dashed #4F46E5;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+.toggleNewCategoryButton:hover {
+    background-color: #eef2ff; /* Light indigo background on hover */
+    color: #4338ca;
+}
+
+.newCategoryForm {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background-color: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.newCategoryInput {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+.newCategoryInput:focus {
+    outline: none;
+    border-color: #4F46E5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.newCategoryColorAndActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap; /* Для переноса на маленьких экранах */
+}
+
+.newCategoryColorPickerInline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.newCategoryColorPickerInline label {
+    font-size: 0.85rem;
+    color: #374151;
+}
+.inlineColorInputSmall {
+    padding: 0.1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    height: 32px;
+    width: 45px;
+    cursor: pointer;
+    background-color: #fff;
+}
+.inlineColorInputSmall:focus {
+    outline: none;
+    border-color: #4F46E5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+
+.newCategoryButtons {
     display: flex;
     gap: 0.5rem;
 }
-.newCategoryGroup input[type="text"] {
-    flex-grow: 1;
-}
-.cancelNewCategory {
-    padding: 0.65rem 1rem;
-    font-size: 0.9rem;
-    border: 1px solid #d1d5db;
+
+.buttonSmall {
+    padding: 0.5rem 1rem;
     border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid transparent;
+}
+.buttonSmall:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.saveButtonSmall {
+    background-color: #4F46E5;
+    color: white;
+    border-color: #4F46E5;
+}
+.saveButtonSmall:hover:not(:disabled) {
+    background-color: #4338ca;
+}
+
+.cancelButtonSmall {
     background-color: #f3f4f6;
     color: #374151;
-    cursor: pointer;
+    border-color: #d1d5db;
 }
-.cancelNewCategory:hover {
+.cancelButtonSmall:hover:not(:disabled) {
     background-color: #e5e7eb;
 }
 
@@ -111,6 +203,10 @@
     cursor: pointer;
     transition: background-color 0.2s;
 }
+.button:disabled {
+    background-color: #a5b4fc;
+    cursor: not-allowed;
+}
 
 .cancelButton {
     background-color: #f3f4f6;
@@ -122,24 +218,39 @@
 }
 
 .submitButton {
-    background-color: #4F46E5; /* Акцентный цвет */
+    background-color: #4F46E5;
     color: white;
 }
 .submitButton:hover {
     background-color: #4338ca;
 }
 
+
 @media (max-width: 767px) {
     .typeToggle {
-        /* Можно оставить в ряд, если кнопки не слишком широкие, или сделать в столбец */
-        /* flex-direction: column; */
     }
     .toggleButton {
         font-size: 0.85rem;
         padding: 0.6rem 0.5rem;
     }
+    .newCategoryColorAndActions {
+        flex-direction: column;
+        align-items: stretch; /* Растягиваем элементы */
+        gap: 0.5rem;
+    }
+    .newCategoryColorPickerInline {
+        justify-content: space-between; /* Растягиваем label и input color */
+        width: 100%;
+    }
+    .newCategoryButtons {
+        width: 100%;
+        flex-direction: column;
+    }
+    .buttonSmall {
+        width: 100%;
+    }
     .formActions {
-        flex-direction: column-reverse; /* Кнопки друг под другом, основная снизу */
+        flex-direction: column-reverse;
         gap: 0.5rem;
     }
     .button {

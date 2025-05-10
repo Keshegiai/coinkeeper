@@ -5,7 +5,6 @@ import styles from './CashFlowPage.module.css';
 import DateRangeFilter from '../components/DateRangeFilter';
 import CustomLineChart from '../components/charts/CustomLineChart';
 
-
 const CashFlowPage = ({ transactions = [] }) => {
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -64,22 +63,18 @@ const CashFlowPage = ({ transactions = [] }) => {
         const dailyData = {};
 
         filteredTransactions.forEach(t => {
-            const date = t.date;
-            if (!dailyData[date]) {
-                dailyData[date] = { income: 0, expenses: 0 };
+            const dateKey = new Date(t.date).toISOString().split('T')[0];
+            if (!dailyData[dateKey]) {
+                dailyData[dateKey] = { date: dateKey, income: 0, expenses: 0 };
             }
             if (t.type === 'income') {
-                dailyData[date].income += t.amount;
+                dailyData[dateKey].income += t.amount;
             } else if (t.type === 'expense') {
-                dailyData[date].expenses += t.amount;
+                dailyData[dateKey].expenses += t.amount;
             }
         });
 
-        return Object.entries(dailyData)
-            .map(([date, values]) => ({
-                date,
-                ...values
-            }))
+        return Object.values(dailyData)
             .sort((a, b) => new Date(a.date) - new Date(b.date));
     }, [filteredTransactions]);
 

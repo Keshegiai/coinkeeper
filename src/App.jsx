@@ -54,7 +54,7 @@ function App() {
             const existingCategory = categories.find(cat => cat.name.toLowerCase() === categoryDataFromForm.name.toLowerCase());
             if (existingCategory) {
                 alert('Категория с таким именем уже существует!');
-                return existingCategory;
+                return null;
             }
             const categoryToSend = {
                 name: categoryDataFromForm.name.trim(),
@@ -62,7 +62,7 @@ function App() {
                 color: categoryDataFromForm.color || "#808080"
             };
             const newCategory = await api.addCategoryAPI(categoryToSend);
-            setCategories(prev => [...prev, newCategory].sort((a, b) => a.name.localeCompare(b.name)));
+            setCategories(prev => [...prev, newCategory]); // Убрали сортировку, новая категория будет в конце
             return newCategory;
         } catch (err) {
             console.error("Add category error:", err);
@@ -91,11 +91,18 @@ function App() {
                 color: categoryDataFromForm.color !== undefined ? categoryDataFromForm.color : categoryToUpdate.color,
             };
             const updatedCat = await api.updateCategoryAPI(categoryId, dataToSend);
-            const updatedCategories = categories.map(cat => (cat.id === categoryId ? updatedCat : cat)).sort((a, b) => a.name.localeCompare(b.name));
-            setCategories(updatedCategories);
-            setTransactions(prevTs => prevTs.map(t =>
-                t.category.id === categoryId ? { ...t, category: updatedCat } : t
-            ));
+
+            // При обновлении категории, сохраняем ее порядок, не сортируем весь список заново
+            setCategories(prevCategories =>
+                prevCategories.map(cat => (cat.id === categoryId ? updatedCat : cat))
+            );
+
+            setTransactions(prevTs => prevTs.map(t => {
+                if (t.category && t.category.id === categoryId) {
+                    return { ...t, category: updatedCat };
+                }
+                return t;
+            }));
             return true;
         } catch (err) {
             console.error("Update category error:", err);
@@ -121,7 +128,11 @@ function App() {
 
     const addTransaction = async (formDataFromComponent) => {
         try {
-            const categoryObject = categories.find(c => c.id === formDataFromComponent.category.id);
+            let categoryObject = formDataFromComponent.category;
+            if (!categoryObject || !categoryObject.id) {
+                categoryObject = categories.find(c => c.id === formDataFromComponent.categoryId);
+            }
+
             if (!categoryObject) {
                 alert('Выбранная категория не найдена! Пожалуйста, выберите категорию из списка или создайте новую.');
                 return;
@@ -144,7 +155,11 @@ function App() {
 
     const updateTransaction = async (transactionId, formDataFromComponent) => {
         try {
-            const categoryObject = categories.find(c => c.id === formDataFromComponent.category.id);
+            let categoryObject = formDataFromComponent.category;
+            if (!categoryObject || !categoryObject.id) {
+                categoryObject = categories.find(c => c.id === formDataFromComponent.categoryId);
+            }
+
             if (!categoryObject) {
                 alert('Выбранная категория не найдена! Пожалуйста, выберите категорию из списка или создайте новую.');
                 return;

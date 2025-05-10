@@ -33,46 +33,46 @@
   ],
   "transactions": [
     {
-      "id": "0eac",
-      "type": "expense",
-      "amount": 77777,
-      "category": {
-        "id": "cat4",
-        "name": "Развлечения",
-        "icon": "LuGamepad2",
-        "color": "#8b5cf6"
-      },
-      "date": "2025-05-10",
-      "comment": "",
-      "createdAt": 1746907037207
-    },
-    {
-      "id": "260a",
+      "id": "c068",
       "type": "income",
-      "amount": 7777,
+      "amount": 1500,
       "category": {
         "id": "cat3",
         "name": "Зарплата",
         "icon": "LuLandmark",
         "color": "#10b981"
       },
-      "date": "2025-05-09",
+      "date": "2025-05-10",
       "comment": "",
-      "createdAt": 1746907047910
+      "createdAt": 1746909889363
     },
     {
-      "id": "6189",
+      "id": "3015",
       "type": "expense",
-      "amount": 7777,
+      "amount": 200,
       "category": {
         "id": "cat1",
         "name": "Продукты",
         "icon": "LuShoppingCart",
         "color": "#22c55e"
       },
-      "date": "2025-05-07",
+      "date": "2025-05-11",
       "comment": "",
-      "createdAt": 1746907208309
+      "createdAt": 1746909900336
+    },
+    {
+      "id": "bb06",
+      "type": "expense",
+      "amount": 300,
+      "category": {
+        "id": "cat4",
+        "name": "Развлечения",
+        "icon": "LuGamepad2",
+        "color": "#8b5cf6"
+      },
+      "date": "2025-05-12",
+      "comment": "",
+      "createdAt": 1746909916404
     }
   ]
 }

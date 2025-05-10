@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import homePageStyles from './HomePage.module.css';
 import opPageStyles from './OperationsPage.module.css';
 import DateRangeFilter from '../components/DateRangeFilter';
@@ -204,7 +204,13 @@ const OperationsPage = ({
                             {filteredAndSortedTransactions.map(t => (
                                 <li key={t.id} className={`${homePageStyles.transactionItem} ${t.type === 'income' ? homePageStyles.incomeItem : homePageStyles.expenseItem}`}>
                                     <div className={homePageStyles.transactionDetails}>
-                                        <span className={homePageStyles.transactionCategoryName}>{t.category?.name || 'Без категории'}</span>
+                                        <div className={homePageStyles.transactionCategoryNameWrapper}>
+                                            <span
+                                                className={homePageStyles.transactionCategoryColorDot}
+                                                style={{ backgroundColor: t.category?.color || '#cccccc' }}
+                                            ></span>
+                                            <span className={homePageStyles.transactionCategoryName}>{t.category?.name || 'Без категории'}</span>
+                                        </div>
                                         <span className={homePageStyles.transactionComment}>{t.comment || '-'}</span>
                                     </div>
                                     <div className={homePageStyles.transactionMeta}>

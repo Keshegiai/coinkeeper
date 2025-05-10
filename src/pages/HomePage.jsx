@@ -18,10 +18,55 @@ const HomePage = ({
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTransaction, setEditingTransaction] = useState(null);
 
+    const monthlyIncome = useMemo(() => {
+        if (!transactions) return 0;
+        const today = new Date();
+        const firstDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const lastDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        firstDayOfCurrentMonth.setHours(0, 0, 0, 0);
+        lastDayOfCurrentMonth.setHours(23, 59, 59, 999);
+
+        return transactions
+            .filter(t => {
+                const transactionDate = new Date(t.date);
+                return t.type === 'income' && transactionDate >= firstDayOfCurrentMonth && transactionDate <= lastDayOfCurrentMonth;
+            })
+            .reduce((sum, t) => sum + t.amount, 0);
+    }, [transactions]);
+
+    const monthlyExpenses = useMemo(() => {
+        if (!transactions) return 0;
+        const today = new Date();
+        const firstDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const lastDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        firstDayOfCurrentMonth.setHours(0, 0, 0, 0);
+        lastDayOfCurrentMonth.setHours(23, 59, 59, 999);
+
+        return transactions
+            .filter(t => {
+                const transactionDate = new Date(t.date);
+                return t.type === 'expense' && transactionDate >= firstDayOfCurrentMonth && transactionDate <= lastDayOfCurrentMonth;
+            })
+            .reduce((sum, t) => sum + t.amount, 0);
+    }, [transactions]);
+
+    const monthlySavings = useMemo(() => monthlyIncome - monthlyExpenses, [monthlyIncome, monthlyExpenses]);
+
+    const totalBalance = useMemo(() => {
+        if (!transactions) return 0;
+        let income = 0;
+        let expenses = 0;
+        transactions.forEach(t => {
+            if (t.type === 'income') income += t.amount;
+            else expenses += t.amount;
+        });
+        return income - expenses;
+    }, [transactions]);
+
     const summaryData = [
-        { title: 'Cash balance', amount: '$3240.21', icon: <FaWallet />, iconBg: '#1F2937', iconColor: '#FFFFFF' },
-        { title: 'Total spent', amount: '$250.80', icon: <LuTrendingUp />, iconBg: '#E5E7EB', iconColor: '#4B5563' },
-        { title: 'Savings', amount: '$810.32', icon: <LuPiggyBank />, iconBg: '#E5E7EB', iconColor: '#4B5563' },
+        { title: 'Cash balance', amount: `$${totalBalance.toFixed(2)}`, icon: <FaWallet />, iconBg: '#1F2937', iconColor: '#FFFFFF' },
+        { title: 'Total spent (Month)', amount: `$${monthlyExpenses.toFixed(2)}`, icon: <LuTrendingUp />, iconBg: '#E5E7EB', iconColor: '#4B5563' },
+        { title: 'Savings (Month)', amount: `$${monthlySavings.toFixed(2)}`, icon: <LuPiggyBank />, iconBg: '#E5E7EB', iconColor: '#4B5563' },
     ];
 
     const cashFlowSummaryChartData = useMemo(() => {
@@ -41,25 +86,20 @@ const HomePage = ({
 
         const dailyData = {};
         currentMonthTransactions.forEach(t => {
-            const date = t.date;
-            if (!dailyData[date]) {
-                dailyData[date] = { income: 0, expenses: 0 };
+            const dateKey = new Date(t.date).toISOString().split('T')[0];
+            if (!dailyData[dateKey]) {
+                dailyData[dateKey] = { date: dateKey, income: 0, expenses: 0 };
             }
             if (t.type === 'income') {
-                dailyData[date].income += t.amount;
+                dailyData[dateKey].income += t.amount;
             } else if (t.type === 'expense') {
-                dailyData[date].expenses += t.amount;
+                dailyData[dateKey].expenses += t.amount;
             }
         });
 
-        return Object.entries(dailyData)
-            .map(([date, values]) => ({
-                date,
-                ...values
-            }))
+        return Object.values(dailyData)
             .sort((a, b) => new Date(a.date) - new Date(b.date));
     }, [transactions]);
-
 
     const handleOpenModal = (transaction = null) => {
         setEditingTransaction(transaction);
@@ -86,13 +126,7 @@ const HomePage = ({
         }
     };
 
-    const getCategoryNameById = (id) => {
-        const category = categories.find(cat => cat.id === id);
-        return category ? category.name : 'Без категории';
-    };
-
     const recentTransactions = transactions.slice(0, 5);
-
 
     return (
         <>
@@ -130,7 +164,13 @@ const HomePage = ({
                                 {recentTransactions.map(t => (
                                     <li key={t.id} className={`${styles.transactionItem} ${t.type === 'income' ? styles.incomeItem : styles.expenseItem}`}>
                                         <div className={styles.transactionDetails}>
-                                            <span className={styles.transactionCategoryName}>{t.category?.name || getCategoryNameById(t.categoryId) || 'Без категории'}</span>
+                                            <div className={styles.transactionCategoryNameWrapper}>
+                                                <span
+                                                    className={styles.transactionCategoryColorDot}
+                                                    style={{ backgroundColor: t.category?.color || '#cccccc' }}
+                                                ></span>
+                                                <span className={styles.transactionCategoryName}>{t.category?.name || 'Без категории'}</span>
+                                            </div>
                                             <span className={styles.transactionComment}>{t.comment || '-'}</span>
                                         </div>
                                         <div className={styles.transactionMeta}>

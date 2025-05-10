@@ -1,7 +1,7 @@
 /* src/pages/HomePage.module.css */
 .dashboardGrid {
     display: grid;
-    grid-template-columns: 2fr 1fr; /* Основная колонка шире правой */
+    grid-template-columns: 2fr 1fr;
     gap: 1.5rem;
     width: 100%;
 }
@@ -9,7 +9,7 @@
 .mainColumn {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* Отступ между секциями */
+    gap: 1.5rem;
 }
 
 .rightColumn {
@@ -22,7 +22,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* margin-bottom: 0.5rem; /* Убрал, т.к. mainColumn имеет gap */
 }
 
 .pageMainTitle {
@@ -50,7 +49,6 @@
     background-color: #4338ca;
 }
 
-/* ---- Summary Cards ---- */
 .summaryCardsContainer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -94,7 +92,6 @@
     color: #111827;
 }
 
-/* ---- General Dashboard Section Styling ---- */
 .dashboardSection {
     background-color: #FFFFFF;
     border-radius: 12px;
@@ -126,35 +123,46 @@
     text-decoration: underline;
 }
 
-/* ---- Стили для списка транзакций на HomePage ---- */
-.lastTransactionsSection { /* Дополнительный класс для секции, если нужны особые отступы */
-    /* например, если dashboardSection имеет слишком большой padding для списка */
+.lastTransactionsSection {
 }
 
 .transactionList {
     list-style: none;
     padding: 0;
-    margin: 0; /* Убираем отступ у списка */
+    margin: 0;
 }
 
 .transactionItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.85rem 0; /* Внутренние отступы только сверху/снизу */
-    border-bottom: 1px solid #f3f4f6; /* Разделитель */
-    gap: 0.75rem; /* Отступ между блоками в строке */
+    padding: 0.85rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    gap: 0.75rem;
 }
 .transactionItem:last-child {
     border-bottom: none;
 }
 
+.transactionCategoryColorDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
 .transactionDetails {
-    flex-grow: 1; /* Занимает основное место */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
-    overflow: hidden; /* Чтобы длинные комменты не ломали верстку */
+    overflow: hidden;
+}
+.transactionCategoryNameWrapper {
+    display: flex;
+    align-items: center;
 }
 .transactionCategoryName {
     font-size: 0.9rem;
@@ -166,14 +174,14 @@
     color: #6B7280;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Обрезка длинных комментариев */
+    text-overflow: ellipsis;
 }
 
 .transactionMeta {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    flex-shrink: 0; /* Чтобы не сжимался */
+    flex-shrink: 0;
     margin-left: 0.75rem;
 }
 
@@ -214,10 +222,7 @@
     color: #ef4444;
 }
 
-
-/* ---- Placeholders ---- */
-.placeholderContent, /* Общий класс для всех заглушек */
-.transactionsListPlaceholder, /* Если список транзакций пуст (transactionsListPlaceholder использовался ранее) */
+.placeholderContent,
 .walletCardPlaceholder {
     min-height: 150px;
     display: flex;
@@ -231,7 +236,6 @@
     text-align: center;
 }
 
-/* ---- Options Button (для Wallet) ---- */
 .optionsButton {
     background: none;
     border: none;
@@ -249,10 +253,6 @@
     color: #111827;
 }
 
-
-/* --- Адаптивность (объединяем и уточняем) --- */
-
-/* Общие классы для страниц-заглушек (как CashFlowPage.jsx) */
 .pageContentWrapper {
     display: flex;
     flex-direction: column;
@@ -264,9 +264,8 @@
     line-height: 1.6;
     margin: 0;
 }
-.chartPlaceholder { /* Используется в CashFlowPage.jsx */
+.chartPlaceholder {
     min-height: 150px;
-    /* ... остальные стили для chartPlaceholder ... */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -277,21 +276,17 @@
     padding: 1rem;
 }
 
-
-/* Планшеты и небольшие десктопы */
 @media (max-width: 1024px) {
     .dashboardGrid {
         grid-template-columns: 1fr;
     }
     .rightColumn {
-        /* Пойдет вниз, отступ управляется gap в .dashboardGrid */
     }
     .summaryCardsContainer {
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 }
 
-/* Мобильные устройства */
 @media (max-width: 767px) {
     .pageMainTitle {
         font-size: 1.5rem;
@@ -326,25 +321,17 @@
         align-items: flex-start;
         gap: 0.75rem;
     }
-
-    /* Адаптация списка транзакций на мобильных */
     .transactionItem {
-        grid-template-columns: 1fr auto; /* Детали слева, сумма и действия справа */
-        /* Если нужно все в столбик, то flex-direction: column; align-items: flex-start; */
-    }
-    .transactionDetails {
-        /* Уже flex-grow: 1; */
+        grid-template-columns: 1fr auto;
     }
     .transactionMeta {
-        flex-direction: row; /* Сумма и дата в ряд */
+        flex-direction: row;
         align-items: center;
         gap: 0.5rem;
-        margin-left: 0; /* Убираем, если transactionActions тоже в ряд */
-        flex-basis: auto; /* Сброс */
+        margin-left: 0;
+        flex-basis: auto;
     }
     .transactionActions {
-        /* Можно сделать, чтобы они были под суммой/датой */
-        /* или в одну линию с ними, если достаточно места */
-        margin-left: 0; /* Сброс */
+        margin-left: 0;
     }
 }
