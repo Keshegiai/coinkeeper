@@ -4,12 +4,15 @@
     background-color: #1E2235;
     color: #A0A3BD;
     padding: 1.5rem 1rem;
-    height: 100vh;
+    height: 100vh; /* Занимает всю высоту */
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    transition: width 0.3s ease;
+    transition: transform 0.3s ease-in-out; /* Анимация выезда */
     flex-shrink: 0;
+    position: sticky; /* Обычное поведение на десктопе */
+    top: 0;
+    z-index: 100; /* Чтобы был выше остального контента на десктопе, если нужно */
 }
 
 .sidebarHeader {
@@ -18,31 +21,38 @@
     gap: 0.75rem;
     padding: 0 0.5rem;
     margin-bottom: 2.5rem;
+    position: relative; /* Для позиционирования кнопки закрытия */
 }
 
 .logoIcon {
     color: #7F56D9;
+    flex-shrink: 0;
 }
 
-/* Стили для h1 внутри .sidebarHeader остаются доступными через этот селектор */
 .sidebarHeader h1 {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
     color: #FFFFFF;
+    white-space: nowrap;
 }
 
 .sidebarNav {
     flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
+.sidebarNav::-webkit-scrollbar { width: 6px; }
+.sidebarNav::-webkit-scrollbar-thumb { background-color: #2a2e45; border-radius: 3px; }
+.sidebarNav::-webkit-scrollbar-track { background-color: transparent; }
 
 .sidebarBottom {
     margin-top: auto;
     padding-top: 1rem;
     border-top: 1px solid #2a2e45;
+    flex-shrink: 0;
 }
 
-/* Базовые стили для ссылок NavLink */
 .navLink {
     display: flex;
     align-items: center;
@@ -51,30 +61,96 @@
     border-radius: 8px;
     font-weight: 500;
     font-size: 0.9rem;
-    color: #A0A3BD; /* Цвет неактивных ссылок */
-    text-decoration: none; /* Убираем подчеркивание по умолчанию */
+    color: #A0A3BD;
+    text-decoration: none;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
-
 .navLink:hover {
     background-color: #2a2e45;
     color: #FFFFFF;
 }
-
-/* Стиль для активной ссылки NavLink */
 .active {
     background-color: #7F56D9;
     color: #FFFFFF;
-    /* Можно добавить другие стили для активного состояния, если нужно, например, font-weight */
 }
 
 .navIcon {
     margin-right: 1rem;
-    display: inline-flex; /* Важно для правильного выравнивания иконки */
+    display: inline-flex;
     align-items: center;
     flex-shrink: 0;
 }
 
-.active .navIcon {
-  color: #FFFFFF;
+.navLinkText {
+    white-space: nowrap;
+}
+
+.mobileCloseButton { /* Кнопка закрытия на мобильных */
+    display: none; /* Скрыта по умолчанию */
+    position: absolute;
+    top: -0.8rem; /* Скорректируй по месту */
+    right: -0.2rem; /* Скорректируй по месту */
+    background: none;
+    border: none;
+    color: #A0A3BD;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+.mobileCloseButton:hover {
+    color: #FFFFFF;
+}
+
+
+/* --- Адаптивность для выпадающего сайдбара --- */
+/* Только для мобильных стилей - класс forMobile не обязателен, если это единственный @media */
+.appSidebar.forMobile { /* Этот класс будет добавлен в JSX, чтобы стили ниже применялись */
+    /* Но можно обойтись и без него, просто @media (...) .appSidebar */
+}
+
+
+@media (max-width: 767px) {
+    .appSidebar {
+        position: fixed; /* Фиксированное позиционирование для выезда поверх контента */
+        left: 0;
+        top: 0;
+        transform: translateX(-100%); /* Изначально скрыт за левым краем */
+        z-index: 1002; /* Выше оверлея и хедера */
+        /* Ширина и высота уже заданы выше, они подойдут для выпадающего меню */
+        /* Убедимся, что текст снова виден, если ранее скрывали его для icon-only */
+        padding: 1.5rem 1rem; /* Возвращаем нормальные паддинги */
+    }
+
+    .appSidebar.mobileOpen { /* Класс для открытого состояния */
+        transform: translateX(0%); /* Выезжает на экран */
+        box-shadow: 3px 0px 15px rgba(0,0,0,0.2); /* Тень для открытого сайдбара */
+    }
+
+    /* Показываем кнопку закрытия на мобильных, когда сайдбар открыт */
+    .appSidebar.mobileOpen .mobileCloseButton {
+        display: block;
+    }
+
+
+    /* Текст в ссылках должен быть виден в выпадающем меню */
+    .navLinkText {
+        opacity: 1;
+        visibility: visible;
+        width: auto;
+    }
+    .navIcon {
+        margin-right: 1rem; /* Возвращаем отступ для иконки */
+        font-size: initial; /* Возвращаем нормальный размер иконки */
+    }
+    .navLink {
+        justify-content: flex-start; /* Выравниваем контент по левому краю */
+    }
+
+    .sidebarHeader h1 { /* Текст заголовка снова виден */
+        opacity: 1;
+        visibility: visible;
+    }
+    .sidebarHeader { /* Убираем центрирование лого, если было */
+        justify-content: flex-start;
+        padding: 0 0.5rem;
+    }
 }

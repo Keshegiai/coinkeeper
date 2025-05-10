@@ -1,15 +1,25 @@
 import React from 'react';
-import styles from './Header.module.css'; // <--- ИЗМЕНЕНИЕ ИМПОРТА
-import { LuSearch, LuBell, LuChevronDown } from "react-icons/lu";
+import styles from './Header.module.css';
+import { LuSearch, LuBell, LuChevronDown, LuMenu } from "react-icons/lu"; // <--- Добавляем LuMenu
 import { FaUserCircle } from "react-icons/fa";
 
-const Header = () => {
+// Принимаем toggleMobileSidebar как проп
+const Header = ({ toggleMobileSidebar }) => {
     return (
-        <header className={styles.appHeader}> {/* <--- ИСПОЛЬЗОВАНИЕ СТИЛЕЙ */}
+        <header className={styles.appHeader}>
             <div className={styles.headerLeft}>
+                {/* Кнопка "бургер" для мобильных */}
+                <button
+                    className={`${styles.headerIconButton} ${styles.mobileMenuButton}`}
+                    onClick={toggleMobileSidebar}
+                    aria-label="Открыть меню"
+                >
+                    <LuMenu size={22} />
+                </button>
+                {/* Сюда можно вернуть название страницы или хлебные крошки, если они нужны на десктопе */}
             </div>
             <div className={styles.headerRight}>
-                <button className={styles.headerIconButton} aria-label="Search">
+                <button className={`${styles.headerIconButton} ${styles.searchButtonDesktop}`} aria-label="Search"> {/* Добавим класс для скрытия на мобильных если нужно */}
                     <LuSearch size={20} />
                 </button>
                 <button className={styles.headerIconButton} aria-label="Notifications">
@@ -18,8 +28,8 @@ const Header = () => {
                 </button>
                 <div className={styles.userProfileContainer}>
                     <FaUserCircle size={28} className={styles.userAvatarIcon} />
-                    <span className={styles.userName}>Maksim Kirievski</span>
-                    <button className={`${styles.headerIconButton} ${styles.userProfileDropdown}`} aria-label="User menu"> {/* <--- Несколько классов */}
+                    <span className={styles.userName}>Maksim Kirievski</span> {/* Этот текст можно скрыть на очень маленьких экранах */}
+                    <button className={`${styles.headerIconButton} ${styles.userProfileDropdown}`} aria-label="User menu">
                         <LuChevronDown size={18} />
                     </button>
                 </div>

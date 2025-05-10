@@ -54,3 +54,19 @@
 .applyButton:hover {
     background-color: #4338ca;
 }
+
+@media (max-width: 767px) {
+    .filterContainer {
+        flex-direction: column; /* Элементы друг под другом */
+        align-items: stretch; /* Растягиваем по ширине */
+    }
+    .inputGroup {
+        width: 100%; /* Инпуты на всю ширину */
+    }
+    .dateInput {
+        width: 100%;
+    }
+    .applyButton {
+        width: 100%; /* Кнопка на всю ширину */
+    }
+}

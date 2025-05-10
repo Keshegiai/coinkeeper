@@ -1,25 +1,22 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import styles from './Sidebar.module.css'; // Импортируем CSS-модуль
-
-// Убедись, что все используемые иконки импортированы и работают
+import styles from './Sidebar.module.css';
 import {
     LuLayoutDashboard,
     LuFileText,
     LuSettings,
     LuLifeBuoy,
-    LuLogOut
+    LuLogOut,
+    LuX
 } from "react-icons/lu";
 import { FaCoins } from "react-icons/fa";
-// Используй рабочую иконку для Cash Flow, например FiActivity, если LuAreaChart не работает
 import { FiActivity } from "react-icons/fi";
 
-
-const Sidebar = () => {
+const Sidebar = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
     const menuItems = [
         { name: 'Главная', icon: <LuLayoutDashboard size={20} />, path: '/' },
         { name: 'Операции', icon: <LuFileText size={20} />, path: '/operations' },
-        { name: 'Cash Flow', icon: <FiActivity size={20} />, path: '/cashflow' }, // Используем FiActivity или другую рабочую иконку
+        { name: 'Cash Flow', icon: <FiActivity size={20} />, path: '/cashflow' },
         { name: 'Настройки', icon: <LuSettings size={20} />, path: '/settings' },
     ];
 
@@ -29,10 +26,13 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className={styles.appSidebar}>
+        <aside className={`${styles.appSidebar} ${isMobileSidebarOpen ? styles.mobileOpen : ''} ${styles.forMobile}`}>
             <div className={styles.sidebarHeader}>
+                <button className={styles.mobileCloseButton} onClick={closeMobileSidebar} aria-label="Закрыть меню">
+                    <LuX size={24} />
+                </button>
                 <FaCoins size={28} className={styles.logoIcon} />
-                <h1>Coinkeeper</h1> {/* h1 будет стилизован через .sidebarHeader h1 в CSS-модуле */}
+                <h1>Coinkeeper</h1>
             </div>
 
             <nav className={styles.sidebarNav}>
@@ -41,13 +41,14 @@ const Sidebar = () => {
                         <li key={item.name}>
                             <NavLink
                                 to={item.path}
-                                // Применяем базовый класс и условно класс 'active'
                                 className={({ isActive }) =>
                                     isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
                                 }
+                                title={item.name}
+                                onClick={isMobileSidebarOpen ? closeMobileSidebar : undefined}
                             >
                                 <span className={styles.navIcon}>{item.icon}</span>
-                                {item.name}
+                                <span className={styles.navLinkText}>{item.name}</span>
                             </NavLink>
                         </li>
                     ))}
@@ -63,9 +64,11 @@ const Sidebar = () => {
                                 className={({ isActive }) =>
                                     isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
                                 }
+                                title={item.name}
+                                onClick={isMobileSidebarOpen ? closeMobileSidebar : undefined}
                             >
                                 <span className={styles.navIcon}>{item.icon}</span>
-                                {item.name}
+                                <span className={styles.navLinkText}>{item.name}</span>
                             </NavLink>
                         </li>
                     ))}

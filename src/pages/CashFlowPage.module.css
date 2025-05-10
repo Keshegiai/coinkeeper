@@ -61,3 +61,15 @@
     text-align: left;
     width: 90%;
 }
+
+@media (max-width: 767px) {
+    .chartsGrid {
+        grid-template-columns: 1fr; /* Одна колонка для графиков */
+    }
+    .chartTitle {
+        font-size: 1rem;
+    }
+    .chartContainer, .chartContainerLarge, .lineChartSectionCustom .noDataPlaceholder /* из CustomLineChart.module.css */ {
+        height: 250px; /* Можно унифицировать высоту графиков на мобильных */
+    }
+}

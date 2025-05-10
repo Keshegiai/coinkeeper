@@ -84,3 +84,26 @@
 .userProfileDropdown { /* Этот класс применяется к headerIconButton */
     padding: 0.25rem;
 }
+
+.mobileMenuButton {
+    display: none; /* По умолчанию скрыта на больших экранах */
+    margin-right: 0.5rem; /* Отступ от левого края или других элементов */
+}
+
+.searchButtonDesktop {
+    /* Стили для кнопки поиска, если мы хотим ее как-то особо позиционировать или скрывать */
+}
+
+@media (max-width: 767px) {
+    .mobileMenuButton {
+        display: inline-flex; /* Показываем на мобильных */
+    }
+
+    .appHeader { /* Уменьшаем отступы в хедере на мобильных */
+        padding: 0 1rem;
+    }
+
+    .userName { /* Пример: скрываем имя пользователя на очень маленьких экранах */
+        display: none; /* Раскомментируй, если нужно */
+    }
+}

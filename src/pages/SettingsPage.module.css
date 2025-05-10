@@ -113,3 +113,31 @@
 .editForm .categoryInput { /* Специфичный стиль для инпута в режиме редактирования */
     margin-right: auto; /* Занимает все доступное место */
 }
+@media (max-width: 767px) {
+    .addCategoryForm {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .addButton {
+        width: 100%;
+        justify-content: center;
+    }
+    .categoryItem {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .categoryActions {
+        margin-top: 0.5rem;
+        width: 100%;
+        justify-content: flex-start; /* или space-between */
+    }
+    .editForm {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .editForm .categoryInput {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+}

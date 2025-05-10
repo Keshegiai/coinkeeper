@@ -52,3 +52,14 @@
 .modalBody {
     /* Стили для тела модального окна, если нужны */
 }
+
+@media (max-width: 767px) {
+    .modalContent {
+        max-width: 90vw; /* Шире на мобильных */
+        margin: 1rem; /* Отступы от краев экрана */
+        padding: 1rem 1.25rem;
+    }
+    .modalTitle {
+        font-size: 1.1rem;
+    }
+}
