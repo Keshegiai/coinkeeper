@@ -1,0 +1,78 @@
+{
+  "categories": [
+    {
+      "id": "cat1",
+      "name": "Продукты",
+      "icon": "LuShoppingCart",
+      "color": "#22c55e"
+    },
+    {
+      "id": "cat2",
+      "name": "Транспорт",
+      "icon": "LuCar",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "cat3",
+      "name": "Зарплата",
+      "icon": "LuLandmark",
+      "color": "#10b981"
+    },
+    {
+      "id": "cat4",
+      "name": "Развлечения",
+      "icon": "LuGamepad2",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "cat5",
+      "name": "Счета и коммуналка",
+      "icon": "LuFileText",
+      "color": "#ef4444"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "0eac",
+      "type": "expense",
+      "amount": 77777,
+      "category": {
+        "id": "cat4",
+        "name": "Развлечения",
+        "icon": "LuGamepad2",
+        "color": "#8b5cf6"
+      },
+      "date": "2025-05-10",
+      "comment": "",
+      "createdAt": 1746907037207
+    },
+    {
+      "id": "260a",
+      "type": "income",
+      "amount": 7777,
+      "category": {
+        "id": "cat3",
+        "name": "Зарплата",
+        "icon": "LuLandmark",
+        "color": "#10b981"
+      },
+      "date": "2025-05-09",
+      "comment": "",
+      "createdAt": 1746907047910
+    },
+    {
+      "id": "6189",
+      "type": "expense",
+      "amount": 7777,
+      "category": {
+        "id": "cat1",
+        "name": "Продукты",
+        "icon": "LuShoppingCart",
+        "color": "#22c55e"
+      },
+      "date": "2025-05-07",
+      "comment": "",
+      "createdAt": 1746907208309
+    }
+  ]
+}

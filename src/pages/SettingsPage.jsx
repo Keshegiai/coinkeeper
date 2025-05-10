@@ -1,45 +1,63 @@
 import React, { useState } from 'react';
-import homePageStyles from './HomePage.module.css'; // Используем для общего макета страницы
-import styles from './SettingsPage.module.css'; // Свои стили для страницы настроек
-
-import { LuTrash2, LuCheck, LuX } from 'react-icons/lu'; // Эти, надеюсь, работают
-import { FiEdit3, FiPlusCircle } from 'react-icons/fi'; // <--- НОВЫЕ АЛЬТЕРНАТИВНЫЕ ИКОНКИ
+import homePageStyles from './HomePage.module.css';
+import styles from './SettingsPage.module.css';
+import { LuTrash2, LuCheck, LuX } from 'react-icons/lu';
+import { FiEdit3, FiPlusCircle } from 'react-icons/fi';
 
 const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory }) => {
     const [newCategoryName, setNewCategoryName] = useState('');
-    const [editingCategoryId, setEditingCategoryId] = useState(null);
-    const [editingCategoryName, setEditingCategoryName] = useState('');
+    const [newCategoryColor, setNewCategoryColor] = useState('#808080');
 
-    const handleAddCategory = (e) => {
+    const [editingCategory, setEditingCategory] = useState(null);
+
+    const handleAddCategory = async (e) => {
         e.preventDefault();
         if (newCategoryName.trim() === '') {
             alert('Название категории не может быть пустым.');
             return;
         }
-        addCategory(newCategoryName);
-        setNewCategoryName('');
+        const newCatData = {
+            name: newCategoryName,
+            color: newCategoryColor
+        };
+        const newCategory = await addCategory(newCatData);
+        if (newCategory) {
+            setNewCategoryName('');
+            setNewCategoryColor('#808080');
+        }
     };
 
     const handleStartEdit = (category) => {
-        setEditingCategoryId(category.id);
-        setEditingCategoryName(category.name);
+        setEditingCategory({
+            id: category.id,
+            name: category.name,
+            color: category.color || '#808080',
+            icon: category.icon // Сохраняем иконку, если она есть, но не даем редактировать
+        });
     };
 
     const handleCancelEdit = () => {
-        setEditingCategoryId(null);
-        setEditingCategoryName('');
+        setEditingCategory(null);
     };
 
-    const handleSaveEdit = (categoryId) => {
-        if (editingCategoryName.trim() === '') {
+    const handleSaveEdit = async () => {
+        if (!editingCategory || editingCategory.name.trim() === '') {
             alert('Название категории не может быть пустым.');
             return;
         }
-        const success = updateCategory({ id: categoryId, name: editingCategoryName });
+        const categoryDataToUpdate = {
+            name: editingCategory.name.trim(),
+            color: editingCategory.color || "#808080",
+            icon: editingCategory.icon // Передаем существующую иконку, т.к. не редактируем ее здесь
+        };
+        const success = await updateCategory(editingCategory.id, categoryDataToUpdate);
         if (success) {
-            setEditingCategoryId(null);
-            setEditingCategoryName('');
+            setEditingCategory(null);
         }
+    };
+
+    const handleEditFieldChange = (field, value) => {
+        setEditingCategory(prev => ({ ...prev, [field]: value }));
     };
 
     return (
@@ -55,41 +73,70 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
                         onChange={(e) => setNewCategoryName(e.target.value)}
                         placeholder="Название категории"
                         className={styles.categoryInput}
+                        required
                     />
+                    <div className={styles.colorInputGroup}>
+                        <label htmlFor="newCategoryColor" className={styles.colorLabel}>Цвет:</label>
+                        <input
+                            type="color"
+                            id="newCategoryColor"
+                            value={newCategoryColor}
+                            onChange={(e) => setNewCategoryColor(e.target.value)}
+                            className={styles.categoryColorInput}
+                        />
+                    </div>
                     <button type="submit" className={styles.addButton}>
-                        <FiPlusCircle size={18} /> {/* <--- ИСПОЛЬЗУЕМ FiPlusCircle */}
-                        Добавить
+                        <FiPlusCircle size={18} /> Добавить
                     </button>
                 </form>
             </section>
 
             <section className={styles.settingsSection}>
                 <h2 className={styles.sectionTitle}>Существующие категории</h2>
-                {categories.length > 0 ? (
+                {categories && categories.length > 0 ? (
                     <ul className={styles.categoryList}>
                         {categories.map(category => (
                             <li key={category.id} className={styles.categoryItem}>
-                                {editingCategoryId === category.id ? (
+                                {editingCategory && editingCategory.id === category.id ? (
                                     <div className={styles.editForm}>
                                         <input
                                             type="text"
-                                            value={editingCategoryName}
-                                            onChange={(e) => setEditingCategoryName(e.target.value)}
+                                            value={editingCategory.name}
+                                            onChange={(e) => handleEditFieldChange('name', e.target.value)}
                                             className={styles.categoryInput}
+                                            required
                                         />
-                                        <button onClick={() => handleSaveEdit(category.id)} className={styles.actionButton} title="Сохранить">
-                                            <LuCheck size={18} />
-                                        </button>
-                                        <button onClick={handleCancelEdit} className={`${styles.actionButton} ${styles.cancelButton}`} title="Отмена">
-                                            <LuX size={18} />
-                                        </button>
+                                        <input
+                                            type="color"
+                                            value={editingCategory.color}
+                                            onChange={(e) => handleEditFieldChange('color', e.target.value)}
+                                            className={styles.categoryColorInputSmall}
+                                        />
+                                        <div className={styles.editActions}>
+                                            <button onClick={handleSaveEdit} className={styles.actionButton} title="Сохранить">
+                                                <LuCheck size={18} />
+                                            </button>
+                                            <button onClick={handleCancelEdit} className={`${styles.actionButton} ${styles.cancelButton}`} title="Отмена">
+                                                <LuX size={18} />
+                                            </button>
+                                        </div>
                                     </div>
                                 ) : (
                                     <>
-                                        <span className={styles.categoryName}>{category.name}</span>
+                                        <div className={styles.categoryInfo}>
+                      <span
+                          className={styles.categoryIconPreview}
+                          style={{ backgroundColor: category.color || '#cccccc' }}
+                          title={`Цвет: ${category.color || 'не задан'}`}
+                      >
+                        {/* Если иконка все еще есть в данных, можно ее как-то отобразить или первую букву имени */}
+                          {/* category.icon ? <DynamicIcon name={category.icon} /> : category.name.charAt(0).toUpperCase() */}
+                      </span>
+                                            <span className={styles.categoryName}>{category.name}</span>
+                                        </div>
                                         <div className={styles.categoryActions}>
                                             <button onClick={() => handleStartEdit(category)} className={styles.actionButton} title="Редактировать">
-                                                <FiEdit3 size={16} /> {/* <--- ИСПОЛЬЗУЕМ FiEdit3 */}
+                                                <FiEdit3 size={16} />
                                             </button>
                                             <button onClick={() => deleteCategory(category.id)} className={`${styles.actionButton} ${styles.deleteButton}`} title="Удалить">
                                                 <LuTrash2 size={16} />
@@ -101,7 +148,7 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
                         ))}
                     </ul>
                 ) : (
-                    <p>Категорий пока нет. Добавьте первую!</p>
+                    <p className={styles.noCategoriesMessage}>Категорий пока нет. Добавьте первую!</p>
                 )}
             </section>
         </div>

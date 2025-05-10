@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './DateRangeFilter.module.css';
 
-const DateRangeFilter = ({ onFilterApply }) => {
-    // Устанавливаем начальные значения: первый день текущего месяца и текущий день
-    const getInitialStartDate = () => {
-        const today = new Date();
-        return new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-    };
-    const getInitialEndDate = () => {
-        return new Date().toISOString().split('T')[0];
-    };
+const DateRangeFilter = ({ onFilterApply, initialStartDate, initialEndDate }) => {
+    const [startDate, setStartDate] = useState(initialStartDate || new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]);
+    const [endDate, setEndDate] = useState(initialEndDate || new Date().toISOString().split('T')[0]);
 
-    const [startDate, setStartDate] = useState(getInitialStartDate());
-    const [endDate, setEndDate] = useState(getInitialEndDate());
+    useEffect(() => {
+        if (initialStartDate) {
+            setStartDate(initialStartDate);
+        }
+        if (initialEndDate) {
+            setEndDate(initialEndDate);
+        }
+    }, [initialStartDate, initialEndDate]);
 
     const handleSubmit = (e) => {
         e.preventDefault();

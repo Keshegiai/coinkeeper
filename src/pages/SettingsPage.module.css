@@ -1,10 +1,9 @@
-/* src/pages/SettingsPage.module.css */
 .settingsSection {
     background-color: #fff;
     padding: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.03);
-    margin-bottom: 1.5rem; /* Используем общий отступ из HomePage.module.css или определяем свой */
+    margin-bottom: 1.5rem;
 }
 
 .sectionTitle {
@@ -17,8 +16,9 @@
 
 .addCategoryForm {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
-    align-items: center;
+    align-items: flex-end;
 }
 
 .categoryInput {
@@ -28,11 +28,30 @@
     border-radius: 6px;
     font-size: 0.9rem;
     box-sizing: border-box;
+    min-width: 150px;
 }
 .categoryInput:focus {
     outline: none;
     border-color: #4F46E5;
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.colorInputGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+.colorLabel {
+    font-size: 0.875rem;
+    color: #374151;
+}
+.categoryColorInput {
+    height: 38px;
+    width: 50px;
+    padding: 0.15rem 0.25rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 .addButton {
@@ -48,6 +67,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s;
+    height: 38px;
 }
 .addButton:hover {
     background-color: #4338ca;
@@ -63,11 +83,29 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.85rem 0; /* Меньше отступы, если внутри .settingsSection уже есть padding */
+    padding: 0.85rem 0;
     border-bottom: 1px solid #f3f4f6;
 }
 .categoryItem:last-child {
     border-bottom: none;
+}
+
+.categoryInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.categoryIconPreview {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: white;
+    border: 1px solid #e5e7eb;
 }
 
 .categoryName {
@@ -82,9 +120,9 @@
 
 .actionButton {
     background: none;
-    border: none; /* Убрал границу для более чистого вида, можно вернуть */
+    border: none;
     color: #6b7280;
-    padding: 0.4rem; /* Немного увеличил для удобства */
+    padding: 0.4rem;
     border-radius: 6px;
     cursor: pointer;
     display: flex;
@@ -97,7 +135,7 @@
     color: #111827;
 }
 .deleteButton:hover {
-    color: #ef4444; /* Красный при наведении на удаление */
+    color: #ef4444;
     background-color: #fee2e2;
 }
 .cancelButton:hover {
@@ -107,37 +145,50 @@
 .editForm {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
     width: 100%;
+    flex-wrap: wrap;
 }
-.editForm .categoryInput { /* Специфичный стиль для инпута в режиме редактирования */
-    margin-right: auto; /* Занимает все доступное место */
+.editForm .categoryInput {
+    flex-grow: 2;
 }
+
+.categoryColorInputSmall {
+    height: 38px;
+    width: 40px;
+    padding: 0.1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.editActions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+.noCategoriesMessage {
+    color: #6b7280;
+    font-style: italic;
+}
+
 @media (max-width: 767px) {
-    .addCategoryForm {
+    .addCategoryForm, .editForm {
         flex-direction: column;
         align-items: stretch;
     }
-    .addButton {
+    .addButton, .editActions button {
         width: 100%;
         justify-content: center;
-    }
-    .categoryItem {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-    .categoryActions {
         margin-top: 0.5rem;
-        width: 100%;
-        justify-content: flex-start; /* или space-between */
     }
-    .editForm {
-        flex-direction: column;
-        align-items: stretch;
+    .editActions {
+        width: 100%;
+        margin-left: 0;
+    }
+    .colorInputGroup {
+        justify-content: space-between;
     }
     .editForm .categoryInput {
-        margin-right: 0;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.5rem; /* Добавляем отступ, если инпуты в столбик */
     }
 }

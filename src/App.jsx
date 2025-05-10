@@ -7,17 +7,26 @@ import SettingsPage from './pages/SettingsPage';
 import SupportPage from './pages/SupportPage';
 import LogoutPage from './pages/LogoutPage';
 import CashFlowPage from './pages/CashFlowPage';
-
-// Импортируем все функции API
 import * as api from './services/api';
 
 function App() {
     const [transactions, setTransactions] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // Состояние загрузки
-    const [error, setError] = useState(null);       // Состояние ошибки
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Функция для загрузки всех данных
+    const sortTransactions = (ts) => {
+        return ts.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+
+            if (dateB.getTime() !== dateA.getTime()) {
+                return dateB.getTime() - dateA.getTime();
+            }
+            return (b.createdAt || 0) - (a.createdAt || 0);
+        });
+    };
+
     const fetchData = useCallback(async () => {
         setIsLoading(true);
         setError(null);
@@ -26,8 +35,8 @@ function App() {
                 api.getCategoriesAPI(),
                 api.getTransactionsAPI(),
             ]);
-            setCategories(fetchedCategories);
-            setTransactions(fetchedTransactions);
+            setCategories(fetchedCategories || []);
+            setTransactions(fetchedTransactions || []);
         } catch (err) {
             console.error("Fetch data error:", err);
             setError(err.message || 'Не удалось загрузить данные');
@@ -36,46 +45,54 @@ function App() {
         }
     }, []);
 
-    // Загружаем данные при первом рендере
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    // --- Функции для категорий ---
-    const addCategory = async (categoryData) => { // categoryData = { name, icon, color } (icon, color - позже)
+    const addCategory = async (categoryDataFromForm) => {
         try {
-            // Проверка на существующую категорию по имени (можно оставить или убрать, если API это делает)
-            const existingCategory = categories.find(cat => cat.name.toLowerCase() === categoryData.name.toLowerCase());
+            const existingCategory = categories.find(cat => cat.name.toLowerCase() === categoryDataFromForm.name.toLowerCase());
             if (existingCategory) {
                 alert('Категория с таким именем уже существует!');
-                return existingCategory; // Возвращаем существующую
+                return existingCategory;
             }
-
-            const newCategory = await api.addCategoryAPI({ name: categoryData.name.trim(), icon: categoryData.icon || '', color: categoryData.color || '' });
-            setCategories(prev => [...prev, newCategory]);
+            const categoryToSend = {
+                name: categoryDataFromForm.name.trim(),
+                icon: categoryDataFromForm.icon || "LuShapes",
+                color: categoryDataFromForm.color || "#808080"
+            };
+            const newCategory = await api.addCategoryAPI(categoryToSend);
+            setCategories(prev => [...prev, newCategory].sort((a, b) => a.name.localeCompare(b.name)));
             return newCategory;
         } catch (err) {
             console.error("Add category error:", err);
             alert(`Ошибка добавления категории: ${err.message}`);
-            // Возвращаем null или undefined в случае ошибки, чтобы форма знала
             return null;
         }
     };
 
-    const updateCategory = async (categoryId, categoryData) => {
+    const updateCategory = async (categoryId, categoryDataFromForm) => {
         try {
-            // Проверка на дубликат имени при обновлении (если API не делает)
-            const existingCategory = categories.find(cat =>
-                cat.name.toLowerCase() === categoryData.name.toLowerCase() && cat.id !== categoryId
+            const existingCategoryByName = categories.find(cat =>
+                cat.name.toLowerCase() === categoryDataFromForm.name.toLowerCase() && cat.id !== categoryId
             );
-            if (existingCategory) {
+            if (existingCategoryByName) {
                 alert('Категория с таким именем уже существует!');
                 return false;
             }
-
-            const updatedCat = await api.updateCategoryAPI(categoryId, categoryData);
-            setCategories(prev => prev.map(cat => (cat.id === categoryId ? updatedCat : cat)));
-            // Обновить категорию во всех транзакциях
+            const categoryToUpdate = categories.find(cat => cat.id === categoryId);
+            if (!categoryToUpdate) {
+                alert('Категория для обновления не найдена');
+                return false;
+            }
+            const dataToSend = {
+                name: categoryDataFromForm.name.trim(),
+                icon: categoryDataFromForm.icon !== undefined ? categoryDataFromForm.icon : categoryToUpdate.icon,
+                color: categoryDataFromForm.color !== undefined ? categoryDataFromForm.color : categoryToUpdate.color,
+            };
+            const updatedCat = await api.updateCategoryAPI(categoryId, dataToSend);
+            const updatedCategories = categories.map(cat => (cat.id === categoryId ? updatedCat : cat)).sort((a, b) => a.name.localeCompare(b.name));
+            setCategories(updatedCategories);
             setTransactions(prevTs => prevTs.map(t =>
                 t.category.id === categoryId ? { ...t, category: updatedCat } : t
             ));
@@ -91,7 +108,7 @@ function App() {
         try {
             const isCategoryUsed = transactions.some(t => t.category.id === categoryId);
             if (isCategoryUsed) {
-                alert('Нельзя удалить категорию, так как она используется в транзакциях.');
+                alert('Нельзя удалить категорию, так как она используется в транзакциях. Сначала измените или удалите соответствующие транзакции.');
                 return;
             }
             await api.deleteCategoryAPI(categoryId);
@@ -102,22 +119,51 @@ function App() {
         }
     };
 
-    // --- Функции для транзакций ---
-    const addTransaction = async (transactionData) => {
-        // transactionData = { type, amount, category (объект {id, name, icon, color}), date, comment }
+    const addTransaction = async (formDataFromComponent) => {
         try {
-            const newTransaction = await api.addTransactionAPI(transactionData);
-            setTransactions(prev => [newTransaction, ...prev]); // Добавляем в начало списка
+            const categoryObject = categories.find(c => c.id === formDataFromComponent.category.id);
+            if (!categoryObject) {
+                alert('Выбранная категория не найдена! Пожалуйста, выберите категорию из списка или создайте новую.');
+                return;
+            }
+            const transactionDataForAPI = {
+                type: formDataFromComponent.type,
+                amount: formDataFromComponent.amount,
+                category: categoryObject,
+                date: formDataFromComponent.date,
+                comment: formDataFromComponent.comment,
+                createdAt: Date.now()
+            };
+            const newTransaction = await api.addTransactionAPI(transactionDataForAPI);
+            setTransactions(prev => sortTransactions([newTransaction, ...prev]));
         } catch (err) {
             console.error("Add transaction error:", err);
             alert(`Ошибка добавления транзакции: ${err.message}`);
         }
     };
 
-    const updateTransaction = async (transactionId, transactionData) => {
+    const updateTransaction = async (transactionId, formDataFromComponent) => {
         try {
-            const updatedTransaction = await api.updateTransactionAPI(transactionId, transactionData);
-            setTransactions(prev => prev.map(t => (t.id === transactionId ? updatedTransaction : t)));
+            const categoryObject = categories.find(c => c.id === formDataFromComponent.category.id);
+            if (!categoryObject) {
+                alert('Выбранная категория не найдена! Пожалуйста, выберите категорию из списка или создайте новую.');
+                return;
+            }
+            const transactionToUpdate = transactions.find(t => t.id === transactionId);
+            if (!transactionToUpdate) {
+                alert('Транзакция для обновления не найдена');
+                return;
+            }
+            const transactionDataForAPI = {
+                type: formDataFromComponent.type,
+                amount: formDataFromComponent.amount,
+                category: categoryObject,
+                date: formDataFromComponent.date,
+                comment: formDataFromComponent.comment,
+                createdAt: transactionToUpdate.createdAt
+            };
+            const updatedTransaction = await api.updateTransactionAPI(transactionId, transactionDataForAPI);
+            setTransactions(prev => sortTransactions(prev.map(t => (t.id === transactionId ? updatedTransaction : t))));
         } catch (err) {
             console.error("Update transaction error:", err);
             alert(`Ошибка обновления транзакции: ${err.message}`);
@@ -134,7 +180,6 @@ function App() {
         }
     };
 
-    // Отображение загрузки или ошибки на все приложение (можно улучшить)
     if (isLoading) {
         return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '1.5rem'}}>Загрузка данных...</div>;
     }
@@ -153,7 +198,7 @@ function App() {
                             categories={categories}
                             addTransaction={addTransaction}
                             deleteTransaction={deleteTransaction}
-                            updateTransaction={updateTransaction} // Передаем функцию обновления
+                            updateTransaction={updateTransaction}
                             addCategory={addCategory}
                         />
                     }
@@ -167,7 +212,7 @@ function App() {
                             categories={categories}
                             addCategory={addCategory}
                             deleteCategory={deleteCategory}
-                            updateCategory={updateCategory} // Передаем функцию обновления
+                            updateCategory={updateCategory}
                         />
                     }
                 />
