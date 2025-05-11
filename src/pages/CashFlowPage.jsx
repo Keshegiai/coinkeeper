@@ -6,6 +6,8 @@ import DateRangeFilter from '../components/DateRangeFilter';
 import CustomLineChart from '../components/charts/CustomLineChart';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
+import { logAction, logStateChange, logEffect } from '../utils/logger';
+
 
 const COLORS_EXPENSE_DARK = ['#F472B6', '#EC4899', '#DB2777', '#BE185D', '#9D174D', '#831843'];
 const COLORS_INCOME_DARK = ['#2DD4BF', '#34D399', '#10B981', '#059669', '#047857', '#065F46'];
@@ -20,7 +22,7 @@ const CustomPieChart = ({ data, title, type }) => {
         : (theme === 'dark' ? COLORS_INCOME_DARK : COLORS_INCOME_LIGHT);
 
     const RADIAN = Math.PI / 180;
-    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name, value }) => {
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
         const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
         const x = cx + radius * Math.cos(-midAngle * RADIAN);
         const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -28,7 +30,7 @@ const CustomPieChart = ({ data, title, type }) => {
         if (percent * 100 < 7) return null;
 
         return (
-            <text x={x} y={y} fill={theme === 'dark' ? '#161B22' : '#FFFFFF'} textAnchor="middle" dominantBaseline="central" fontSize="10px" fontWeight="bold">
+            <text x={x} y={y} fill={theme === 'dark' ? 'var(--background-secondary)' : '#FFFFFF'} textAnchor="middle" dominantBaseline="central" fontSize="10px" fontWeight="bold">
                 {`${(percent * 100).toFixed(0)}%`}
             </text>
         );
@@ -41,7 +43,8 @@ const CustomPieChart = ({ data, title, type }) => {
         color: COLORS[index % COLORS.length],
     }));
 
-    const legendTextColor = theme === 'dark' ? 'var(--text-secondary-dark, #8B949E)' : 'var(--text-secondary-light, #6B7280)';
+    const legendTextColor = theme === 'dark' ? 'var(--text-secondary)' : 'var(--text-secondary)';
+
 
     if (!data || data.length === 0) {
         return <p className={styles.noDataMessage}>Нет данных о {type === 'expense' ? 'расходах' : 'доходах'} за выбранный период.</p>;
@@ -117,6 +120,7 @@ const CashFlowPage = ({ transactions = [] }) => {
     const [dateRange, setDateRange] = useState(getInitialDateRange());
 
     useEffect(() => {
+        logEffect('CashFlowPage', 'URL Sync Effect', {dateRange});
         const params = {};
         if (dateRange.allTime) {
             params.allTime = 'true';
@@ -128,6 +132,7 @@ const CashFlowPage = ({ transactions = [] }) => {
     }, [dateRange, setSearchParams]);
 
     const filteredTransactions = useMemo(() => {
+        logEffect('CashFlowPage', 'Memo: filteredTransactions', { numTransactions: transactions.length, dateRange });
         if (dateRange.allTime || (!dateRange.startDate && !dateRange.endDate)) {
             return transactions;
         }
@@ -146,6 +151,7 @@ const CashFlowPage = ({ transactions = [] }) => {
     }, [transactions, dateRange]);
 
     const lineChartData = useMemo(() => {
+        logEffect('CashFlowPage', 'Memo: lineChartData', { numFilteredTransactions: filteredTransactions.length });
         if (!filteredTransactions || filteredTransactions.length === 0) return [];
 
         const dailyData = {};
@@ -167,6 +173,7 @@ const CashFlowPage = ({ transactions = [] }) => {
     }, [filteredTransactions]);
 
     const processPieChartData = (type) => {
+        logEffect('CashFlowPage', `Memo: processPieChartData (${type})`, { numFilteredTransactions: filteredTransactions.length });
         if (!filteredTransactions || filteredTransactions.length === 0) return [];
         const relevantTransactions = filteredTransactions.filter(t => t.type === type);
         const dataMap = relevantTransactions.reduce((acc, transaction) => {
@@ -181,7 +188,12 @@ const CashFlowPage = ({ transactions = [] }) => {
     const incomeDataForPieChart = useMemo(() => processPieChartData('income'), [filteredTransactions]);
 
     const handleFilterApply = (newDateRange) => {
-        setDateRange({ ...newDateRange, allTime: !newDateRange.startDate && !newDateRange.endDate });
+        logAction('CashFlowPage', 'handleFilterApply', { newDateRange });
+        setDateRange(prev => {
+            const newState = { ...newDateRange, allTime: !newDateRange.startDate && !newDateRange.endDate };
+            logStateChange('CashFlowPage', 'dateRange', newState, prev);
+            return newState;
+        });
     };
 
     return (

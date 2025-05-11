@@ -3,6 +3,7 @@ import homePageStyles from './HomePage.module.css';
 import styles from './SettingsPage.module.css';
 import { LuTrash2, LuCheck, LuX, LuSearch } from 'react-icons/lu';
 import { FiEdit3, FiPlusCircle } from 'react-icons/fi';
+import { logAction, logStateChange, logError } from '../utils/logger';
 
 const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory }) => {
     const [newCategoryName, setNewCategoryName] = useState('');
@@ -12,6 +13,7 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
 
     const handleAddCategory = async (e) => {
         e.preventDefault();
+        logAction('SettingsPage', 'handleAddCategory', { name: newCategoryName, color: newCategoryColor });
         if (newCategoryName.trim() === '') {
             alert('Название категории не может быть пустым.');
             return;
@@ -20,14 +22,19 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
             name: newCategoryName,
             color: newCategoryColor
         };
-        const newCategory = await addCategory(newCatData);
-        if (newCategory) {
-            setNewCategoryName('');
-            setNewCategoryColor('#808080');
+        try {
+            const newCategory = await addCategory(newCatData);
+            if (newCategory) {
+                setNewCategoryName('');
+                setNewCategoryColor('#808080');
+            }
+        } catch (err) {
+            logError('SettingsPage', 'handleAddCategory', err);
         }
     };
 
     const handleStartEdit = (category) => {
+        logAction('SettingsPage', 'handleStartEdit', { categoryId: category.id });
         setEditingCategory({
             id: category.id,
             name: category.name,
@@ -37,6 +44,7 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
     };
 
     const handleCancelEdit = () => {
+        logAction('SettingsPage', 'handleCancelEdit');
         setEditingCategory(null);
     };
 
@@ -45,19 +53,40 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
             alert('Название категории не может быть пустым.');
             return;
         }
+        logAction('SettingsPage', 'handleSaveEdit', { category: editingCategory });
         const categoryDataToUpdate = {
             name: editingCategory.name.trim(),
             color: editingCategory.color || "#808080",
             icon: editingCategory.icon
         };
-        const success = await updateCategory(editingCategory.id, categoryDataToUpdate);
-        if (success) {
-            setEditingCategory(null);
+        try {
+            const success = await updateCategory(editingCategory.id, categoryDataToUpdate);
+            if (success) {
+                setEditingCategory(null);
+            }
+        } catch (err) {
+            logError('SettingsPage', 'handleSaveEdit', err);
         }
     };
 
     const handleEditFieldChange = (field, value) => {
-        setEditingCategory(prev => ({ ...prev, [field]: value }));
+        const oldEditingCategory = editingCategory;
+        setEditingCategory(prev => {
+            const newState = { ...prev, [field]: value };
+            logStateChange('SettingsPage', `editingCategory.${field}`, value, oldEditingCategory ? oldEditingCategory[field] : undefined);
+            return newState;
+        });
+    };
+
+    const handleDeleteCategory = async (categoryId) => {
+        logAction('SettingsPage', 'handleDeleteCategory', { categoryId });
+        if (window.confirm('Вы уверены, что хотите удалить эту категорию? Это действие не может быть отменено.')) {
+            try {
+                await deleteCategory(categoryId);
+            } catch (err) {
+                logError('SettingsPage', 'handleDeleteCategory', err);
+            }
+        }
     };
 
     const filteredCategories = useMemo(() => {
@@ -159,7 +188,7 @@ const SettingsPage = ({ categories, addCategory, deleteCategory, updateCategory 
                                             <button onClick={() => handleStartEdit(category)} className={styles.actionButton} title="Редактировать">
                                                 <FiEdit3 size={16} />
                                             </button>
-                                            <button onClick={() => deleteCategory(category.id)} className={`${styles.actionButton} ${styles.deleteButton}`} title="Удалить">
+                                            <button onClick={() => handleDeleteCategory(category.id)} className={`${styles.actionButton} ${styles.deleteButton}`} title="Удалить">
                                                 <LuTrash2 size={16} />
                                             </button>
                                         </div>

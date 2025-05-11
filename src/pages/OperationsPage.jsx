@@ -8,6 +8,7 @@ import { FiEdit } from 'react-icons/fi';
 import { LuTrash2 } from 'react-icons/lu';
 import Modal from '../components/Modal';
 import TransactionForm from '../components/TransactionForm';
+import { logAction, logStateChange, logEffect, logError } from '../utils/logger';
 
 const OperationsPage = ({
                             transactions: allTransactions = [],
@@ -24,10 +25,13 @@ const OperationsPage = ({
     const getInitialFilters = () => {
         const today = new Date();
         const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        const defaultStartDate = currentMonthStart.toISOString().split('T')[0];
+        const defaultEndDate = today.toISOString().split('T')[0];
 
         return {
-            startDate: searchParams.get('startDate') || currentMonthStart.toISOString().split('T')[0],
-            endDate: searchParams.get('endDate') || today.toISOString().split('T')[0],
+            startDate: searchParams.get('startDate') || defaultStartDate,
+            endDate: searchParams.get('endDate') || defaultEndDate,
+            allTime: searchParams.get('allTime') === 'true' || (!searchParams.get('startDate') && !searchParams.get('endDate') && !searchParams.has('allTime') ? false : searchParams.get('allTime') === 'true'),
             sortOrder: searchParams.get('sortOrder') || 'date_desc',
             searchTerm: searchParams.get('searchTerm') || '',
             categoryFilter: searchParams.get('categoryFilter') || 'all',
@@ -38,9 +42,14 @@ const OperationsPage = ({
     const [filters, setFilters] = useState(getInitialFilters());
 
     useEffect(() => {
+        logEffect('OperationsPage', 'URL Sync Effect', { filters });
         const params = {};
-        if (filters.startDate) params.startDate = filters.startDate;
-        if (filters.endDate) params.endDate = filters.endDate;
+        if (filters.allTime) {
+            params.allTime = 'true';
+        } else {
+            if (filters.startDate) params.startDate = filters.startDate;
+            if (filters.endDate) params.endDate = filters.endDate;
+        }
         if (filters.sortOrder) params.sortOrder = filters.sortOrder;
         if (filters.searchTerm) params.searchTerm = filters.searchTerm;
         if (filters.categoryFilter && filters.categoryFilter !== 'all') params.categoryFilter = filters.categoryFilter;
@@ -49,21 +58,41 @@ const OperationsPage = ({
     }, [filters, setSearchParams]);
 
     const handleFilterChange = (key, value) => {
-        setFilters(prev => ({ ...prev, [key]: value }));
+        logAction('OperationsPage', 'handleFilterChange', { filterKey: key, newValue: value });
+        setFilters(prev => {
+            const newState = { ...prev, [key]: value };
+            if (key === 'allTime' && value === true) {
+                newState.startDate = '';
+                newState.endDate = '';
+            } else if (key === 'allTime' && value === false) {
+                const today = new Date();
+                newState.startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+                newState.endDate = today.toISOString().split('T')[0];
+            }
+            logStateChange('OperationsPage', 'filters', newState, prev);
+            return newState;
+        });
     };
 
     const handleDateRangeApply = (newDateRange) => {
-        setFilters(prev => ({
-            ...prev,
-            startDate: newDateRange.startDate,
-            endDate: newDateRange.endDate
-        }));
+        logAction('OperationsPage', 'handleDateRangeApply', { newDateRange });
+        setFilters(prev => {
+            const newState = {
+                ...prev,
+                startDate: newDateRange.startDate,
+                endDate: newDateRange.endDate,
+                allTime: !newDateRange.startDate && !newDateRange.endDate
+            };
+            logStateChange('OperationsPage', 'filters (dateRange)', newState, prev);
+            return newState;
+        });
     };
 
     const filteredAndSortedTransactions = useMemo(() => {
+        logEffect('OperationsPage', 'Memo: filteredAndSortedTransactions', { numAllTransactions: allTransactions.length, filters });
         let processedTransactions = [...allTransactions];
 
-        if (filters.startDate && filters.endDate) {
+        if (!filters.allTime && filters.startDate && filters.endDate) {
             const start = new Date(filters.startDate);
             const end = new Date(filters.endDate);
             start.setHours(0, 0, 0, 0);
@@ -105,40 +134,58 @@ const OperationsPage = ({
     }, [allTransactions, filters]);
 
     const handleOpenModal = (transaction = null) => {
+        logAction('OperationsPage', 'handleOpenModal', { transaction });
         setEditingTransaction(transaction);
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
+        logAction('OperationsPage', 'handleCloseModal');
         setIsModalOpen(false);
         setEditingTransaction(null);
     };
 
-    const handleFormSubmit = (transactionData) => {
-        if (editingTransaction) {
-            updateTransaction(editingTransaction.id, transactionData);
-        } else {
-            addTransaction(transactionData);
+    const handleFormSubmit = async (transactionData) => {
+        logAction('OperationsPage', 'handleFormSubmit', { transactionData, isEditing: !!editingTransaction });
+        try {
+            if (editingTransaction) {
+                await updateTransaction(editingTransaction.id, transactionData);
+            } else {
+                await addTransaction(transactionData);
+            }
+            handleCloseModal();
+        } catch(err) {
+            logError('OperationsPage', 'handleFormSubmit', err);
         }
-        handleCloseModal();
     };
 
-    const handleDeleteTransaction = (transactionId) => {
+    const handleDeleteTransaction = async (transactionId) => {
+        logAction('OperationsPage', 'handleDeleteTransaction', { transactionId });
         if (window.confirm('Вы уверены, что хотите удалить эту транзакцию?')) {
-            deleteTransaction(transactionId);
+            try {
+                await deleteTransaction(transactionId);
+            } catch(err) {
+                logError('OperationsPage', 'handleDeleteTransaction', err);
+            }
         }
     };
 
     const resetAllFilters = () => {
+        logAction('OperationsPage', 'resetAllFilters');
         const today = new Date();
         const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-        setFilters({
-            startDate: currentMonthStart.toISOString().split('T')[0],
-            endDate: today.toISOString().split('T')[0],
-            sortOrder: 'date_desc',
-            searchTerm: '',
-            categoryFilter: 'all',
-            typeFilter: 'all',
+        setFilters(prev => {
+            const newState = {
+                startDate: currentMonthStart.toISOString().split('T')[0],
+                endDate: today.toISOString().split('T')[0],
+                allTime: false,
+                sortOrder: 'date_desc',
+                searchTerm: '',
+                categoryFilter: 'all',
+                typeFilter: 'all',
+            };
+            logStateChange('OperationsPage', 'filters (reset)', newState, prev);
+            return newState;
         });
     };
 

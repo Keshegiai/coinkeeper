@@ -15,6 +15,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 0.5rem;
 }
 
 .pageMainTitle {
@@ -36,10 +37,14 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.2s, filter 0.2s;
+    transition: background-color 0.2s;
 }
 .addTransactionButton:hover {
     filter: brightness(0.9);
+}
+
+.homePageDateFilterContainer {
+    margin-bottom: 0.75rem;
 }
 
 .summaryCardsContainer {
@@ -78,20 +83,18 @@
     font-size: 0.875rem;
     color: var(--text-tertiary);
     margin-bottom: 0.25rem;
+    line-height: 1.3;
 }
 .summaryCardAmount {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-primary);
+    line-height: 1.2;
 }
 
 .iconStyleDefault {
-    background-color: var(--icon-default-bg);
-    color: var(--icon-default-text);
-}
-.iconStyleBalance {
-    background-color: var(--icon-balance-bg);
-    color: var(--icon-balance-text);
+    background-color: var(--icon-default-bg, var(--background-tertiary));
+    color: var(--icon-default-text, var(--text-secondary));
 }
 
 .dashboardSection {
@@ -107,6 +110,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 .sectionTitle {
     font-size: 1.125rem;
@@ -114,15 +119,41 @@
     color: var(--text-primary);
     margin: 0;
 }
-.sectionLink {
+
+.homePageSearchWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 200px;
+    max-width: 300px;
+    flex-grow: 1;
+}
+.homePageSearchIcon {
+    position: absolute;
+    left: 0.75rem;
+    color: var(--text-tertiary);
+    pointer-events: none;
+    font-size: 0.9rem;
+}
+.homePageSearchInput {
+    width: 100%;
+    padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+    border: 1px solid var(--border-secondary);
+    border-radius: 6px;
     font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text-accent);
-    text-decoration: none;
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
-.sectionLink:hover {
-    text-decoration: underline;
+.homePageSearchInput::placeholder {
+    color: var(--text-tertiary);
 }
+.homePageSearchInput:focus {
+    outline: none;
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 2px var(--border-accent_alpha);
+}
+
 
 .lastTransactionsSection {
 }
@@ -216,7 +247,6 @@
     padding: 0.25rem;
     display: flex;
     align-items: center;
-    transition: color 0.2s ease;
 }
 .actionButton:hover {
     color: var(--text-primary);
@@ -296,6 +326,14 @@
     .sectionTitle {
         font-size: 1rem;
     }
+    .homePageDateFilterContainer :global(.filterContainer) {
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+    }
+    .homePageDateFilterContainer {
+        margin-bottom: 1rem;
+    }
     .summaryCardsContainer {
         grid-template-columns: 1fr;
         gap: 0.75rem;
@@ -314,14 +352,18 @@
         padding: 0.5rem 0.8rem;
         font-size: 0.8rem;
     }
-    .addTransactionButton svg {
-        width: 10px;
-        height: 10px;
-    }
     .pageHeader {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.75rem;
+    }
+    .sectionHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .homePageSearchWrapper {
+        width: 100%;
+        max-width: none;
     }
     .transactionItem {
         grid-template-columns: 1fr auto;

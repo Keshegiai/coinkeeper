@@ -5,6 +5,18 @@
       "name": "Aidyn",
       "email": "mralmaz.09@gmail.com",
       "password": "12345Aa+"
+    },
+    {
+      "id": "9abf",
+      "name": "test",
+      "email": "test@example.com",
+      "password": "12345Aa+"
+    },
+    {
+      "id": "1746981254114",
+      "name": "Sultan ",
+      "email": "sultan.03@gmail.com",
+      "password": "12345Aa+"
     }
   ],
   "categories": [
@@ -35,6 +47,34 @@
       "icon": "LuShapes",
       "color": "#a92d2d",
       "userId": "9450"
+    },
+    {
+      "id": "7b8e",
+      "name": "Зарплата",
+      "icon": "LuShapes",
+      "color": "#b91818",
+      "userId": "9abf"
+    },
+    {
+      "id": "9331",
+      "name": "Продукты",
+      "icon": "LuShapes",
+      "color": "#2fb131",
+      "userId": "9abf"
+    },
+    {
+      "id": "11c6",
+      "name": "Транспорт",
+      "icon": "LuShapes",
+      "color": "#4d1a99",
+      "userId": "9abf"
+    },
+    {
+      "id": "488e",
+      "name": "Развлечения",
+      "icon": "LuShapes",
+      "color": "#ac1575",
+      "userId": "9450"
     }
   ],
   "transactions": [
@@ -55,7 +95,6 @@
       "id": "6ef5"
     },
     {
-      "id": "0ed3",
       "type": "income",
       "amount": 1500,
       "category": {
@@ -68,7 +107,8 @@
       "date": "2025-05-10",
       "comment": "",
       "createdAt": 1746918499844,
-      "userId": "9450"
+      "userId": "9450",
+      "id": "0ed3"
     },
     {
       "id": "2345",
@@ -101,6 +141,86 @@
       "comment": "",
       "createdAt": 1746918543510,
       "userId": "9450"
+    },
+    {
+      "id": "9533",
+      "type": "income",
+      "amount": 1500,
+      "category": {
+        "id": "52df",
+        "name": "Зарплата",
+        "icon": "LuShapes",
+        "color": "#0c9748",
+        "userId": "9450"
+      },
+      "date": "2025-05-14",
+      "comment": "",
+      "createdAt": 1746945908406,
+      "userId": "9450"
+    },
+    {
+      "id": "1eaf",
+      "type": "income",
+      "amount": 1500,
+      "category": {
+        "id": "7b8e",
+        "name": "Зарплата",
+        "icon": "LuShapes",
+        "color": "#b91818",
+        "userId": "9abf"
+      },
+      "date": "2025-05-11",
+      "comment": "",
+      "createdAt": 1746946409620,
+      "userId": "9abf"
+    },
+    {
+      "type": "expense",
+      "amount": 300,
+      "category": {
+        "id": "9331",
+        "name": "Продукты",
+        "icon": "LuShapes",
+        "color": "#2fb131",
+        "userId": "9abf"
+      },
+      "date": "2025-05-12",
+      "comment": "",
+      "createdAt": 1746946428483,
+      "userId": "9abf",
+      "id": "01fa"
+    },
+    {
+      "id": "31c0",
+      "type": "expense",
+      "amount": 250,
+      "category": {
+        "id": "8445",
+        "name": "Продукты",
+        "icon": "LuShapes",
+        "color": "#289013",
+        "userId": "9450"
+      },
+      "date": "2025-05-10",
+      "comment": "",
+      "createdAt": 1746949025737,
+      "userId": "9450"
+    },
+    {
+      "type": "expense",
+      "amount": 0.18,
+      "category": {
+        "id": "4d4c",
+        "name": "Интернет",
+        "icon": "LuShapes",
+        "color": "#a92d2d",
+        "userId": "9450"
+      },
+      "date": "2025-05-11",
+      "comment": "",
+      "createdAt": 1746966192963,
+      "userId": "9450",
+      "id": "49e0"
     }
   ]
 }

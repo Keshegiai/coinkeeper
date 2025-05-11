@@ -20,8 +20,9 @@ function App() {
     const [isAppDataLoading, setIsAppDataLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const sortTransactions = (ts) => {
-        return ts.sort((a, b) => {
+    const sortTransactions = useCallback((ts) => {
+        if (!Array.isArray(ts)) return [];
+        return [...ts].sort((a, b) => {
             const dateA = new Date(a.date);
             const dateB = new Date(b.date);
             if (dateB.getTime() !== dateA.getTime()) {
@@ -29,7 +30,7 @@ function App() {
             }
             return (b.createdAt || 0) - (a.createdAt || 0);
         });
-    };
+    }, []);
 
     const fetchData = useCallback(async () => {
         if (!isAuthenticated || !currentUser?.id) {
@@ -45,20 +46,20 @@ function App() {
                 api.getCategoriesAPI(),
                 api.getTransactionsAPI(),
             ]);
-            setCategories(fetchedCategories || []);
-            setTransactions(sortTransactions(fetchedTransactions || []));
+            setCategories(Array.isArray(fetchedCategories) ? fetchedCategories : []);
+            setTransactions(sortTransactions(fetchedTransactions));
         } catch (err) {
             setError(err.message || 'Не удалось загрузить данные');
         } finally {
             setIsAppDataLoading(false);
         }
-    }, [isAuthenticated, currentUser]);
+    }, [isAuthenticated, currentUser, sortTransactions]);
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    const addCategory = async (categoryDataFromForm) => {
+    const addCategory = useCallback(async (categoryDataFromForm) => {
         if (!currentUser?.id) {
             alert("Ошибка: Пользователь не определен для добавления категории.");
             return null;
@@ -85,9 +86,9 @@ function App() {
             alert(`Ошибка добавления категории: ${err.message}`);
             return null;
         }
-    };
+    }, [currentUser, categories]);
 
-    const updateCategory = async (categoryId, categoryDataFromForm) => {
+    const updateCategory = useCallback(async (categoryId, categoryDataFromForm) => {
         if (!currentUser?.id) {
             alert("Ошибка: Пользователь не определен для обновления категории.");
             return false;
@@ -129,9 +130,9 @@ function App() {
             alert(`Ошибка обновления категории: ${err.message}`);
             return false;
         }
-    };
+    }, [currentUser, categories, transactions]);
 
-    const deleteCategory = async (categoryId) => {
+    const deleteCategory = useCallback(async (categoryId) => {
         if (!currentUser?.id) {
             alert("Ошибка: Пользователь не определен для удаления категории.");
             return;
@@ -152,9 +153,9 @@ function App() {
         } catch (err) {
             alert(`Ошибка удаления категории: ${err.message}`);
         }
-    };
+    }, [currentUser, categories, transactions]);
 
-    const addTransaction = async (formDataFromComponent) => {
+    const addTransaction = useCallback(async (formDataFromComponent) => {
         if (!currentUser?.id) {
             alert("Ошибка: Пользователь не определен для добавления транзакции.");
             return;
@@ -186,9 +187,9 @@ function App() {
         } catch (err) {
             alert(`Ошибка добавления транзакции: ${err.message}`);
         }
-    };
+    }, [currentUser, categories, sortTransactions]);
 
-    const updateTransaction = async (transactionId, formDataFromComponent) => {
+    const updateTransaction = useCallback(async (transactionId, formDataFromComponent) => {
         if (!currentUser?.id) {
             alert("Ошибка: Пользователь не определен для обновления транзакции.");
             return;
@@ -225,9 +226,9 @@ function App() {
         } catch (err) {
             alert(`Ошибка обновления транзакции: ${err.message}`);
         }
-    };
+    }, [currentUser, categories, transactions, sortTransactions]);
 
-    const deleteTransaction = async (transactionId) => {
+    const deleteTransaction = useCallback(async (transactionId) => {
         if (!currentUser?.id) {
             alert("Ошибка: Пользователь не определен для удаления транзакции.");
             return;
@@ -243,7 +244,7 @@ function App() {
         } catch (err) {
             alert(`Ошибка удаления транзакции: ${err.message}`);
         }
-    };
+    }, [currentUser, transactions]);
 
     if (isLoadingAuth) {
         return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '1.5rem'}}>Загрузка приложения...</div>;
@@ -259,8 +260,8 @@ function App() {
                     <Route
                         index
                         element={
-                            isAppDataLoading && isAuthenticated ? <div>Загрузка данных главной страницы...</div> :
-                                error && isAuthenticated ? <div style={{color: 'red'}}>Ошибка загрузки данных: {error}</div> :
+                            isAppDataLoading && isAuthenticated ? <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 70px)', fontSize: '1.2rem'}}>Загрузка данных...</div> :
+                                error && isAuthenticated ? <div style={{color: 'red', textAlign: 'center', marginTop: '2rem'}}>Ошибка загрузки данных: {error}</div> :
                                     isAuthenticated ? <HomePage
                                         transactions={transactions}
                                         categories={categories}
@@ -274,8 +275,8 @@ function App() {
                     <Route
                         path="operations"
                         element={
-                            isAppDataLoading && isAuthenticated ? <div>Загрузка операций...</div> :
-                                error && isAuthenticated ? <div style={{color: 'red'}}>Ошибка загрузки данных: {error}</div> :
+                            isAppDataLoading && isAuthenticated ? <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 70px)', fontSize: '1.2rem'}}>Загрузка операций...</div> :
+                                error && isAuthenticated ? <div style={{color: 'red', textAlign: 'center', marginTop: '2rem'}}>Ошибка загрузки данных: {error}</div> :
                                     isAuthenticated ? <OperationsPage
                                         transactions={transactions}
                                         categories={categories}
@@ -289,16 +290,16 @@ function App() {
                     <Route
                         path="cashflow"
                         element={
-                            isAppDataLoading && isAuthenticated ? <div>Загрузка аналитики...</div> :
-                                error && isAuthenticated ? <div style={{color: 'red'}}>Ошибка загрузки данных: {error}</div> :
+                            isAppDataLoading && isAuthenticated ? <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 70px)', fontSize: '1.2rem'}}>Загрузка аналитики...</div> :
+                                error && isAuthenticated ? <div style={{color: 'red', textAlign: 'center', marginTop: '2rem'}}>Ошибка загрузки данных: {error}</div> :
                                     isAuthenticated ? <CashFlowPage transactions={transactions} /> : null
                         }
                     />
                     <Route
                         path="settings"
                         element={
-                            isAppDataLoading && isAuthenticated ? <div>Загрузка настроек...</div> :
-                                error && isAuthenticated ? <div style={{color: 'red'}}>Ошибка загрузки данных: {error}</div> :
+                            isAppDataLoading && isAuthenticated ? <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 70px)', fontSize: '1.2rem'}}>Загрузка настроек...</div> :
+                                error && isAuthenticated ? <div style={{color: 'red', textAlign: 'center', marginTop: '2rem'}}>Ошибка загрузки данных: {error}</div> :
                                     isAuthenticated ? <SettingsPage
                                         categories={categories}
                                         addCategory={addCategory}

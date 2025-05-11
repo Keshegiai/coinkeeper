@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Header.module.css';
-import { LuSearch, LuBell, LuChevronDown, LuMenu, LuLogOut, LuSun, LuMoon } from "react-icons/lu";
+import { LuSearch, LuBell, LuMenu, LuLogOut, LuSun, LuMoon } from "react-icons/lu";
 import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';

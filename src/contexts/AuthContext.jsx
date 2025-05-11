@@ -1,63 +1,78 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useMemo } from 'react';
 import * as authApi from '../services/authApi';
+import { log, logAction, logStateChange, logEffect, logError } from '../utils/logger';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
     useEffect(() => {
+        logEffect('AuthProvider', 'Initial Auth Check');
         const token = localStorage.getItem('authToken');
         const userData = localStorage.getItem('userData');
         if (token && userData) {
             try {
-                setCurrentUser(JSON.parse(userData));
+                const parsedUser = JSON.parse(userData);
+                logStateChange('AuthProvider', 'currentUser', parsedUser, null);
+                setCurrentUser(parsedUser);
             } catch (e) {
+                logError('AuthProvider', 'Initial Auth Check', e, { issue: 'Failed to parse user data' });
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('userData');
             }
+        } else {
+            log('[AuthProvider] No token or user data in localStorage.');
         }
-        setIsLoading(false);
+        setIsLoadingAuth(false);
     }, []);
 
-    const login = async (email, password) => {
+    const login = useCallback(async (email, password) => {
+        logAction('AuthProvider', 'login', { email });
         try {
             const response = await authApi.loginUserAPI({ email, password });
+            logStateChange('AuthProvider', 'currentUser', response.user, currentUser);
             localStorage.setItem('authToken', response.token);
             localStorage.setItem('userData', JSON.stringify(response.user));
             setCurrentUser(response.user);
             return response.user;
         } catch (error) {
+            logError('AuthProvider', 'login', error, { email });
             throw error;
         }
-    };
+    }, [currentUser]);
 
-    const register = async (userData) => {
+    const register = useCallback(async (userData) => {
+        logAction('AuthProvider', 'register', { email: userData.email, name: userData.name });
         try {
             const newUser = await authApi.registerUserAPI(userData);
+            log('[AuthProvider] Registration successful for user:', newUser);
             return newUser;
         } catch (error) {
+            logError('AuthProvider', 'register', error, { userData });
             throw error;
         }
-    };
+    }, []);
 
-    const logout = () => {
+    const logout = useCallback(() => {
+        logAction('AuthProvider', 'logout', { user: currentUser });
         localStorage.removeItem('authToken');
         localStorage.removeItem('userData');
+        logStateChange('AuthProvider', 'currentUser', null, currentUser);
         setCurrentUser(null);
-    };
+    }, [currentUser]);
 
-    const value = {
+    const value = useMemo(() => ({
         currentUser,
         isAuthenticated: !!currentUser,
-        isLoadingAuth: isLoading,
+        isLoadingAuth,
         login,
         register,
         logout,
-    };
+    }), [currentUser, isLoadingAuth, login, register, logout]);
 
-    return <AuthContext.Provider value={value}>{!isLoading && children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={value}>{!isLoadingAuth && children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

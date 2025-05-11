@@ -36,21 +36,15 @@
     background-color: var(--color-expense);
 }
 
-.timeFilterDropdown {
+.selectedPeriodLabel {
     font-size: 0.875rem;
-    padding: 0.45rem 0.75rem;
-    border: 1px solid var(--border-secondary);
-    border-radius: 6px;
-    background-color: var(--background-secondary);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    color: var(--text-secondary);
+    background-color: var(--background-tertiary);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-primary);
 }
-.timeFilterDropdown:focus {
-    outline: none;
-    border-color: var(--border-accent);
-    box-shadow: 0 0 0 2px var(--border-accent_alpha);
-}
+
 
 .noDataPlaceholder {
     height: 260px;
@@ -69,6 +63,11 @@
     .sectionControls {
         gap: 0.5rem;
         justify-content: flex-start;
+    }
+    .selectedPeriodLabel {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+        margin-top: 0.25rem;
     }
     .noDataPlaceholder {
         height: 220px;

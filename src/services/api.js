@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 const getUserId = () => {
     const userData = localStorage.getItem('userData');
@@ -6,7 +6,6 @@ const getUserId = () => {
         try {
             return JSON.parse(userData).id;
         } catch (e) {
-            console.error("Failed to parse user data from localStorage for userId", e);
             return null;
         }
     }
@@ -25,7 +24,24 @@ const fetchAPI = async (url, options = {}, errorMessage = 'Ошибка API') =>
 
     const fetchOptions = { ...options, headers };
 
-    console.log(`API Request: ${fetchOptions.method || 'GET'} ${url}`, fetchOptions.body && headers['Content-Type'] === 'application/json' ? JSON.parse(fetchOptions.body) : fetchOptions.body || '');
+    const groupLabel = `API: ${fetchOptions.method || 'GET'} ${url}`;
+    const IS_DEV = import.meta.env.DEV;
+
+    if (IS_DEV) {
+        console.groupCollapsed(groupLabel);
+        console.log('Request URL:', url);
+        console.log('Request Options:', fetchOptions);
+        if (fetchOptions.body && headers['Content-Type'] === 'application/json') {
+            try {
+                console.log('Request Body (parsed):', JSON.parse(fetchOptions.body));
+            } catch (e) {
+                console.log('Request Body (raw):', fetchOptions.body);
+            }
+        } else if (fetchOptions.body) {
+            console.log('Request Body:', fetchOptions.body);
+        }
+    }
+
     try {
         const response = await fetch(url, fetchOptions);
 
@@ -33,29 +49,40 @@ const fetchAPI = async (url, options = {}, errorMessage = 'Ошибка API') =>
         let responseData = null;
         if (contentType && contentType.includes("application/json")) {
             responseData = await response.json().catch(() => null);
-        } else if (response.status === 204 || (fetchOptions.method === 'DELETE' && response.status === 200 && response.headers.get("content-length") === "0")) {
+        } else if (response.status === 204 || (fetchOptions.method === 'DELETE' && response.status === 200 && (response.headers.get("content-length") === "0" || !response.headers.get("content-length") ))) {
             responseData = null;
         } else {
             const textResponse = await response.text();
             responseData = textResponse || null;
         }
 
+        if (IS_DEV) {
+            console.log('Response Status:', response.status);
+            console.log('Response Data:', responseData);
+        }
+
         if (!response.ok) {
             const errorPayload = responseData && typeof responseData === 'object' ? responseData : { message: typeof responseData === 'string' ? responseData : response.statusText };
-            console.error(`API Error Response (${response.status}) for ${fetchOptions.method || 'GET'} ${url}:`, errorPayload);
+            if (IS_DEV) console.error('API Error Payload:', errorPayload);
 
             if (response.status === 401) {
+                if (IS_DEV) console.groupEnd();
                 throw new Error('Ошибка авторизации. Пожалуйста, войдите снова.');
             }
             if (errorPayload && errorPayload.message) {
+                if (IS_DEV) console.groupEnd();
                 throw new Error(`${errorMessage}: ${errorPayload.message} (Статус: ${response.status})`);
             }
+            if (IS_DEV) console.groupEnd();
             throw new Error(`${errorMessage}: ${response.statusText} (Статус: ${response.status})`);
         }
-        console.log(`API Response (${response.status}) for ${fetchOptions.method || 'GET'} ${url}:`, responseData);
+        if (IS_DEV) console.groupEnd();
         return responseData;
     } catch (error) {
-        console.error(`Workspace API Call Failed for ${fetchOptions.method || 'GET'} ${url}:`, error);
+        if (IS_DEV) {
+            console.error('API Call Failed Details:', error);
+            console.groupEnd();
+        }
         if (error.message.startsWith(errorMessage) || error.message.startsWith('Ошибка авторизации') || error instanceof TypeError) {
             throw error;
         }

@@ -1,44 +1,110 @@
 .filterContainer {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: center;
     gap: 1rem;
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     background-color: var(--background-secondary);
-    border-radius: 12px;
+    border-radius: 10px;
     box-shadow: var(--shadow-primary);
     margin-bottom: 1.5rem;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.inputGroup {
+.presetButtons {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
+    flex-shrink: 0;
 }
-.inputGroup label {
+
+.presetButton {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background-color: var(--background-tertiary);
+    border: 1px solid var(--border-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+.presetButton:hover {
+    border-color: var(--text-accent);
+    color: var(--text-accent);
+    background-color: var(--sidebar-hover-bg);
+}
+.presetButton.active {
+    background-color: var(--text-accent);
+    color: var(--text-on-accent);
+    border-color: var(--text-accent);
+    box-shadow: 0 0 0 2px var(--border-accent_alpha);
+}
+
+.dateInputsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    flex-grow: 1;
+}
+
+.dateInputGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-grow: 1;
+    min-width: 160px;
+}
+.dateInputLabel {
     font-size: 0.875rem;
     color: var(--text-secondary);
     font-weight: 500;
+    white-space: nowrap;
+}
+
+.inputWithIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
 }
 
 .dateInput {
-    padding: 0.6rem 0.75rem;
+    padding: 0.5rem 0.75rem;
+    padding-right: 2.2rem;
     border: 1px solid var(--border-secondary);
     border-radius: 6px;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     background-color: var(--background-secondary);
     color: var(--text-primary);
-    min-width: 150px;
+    width: 100%;
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
+.dateInput::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.dateInputIcon {
+    position: absolute;
+    right: 0.6rem;
+    color: var(--text-tertiary);
+    pointer-events: none;
+    font-size: 1rem;
+}
+
 .dateInput:disabled {
     background-color: var(--background-tertiary);
     cursor: not-allowed;
     opacity: 0.7;
-}
-html[data-theme='dark'] .dateInput::-webkit-calendar-picker-indicator {
-    filter: invert(1);
 }
 .dateInput:focus:not(:disabled) {
     outline: none;
@@ -46,24 +112,8 @@ html[data-theme='dark'] .dateInput::-webkit-calendar-picker-indicator {
     box-shadow: 0 0 0 2px var(--border-accent_alpha);
 }
 
-.allTimeToggle {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding-bottom: 0.65rem; /* Для выравнивания с кнопкой */
-    color: var(--text-secondary);
-}
-.allTimeToggle input[type="checkbox"] {
-    cursor: pointer;
-    accent-color: var(--text-accent); /* Для современных браузеров */
-}
-.allTimeToggle label {
-    font-size: 0.9rem;
-    cursor: pointer;
-}
-
 .applyButton {
-    padding: 0.65rem 1.25rem;
+    padding: 0.5rem 1rem;
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--text-on-accent);
@@ -72,29 +122,66 @@ html[data-theme='dark'] .dateInput::-webkit-calendar-picker-indicator {
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s;
+    line-height: 1.5;
+    flex-shrink: 0;
+    margin-left: auto;
 }
 .applyButton:hover {
     filter: brightness(0.9);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
     .filterContainer {
         flex-direction: column;
         align-items: stretch;
     }
-    .inputGroup {
-        width: 100%;
-    }
-    .dateInput {
-        width: 100%;
-    }
-    .allTimeToggle {
-        padding-bottom: 0;
-        margin-top: 0.5rem;
+    .presetButtons {
         justify-content: flex-start;
+        margin-bottom: 0.75rem;
+    }
+    .dateInputsContainer {
+        width: 100%;
+    }
+    .applyButton {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+
+@media (max-width: 767px) {
+    .presetButtons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        width: 100%;
+    }
+    .dateInputsContainer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    .dateInputGroup {
+        width: 100%;
+        min-width: unset;
     }
     .applyButton {
         width: 100%;
-        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .presetButton, .dateInput, .applyButton, .dateInputLabel {
+        font-size: 0.8rem;
+    }
+    .applyButton, .dateInput, .presetButton {
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
+    }
+    .filterContainer {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+    .dateInputIcon {
+        right: 0.5rem;
     }
 }

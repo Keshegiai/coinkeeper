@@ -4,7 +4,7 @@ import compStyles from './CashFlowSummary.module.css';
 import pageStyles from '../pages/HomePage.module.css';
 import CustomLineChart from './charts/CustomLineChart';
 
-const CashFlowSummary = ({ chartData = [] }) => {
+const CashFlowSummary = ({ chartData = [], selectedPeriodLabel }) => {
     const navigate = useNavigate();
 
     const handleChartClick = () => {
@@ -27,21 +27,14 @@ const CashFlowSummary = ({ chartData = [] }) => {
                     <span className={`${compStyles.cashFlowLegend} ${compStyles.expenses}`}>
                         <span className={compStyles.legendDot}></span>Expenses
                     </span>
-                    <select
-                        className={compStyles.timeFilterDropdown}
-                        defaultValue="this_month"
-                        onClick={(e) => e.stopPropagation()}
-                        aria-label="Выберите период"
-                    >
-                        <option value="this_month">This month</option>
-                        <option value="last_7_days">Last 7 days</option>
-                        <option value="last_30_days">Last 30 days</option>
-                    </select>
+                    {selectedPeriodLabel && (
+                        <span className={compStyles.selectedPeriodLabel}>
+                            {selectedPeriodLabel}
+                        </span>
+                    )}
                 </div>
             </div>
-
             <CustomLineChart data={chartData} chartHeight={260} />
-
         </section>
     );
 };
