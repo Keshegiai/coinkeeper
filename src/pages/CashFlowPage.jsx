@@ -4,6 +4,93 @@ import homePageStyles from './HomePage.module.css';
 import styles from './CashFlowPage.module.css';
 import DateRangeFilter from '../components/DateRangeFilter';
 import CustomLineChart from '../components/charts/CustomLineChart';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useTheme } from '../contexts/ThemeContext';
+
+const COLORS_EXPENSE_DARK = ['#F472B6', '#EC4899', '#DB2777', '#BE185D', '#9D174D', '#831843'];
+const COLORS_INCOME_DARK = ['#2DD4BF', '#34D399', '#10B981', '#059669', '#047857', '#065F46'];
+const COLORS_EXPENSE_LIGHT = ['#EC4899', '#DB2777', '#BE185D', '#9D174D', '#831843', '#701A75'];
+const COLORS_INCOME_LIGHT = ['#10B981', '#059669', '#047857', '#065F46', '#064E3B', '#022C22'];
+
+
+const CustomPieChart = ({ data, title, type }) => {
+    const { theme } = useTheme();
+    const COLORS = type === 'expense'
+        ? (theme === 'dark' ? COLORS_EXPENSE_DARK : COLORS_EXPENSE_LIGHT)
+        : (theme === 'dark' ? COLORS_INCOME_DARK : COLORS_INCOME_LIGHT);
+
+    const RADIAN = Math.PI / 180;
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name, value }) => {
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
+        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+        if (percent * 100 < 7) return null;
+
+        return (
+            <text x={x} y={y} fill={theme === 'dark' ? '#161B22' : '#FFFFFF'} textAnchor="middle" dominantBaseline="central" fontSize="10px" fontWeight="bold">
+                {`${(percent * 100).toFixed(0)}%`}
+            </text>
+        );
+    };
+
+    const legendPayload = data.map((entry, index) => ({
+        value: `${entry.name} (${entry.value.toLocaleString(undefined, { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })})`,
+        type: 'square',
+        id: entry.name,
+        color: COLORS[index % COLORS.length],
+    }));
+
+    const legendTextColor = theme === 'dark' ? 'var(--text-secondary-dark, #8B949E)' : 'var(--text-secondary-light, #6B7280)';
+
+    if (!data || data.length === 0) {
+        return <p className={styles.noDataMessage}>Нет данных о {type === 'expense' ? 'расходах' : 'доходах'} за выбранный период.</p>;
+    }
+
+    return (
+        <div className={styles.pieChartWrapper}>
+            <h2 className={styles.chartTitle}>{title}</h2>
+            <ResponsiveContainer width="100%" height={350}>
+                <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                    <Pie
+                        data={data}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={renderCustomizedLabel}
+                        outerRadius={100}
+                        innerRadius={40}
+                        fill="#8884d8"
+                        dataKey="value"
+                        nameKey="name"
+                        paddingAngle={1}
+                    >
+                        {data.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke={theme === 'dark' ? 'var(--background-secondary)' : 'var(--background-secondary)'} strokeWidth={1}/>
+                        ))}
+                    </Pie>
+                    <Tooltip
+                        formatter={(value, name) => [value.toLocaleString(undefined, { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }), name]}
+                        contentStyle={{
+                            backgroundColor: theme === 'dark' ? 'var(--background-tertiary)' : 'var(--background-secondary)',
+                            borderColor: theme === 'dark' ? 'var(--border-secondary)' : 'var(--border-primary)',
+                            color: theme === 'dark' ? 'var(--text-primary)' : 'var(--text-primary)',
+                        }}
+                    />
+                    <Legend
+                        payload={legendPayload}
+                        layout="vertical"
+                        align="right"
+                        verticalAlign="middle"
+                        iconSize={10}
+                        wrapperStyle={{ color: legendTextColor, fontSize: '12px', lineHeight: '20px', paddingLeft: '20px' }}
+                    />
+                </PieChart>
+            </ResponsiveContainer>
+        </div>
+    );
+};
+
 
 const CashFlowPage = ({ transactions = [] }) => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -11,40 +98,41 @@ const CashFlowPage = ({ transactions = [] }) => {
     const getInitialDateRange = () => {
         const urlStartDate = searchParams.get('startDate');
         const urlEndDate = searchParams.get('endDate');
+        const urlAllTime = searchParams.get('allTime');
+
+        if (urlAllTime === 'true') {
+            return { startDate: '', endDate: '', allTime: true };
+        }
 
         if (urlStartDate && urlEndDate) {
-            return { startDate: urlStartDate, endDate: urlEndDate };
+            return { startDate: urlStartDate, endDate: urlEndDate, allTime: false };
         }
 
-        const savedRange = localStorage.getItem('cashFlowDateRange');
-        if (savedRange) {
-            try {
-                const parsedRange = JSON.parse(savedRange);
-                if (parsedRange.startDate && parsedRange.endDate) {
-                    return parsedRange;
-                }
-            } catch (e) {
-                console.error("Failed to parse saved date range from localStorage", e);
-            }
-        }
         const today = new Date();
         const endDate = today.toISOString().split('T')[0];
         const startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-        return { startDate, endDate };
+        return { startDate, endDate, allTime: false };
     };
 
     const [dateRange, setDateRange] = useState(getInitialDateRange());
 
     useEffect(() => {
-        localStorage.setItem('cashFlowDateRange', JSON.stringify(dateRange));
-        if (dateRange.startDate && dateRange.endDate) {
-            setSearchParams({ startDate: dateRange.startDate, endDate: dateRange.endDate }, { replace: true });
+        const params = {};
+        if (dateRange.allTime) {
+            params.allTime = 'true';
+        } else {
+            if (dateRange.startDate) params.startDate = dateRange.startDate;
+            if (dateRange.endDate) params.endDate = dateRange.endDate;
         }
+        setSearchParams(params, { replace: true });
     }, [dateRange, setSearchParams]);
 
     const filteredTransactions = useMemo(() => {
-        if (!dateRange.startDate || !dateRange.endDate) {
+        if (dateRange.allTime || (!dateRange.startDate && !dateRange.endDate)) {
             return transactions;
+        }
+        if (!dateRange.startDate || !dateRange.endDate) {
+            return [];
         }
         const start = new Date(dateRange.startDate);
         const end = new Date(dateRange.endDate);
@@ -93,7 +181,7 @@ const CashFlowPage = ({ transactions = [] }) => {
     const incomeDataForPieChart = useMemo(() => processPieChartData('income'), [filteredTransactions]);
 
     const handleFilterApply = (newDateRange) => {
-        setDateRange(newDateRange);
+        setDateRange({ ...newDateRange, allTime: !newDateRange.startDate && !newDateRange.endDate });
     };
 
     return (
@@ -109,33 +197,16 @@ const CashFlowPage = ({ transactions = [] }) => {
             />
 
             <section className={`${styles.chartSection} ${styles.lineChartSectionCustom}`}>
-                <h2 className={styles.chartTitle}>Динамика доходов и расходов</h2>
                 <CustomLineChart data={lineChartData} chartHeight={350} />
             </section>
 
             <div className={styles.chartsGrid}>
                 <section className={styles.chartSection}>
-                    <h2 className={styles.chartTitle}>Расходы по категориям</h2>
-                    {expenseDataForPieChart.length > 0 ? (
-                        <div className={styles.chartContainer}>
-                            <p>PieChart для расходов будет здесь. Данные:</p>
-                            <pre>{JSON.stringify(expenseDataForPieChart, null, 2)}</pre>
-                        </div>
-                    ) : (
-                        <p className={styles.noDataMessage}>Нет данных о расходах за выбранный период.</p>
-                    )}
+                    <CustomPieChart data={expenseDataForPieChart} title="Расходы по категориям" type="expense" />
                 </section>
 
                 <section className={styles.chartSection}>
-                    <h2 className={styles.chartTitle}>Доходы по категориям</h2>
-                    {incomeDataForPieChart.length > 0 ? (
-                        <div className={styles.chartContainer}>
-                            <p>PieChart для доходов будет здесь. Данные:</p>
-                            <pre>{JSON.stringify(incomeDataForPieChart, null, 2)}</pre>
-                        </div>
-                    ) : (
-                        <p className={styles.noDataMessage}>Нет данных о доходах за выбранный период.</p>
-                    )}
+                    <CustomPieChart data={incomeDataForPieChart} title="Доходы по категориям" type="income" />
                 </section>
             </div>
         </div>

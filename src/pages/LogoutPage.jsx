@@ -1,11 +1,21 @@
-import React from 'react';
-import './HomePage.module.css'; // Используем те же стили
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import styles from './HomePage.module.css';
 
 const LogoutPage = () => {
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        logout();
+        navigate('/login');
+    }, [logout, navigate]);
+
     return (
-        <div className="page-content-wrapper">
-            <h1 className="page-main-title">Выход</h1>
-            <p>Вы успешно вышли из системы. (Это заглушка)</p>
+        <div className={styles.pageContentWrapper}>
+            <h1 className={styles.pageMainTitle}>Выход...</h1>
+            <p>Вы будете перенаправлены на страницу входа.</p>
         </div>
     );
 };

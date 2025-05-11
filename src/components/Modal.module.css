@@ -1,11 +1,10 @@
-/* src/components/Modal.module.css */
 .modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: var(--background-overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -13,50 +12,52 @@
 }
 
 .modalContent {
-    background-color: #fff;
+    background-color: var(--background-secondary);
     padding: 1.5rem 2rem;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-modal);
     width: 100%;
-    max-width: 500px; /* Максимальная ширина модального окна */
+    max-width: 500px;
     z-index: 1001;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .modalHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-primary);
     padding-bottom: 1rem;
     margin-bottom: 1rem;
+    transition: border-color 0.3s ease;
 }
 
 .modalTitle {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: #111827;
+    color: var(--text-primary);
 }
 
 .closeButton {
     background: none;
     border: none;
     cursor: pointer;
-    color: #6b7280;
+    color: var(--text-tertiary);
     padding: 0.25rem;
+    transition: color 0.2s ease;
 }
 .closeButton:hover {
-    color: #111827;
+    color: var(--text-primary);
 }
 
 .modalBody {
-    /* Стили для тела модального окна, если нужны */
 }
 
 @media (max-width: 767px) {
     .modalContent {
-        max-width: 90vw; /* Шире на мобильных */
-        margin: 1rem; /* Отступы от краев экрана */
+        max-width: 90vw;
+        margin: 1rem;
         padding: 1rem 1.25rem;
     }
     .modalTitle {

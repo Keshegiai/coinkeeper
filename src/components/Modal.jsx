@@ -12,7 +12,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.modalHeader}>
                     <h3 className={styles.modalTitle}>{title}</h3>
-                    <button className={styles.closeButton} onClick={onClose}>
+                    <button className={styles.closeButton} onClick={onClose} aria-label="Закрыть модальное окно">
                         <LuX size={24} />
                     </button>
                 </div>

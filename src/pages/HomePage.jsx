@@ -64,9 +64,9 @@ const HomePage = ({
     }, [transactions]);
 
     const summaryData = [
-        { title: 'Cash balance', amount: `$${totalBalance.toFixed(2)}`, icon: <FaWallet />, iconBg: '#1F2937', iconColor: '#FFFFFF' },
-        { title: 'Total spent (Month)', amount: `$${monthlyExpenses.toFixed(2)}`, icon: <LuTrendingUp />, iconBg: '#E5E7EB', iconColor: '#4B5563' },
-        { title: 'Savings (Month)', amount: `$${monthlySavings.toFixed(2)}`, icon: <LuPiggyBank />, iconBg: '#E5E7EB', iconColor: '#4B5563' },
+        { title: 'Cash balance', amount: `$${totalBalance.toFixed(2)}`, icon: <FaWallet />, iconStyleClass: styles.iconStyleDefault },
+        { title: 'Total spent (Month)', amount: `$${monthlyExpenses.toFixed(2)}`, icon: <LuTrendingUp />, iconStyleClass: styles.iconStyleDefault },
+        { title: 'Savings (Month)', amount: `$${monthlySavings.toFixed(2)}`, icon: <LuPiggyBank />, iconStyleClass: styles.iconStyleDefault },
     ];
 
     const cashFlowSummaryChartData = useMemo(() => {
@@ -142,7 +142,7 @@ const HomePage = ({
                     <section className={styles.summaryCardsContainer}>
                         {summaryData.map(card => (
                             <div className={styles.summaryCard} key={card.title}>
-                                <div className={styles.summaryCardIcon} style={{ backgroundColor: card.iconBg, color: card.iconColor }}>
+                                <div className={`${styles.summaryCardIcon} ${card.iconStyleClass || styles.iconStyleDefault}`}>
                                     {React.cloneElement(card.icon, { size: 20 })}
                                 </div>
                                 <div className={styles.summaryCardInfo}>

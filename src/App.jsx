@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './layout/MainLayout';
 import HomePage from './pages/HomePage';
 import OperationsPage from './pages/OperationsPage';
@@ -7,19 +7,23 @@ import SettingsPage from './pages/SettingsPage';
 import SupportPage from './pages/SupportPage';
 import LogoutPage from './pages/LogoutPage';
 import CashFlowPage from './pages/CashFlowPage';
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import { useAuth } from './contexts/AuthContext';
 import * as api from './services/api';
 
 function App() {
+    const { currentUser, isAuthenticated, isLoadingAuth } = useAuth();
     const [transactions, setTransactions] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isAppDataLoading, setIsAppDataLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const sortTransactions = (ts) => {
         return ts.sort((a, b) => {
             const dateA = new Date(a.date);
             const dateB = new Date(b.date);
-
             if (dateB.getTime() !== dateA.getTime()) {
                 return dateB.getTime() - dateA.getTime();
             }
@@ -28,7 +32,13 @@ function App() {
     };
 
     const fetchData = useCallback(async () => {
-        setIsLoading(true);
+        if (!isAuthenticated || !currentUser?.id) {
+            setIsAppDataLoading(false);
+            setTransactions([]);
+            setCategories([]);
+            return;
+        }
+        setIsAppDataLoading(true);
         setError(null);
         try {
             const [fetchedCategories, fetchedTransactions] = await Promise.all([
@@ -38,51 +48,63 @@ function App() {
             setCategories(fetchedCategories || []);
             setTransactions(sortTransactions(fetchedTransactions || []));
         } catch (err) {
-            console.error("Fetch data error:", err);
             setError(err.message || 'Не удалось загрузить данные');
         } finally {
-            setIsLoading(false);
+            setIsAppDataLoading(false);
         }
-    }, []);
+    }, [isAuthenticated, currentUser]);
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
     const addCategory = async (categoryDataFromForm) => {
+        if (!currentUser?.id) {
+            alert("Ошибка: Пользователь не определен для добавления категории.");
+            return null;
+        }
         try {
-            const existingCategory = categories.find(cat => cat.name.toLowerCase() === categoryDataFromForm.name.toLowerCase());
+            const existingCategory = categories.find(cat =>
+                cat.name.toLowerCase() === categoryDataFromForm.name.toLowerCase() && cat.userId === currentUser.id
+            );
             if (existingCategory) {
-                alert('Категория с таким именем уже существует!');
+                alert('Категория с таким именем уже существует у вас.');
                 return null;
             }
             const categoryToSend = {
                 name: categoryDataFromForm.name.trim(),
                 icon: categoryDataFromForm.icon || "LuShapes",
-                color: categoryDataFromForm.color || "#808080"
+                color: categoryDataFromForm.color || "#808080",
             };
             const newCategory = await api.addCategoryAPI(categoryToSend);
-            setCategories(prev => [...prev, newCategory]); // Убрали сортировку, новая категория будет в конце
+            if (newCategory) {
+                setCategories(prev => [...prev, newCategory]);
+            }
             return newCategory;
         } catch (err) {
-            console.error("Add category error:", err);
             alert(`Ошибка добавления категории: ${err.message}`);
             return null;
         }
     };
 
     const updateCategory = async (categoryId, categoryDataFromForm) => {
+        if (!currentUser?.id) {
+            alert("Ошибка: Пользователь не определен для обновления категории.");
+            return false;
+        }
         try {
             const existingCategoryByName = categories.find(cat =>
-                cat.name.toLowerCase() === categoryDataFromForm.name.toLowerCase() && cat.id !== categoryId
+                cat.name.toLowerCase() === categoryDataFromForm.name.toLowerCase() &&
+                cat.id !== categoryId &&
+                cat.userId === currentUser.id
             );
             if (existingCategoryByName) {
-                alert('Категория с таким именем уже существует!');
+                alert('Категория с таким именем уже существует у вас.');
                 return false;
             }
-            const categoryToUpdate = categories.find(cat => cat.id === categoryId);
+            const categoryToUpdate = categories.find(cat => cat.id === categoryId && cat.userId === currentUser.id);
             if (!categoryToUpdate) {
-                alert('Категория для обновления не найдена');
+                alert('Категория для обновления не найдена или не принадлежит вам.');
                 return false;
             }
             const dataToSend = {
@@ -91,50 +113,62 @@ function App() {
                 color: categoryDataFromForm.color !== undefined ? categoryDataFromForm.color : categoryToUpdate.color,
             };
             const updatedCat = await api.updateCategoryAPI(categoryId, dataToSend);
-
-            // При обновлении категории, сохраняем ее порядок, не сортируем весь список заново
-            setCategories(prevCategories =>
-                prevCategories.map(cat => (cat.id === categoryId ? updatedCat : cat))
-            );
-
-            setTransactions(prevTs => prevTs.map(t => {
-                if (t.category && t.category.id === categoryId) {
-                    return { ...t, category: updatedCat };
-                }
-                return t;
-            }));
-            return true;
+            if (updatedCat) {
+                setCategories(prevCategories =>
+                    prevCategories.map(cat => (cat.id === categoryId ? updatedCat : cat))
+                );
+                setTransactions(prevTs => prevTs.map(t => {
+                    if (t.category && t.category.id === categoryId) {
+                        return { ...t, category: updatedCat };
+                    }
+                    return t;
+                }));
+            }
+            return !!updatedCat;
         } catch (err) {
-            console.error("Update category error:", err);
             alert(`Ошибка обновления категории: ${err.message}`);
             return false;
         }
     };
 
     const deleteCategory = async (categoryId) => {
+        if (!currentUser?.id) {
+            alert("Ошибка: Пользователь не определен для удаления категории.");
+            return;
+        }
         try {
-            const isCategoryUsed = transactions.some(t => t.category.id === categoryId);
+            const categoryToDelete = categories.find(cat => cat.id === categoryId && cat.userId === currentUser.id);
+            if (!categoryToDelete) {
+                alert('Категория для удаления не найдена или не принадлежит вам.');
+                return;
+            }
+            const isCategoryUsed = transactions.some(t => t.category.id === categoryId && t.userId === currentUser.id);
             if (isCategoryUsed) {
-                alert('Нельзя удалить категорию, так как она используется в транзакциях. Сначала измените или удалите соответствующие транзакции.');
+                alert('Нельзя удалить категорию, так как она используется в ваших транзакциях. Сначала измените или удалите соответствующие транзакции.');
                 return;
             }
             await api.deleteCategoryAPI(categoryId);
             setCategories(prev => prev.filter(cat => cat.id !== categoryId));
         } catch (err) {
-            console.error("Delete category error:", err);
             alert(`Ошибка удаления категории: ${err.message}`);
         }
     };
 
     const addTransaction = async (formDataFromComponent) => {
+        if (!currentUser?.id) {
+            alert("Ошибка: Пользователь не определен для добавления транзакции.");
+            return;
+        }
         try {
             let categoryObject = formDataFromComponent.category;
             if (!categoryObject || !categoryObject.id) {
-                categoryObject = categories.find(c => c.id === formDataFromComponent.categoryId);
+                categoryObject = categories.find(c => c.id === formDataFromComponent.categoryId && c.userId === currentUser.id);
+            } else if (categoryObject.userId !== currentUser.id && categoryObject.id !== undefined) {
+                categoryObject = categories.find(c => c.id === categoryObject.id && c.userId === currentUser.id);
             }
 
             if (!categoryObject) {
-                alert('Выбранная категория не найдена! Пожалуйста, выберите категорию из списка или создайте новую.');
+                alert('Выбранная категория не найдена или не принадлежит вам! Пожалуйста, выберите категорию из списка или создайте новую.');
                 return;
             }
             const transactionDataForAPI = {
@@ -143,30 +177,37 @@ function App() {
                 category: categoryObject,
                 date: formDataFromComponent.date,
                 comment: formDataFromComponent.comment,
-                createdAt: Date.now()
+                createdAt: Date.now(),
             };
             const newTransaction = await api.addTransactionAPI(transactionDataForAPI);
-            setTransactions(prev => sortTransactions([newTransaction, ...prev]));
+            if (newTransaction) {
+                setTransactions(prev => sortTransactions([newTransaction, ...prev]));
+            }
         } catch (err) {
-            console.error("Add transaction error:", err);
             alert(`Ошибка добавления транзакции: ${err.message}`);
         }
     };
 
     const updateTransaction = async (transactionId, formDataFromComponent) => {
+        if (!currentUser?.id) {
+            alert("Ошибка: Пользователь не определен для обновления транзакции.");
+            return;
+        }
         try {
             let categoryObject = formDataFromComponent.category;
             if (!categoryObject || !categoryObject.id) {
-                categoryObject = categories.find(c => c.id === formDataFromComponent.categoryId);
+                categoryObject = categories.find(c => c.id === formDataFromComponent.categoryId && c.userId === currentUser.id);
+            } else if (categoryObject.userId !== currentUser.id && categoryObject.id !== undefined) {
+                categoryObject = categories.find(c => c.id === categoryObject.id && c.userId === currentUser.id);
             }
 
             if (!categoryObject) {
-                alert('Выбранная категория не найдена! Пожалуйста, выберите категорию из списка или создайте новую.');
+                alert('Выбранная категория не найдена или не принадлежит вам! Пожалуйста, выберите категорию из списка или создайте новую.');
                 return;
             }
-            const transactionToUpdate = transactions.find(t => t.id === transactionId);
+            const transactionToUpdate = transactions.find(t => t.id === transactionId && t.userId === currentUser.id);
             if (!transactionToUpdate) {
-                alert('Транзакция для обновления не найдена');
+                alert('Транзакция для обновления не найдена или не принадлежит вам.');
                 return;
             }
             const transactionDataForAPI = {
@@ -175,77 +216,102 @@ function App() {
                 category: categoryObject,
                 date: formDataFromComponent.date,
                 comment: formDataFromComponent.comment,
-                createdAt: transactionToUpdate.createdAt
+                createdAt: transactionToUpdate.createdAt,
             };
             const updatedTransaction = await api.updateTransactionAPI(transactionId, transactionDataForAPI);
-            setTransactions(prev => sortTransactions(prev.map(t => (t.id === transactionId ? updatedTransaction : t))));
+            if (updatedTransaction) {
+                setTransactions(prev => sortTransactions(prev.map(t => (t.id === transactionId ? updatedTransaction : t))));
+            }
         } catch (err) {
-            console.error("Update transaction error:", err);
             alert(`Ошибка обновления транзакции: ${err.message}`);
         }
     };
 
     const deleteTransaction = async (transactionId) => {
+        if (!currentUser?.id) {
+            alert("Ошибка: Пользователь не определен для удаления транзакции.");
+            return;
+        }
         try {
+            const transactionToDelete = transactions.find(t => t.id === transactionId && t.userId === currentUser.id);
+            if (!transactionToDelete) {
+                alert('Транзакция для удаления не найдена или не принадлежит вам.');
+                return;
+            }
             await api.deleteTransactionAPI(transactionId);
             setTransactions(prev => prev.filter(t => t.id !== transactionId));
         } catch (err) {
-            console.error("Delete transaction error:", err);
             alert(`Ошибка удаления транзакции: ${err.message}`);
         }
     };
 
-    if (isLoading) {
-        return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '1.5rem'}}>Загрузка данных...</div>;
-    }
-    if (error) {
-        return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '1.5rem', color: 'red'}}>Ошибка: {error}</div>;
+    if (isLoadingAuth) {
+        return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '1.5rem'}}>Загрузка приложения...</div>;
     }
 
     return (
         <Routes>
-            <Route path="/" element={<MainLayout />}>
-                <Route
-                    index
-                    element={
-                        <HomePage
-                            transactions={transactions}
-                            categories={categories}
-                            addTransaction={addTransaction}
-                            deleteTransaction={deleteTransaction}
-                            updateTransaction={updateTransaction}
-                            addCategory={addCategory}
-                        />
-                    }
-                />
-                <Route
-                    path="operations"
-                    element={
-                        <OperationsPage
-                            transactions={transactions}
-                            categories={categories}
-                            addTransaction={addTransaction}
-                            deleteTransaction={deleteTransaction}
-                            updateTransaction={updateTransaction}
-                            addCategory={addCategory}
-                        />
-                    }
-                />
-                <Route path="cashflow" element={<CashFlowPage transactions={transactions} />} />
-                <Route
-                    path="settings"
-                    element={
-                        <SettingsPage
-                            categories={categories}
-                            addCategory={addCategory}
-                            deleteCategory={deleteCategory}
-                            updateCategory={updateCategory}
-                        />
-                    }
-                />
-                <Route path="support" element={<SupportPage />} />
-                <Route path="logout" element={<LogoutPage />} />
+            <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" />} />
+            <Route path="/register" element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/" />} />
+
+            <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<MainLayout />}>
+                    <Route
+                        index
+                        element={
+                            isAppDataLoading && isAuthenticated ? <div>Загрузка данных главной страницы...</div> :
+                                error && isAuthenticated ? <div style={{color: 'red'}}>Ошибка загрузки данных: {error}</div> :
+                                    isAuthenticated ? <HomePage
+                                        transactions={transactions}
+                                        categories={categories}
+                                        addTransaction={addTransaction}
+                                        deleteTransaction={deleteTransaction}
+                                        updateTransaction={updateTransaction}
+                                        addCategory={addCategory}
+                                    /> : null
+                        }
+                    />
+                    <Route
+                        path="operations"
+                        element={
+                            isAppDataLoading && isAuthenticated ? <div>Загрузка операций...</div> :
+                                error && isAuthenticated ? <div style={{color: 'red'}}>Ошибка загрузки данных: {error}</div> :
+                                    isAuthenticated ? <OperationsPage
+                                        transactions={transactions}
+                                        categories={categories}
+                                        addTransaction={addTransaction}
+                                        deleteTransaction={deleteTransaction}
+                                        updateTransaction={updateTransaction}
+                                        addCategory={addCategory}
+                                    /> : null
+                        }
+                    />
+                    <Route
+                        path="cashflow"
+                        element={
+                            isAppDataLoading && isAuthenticated ? <div>Загрузка аналитики...</div> :
+                                error && isAuthenticated ? <div style={{color: 'red'}}>Ошибка загрузки данных: {error}</div> :
+                                    isAuthenticated ? <CashFlowPage transactions={transactions} /> : null
+                        }
+                    />
+                    <Route
+                        path="settings"
+                        element={
+                            isAppDataLoading && isAuthenticated ? <div>Загрузка настроек...</div> :
+                                error && isAuthenticated ? <div style={{color: 'red'}}>Ошибка загрузки данных: {error}</div> :
+                                    isAuthenticated ? <SettingsPage
+                                        categories={categories}
+                                        addCategory={addCategory}
+                                        deleteCategory={deleteCategory}
+                                        updateCategory={updateCategory}
+                                    /> : null
+                        }
+                    />
+                    <Route path="support" element={<SupportPage />} />
+                    <Route path="logout" element={<LogoutPage />} />
+                </Route>
             </Route>
+            <Route path="*" element={<Navigate to={isAuthenticated ? "/" : "/login"} />} />
         </Routes>
     );
 }

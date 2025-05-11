@@ -1,0 +1,148 @@
+.authContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: var(--background-primary);
+    padding: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.authFormWrapper {
+    background-color: var(--background-secondary);
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-modal);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.authTitle {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    position: relative;
+}
+
+.formGroup label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 0.35rem;
+}
+
+.inputField {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-secondary);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.inputField::placeholder {
+    color: var(--text-tertiary);
+}
+.inputField:focus {
+    outline: none;
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 2px var(--border-accent_alpha);
+}
+
+.submitButton {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s, filter 0.2s;
+    background-color: var(--text-accent);
+    color: var(--text-on-accent);
+    margin-top: 0.5rem;
+}
+.submitButton:hover:not(:disabled) {
+    filter: brightness(0.9);
+}
+.submitButton:disabled {
+    background-color: var(--text-tertiary);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.errorMessage {
+    color: var(--color-expense);
+    background-color: var(--color-expense_light_bg);
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-expense);
+    text-align: left;
+    white-space: pre-line;
+}
+
+.switchFormText {
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.switchFormLink {
+    color: var(--text-accent);
+    font-weight: 500;
+    text-decoration: none;
+}
+.switchFormLink:hover {
+    text-decoration: underline;
+}
+
+.passwordStrengthIndicator {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--background-tertiary);
+    border-radius: 4px;
+    border: 1px solid var(--border-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.criterion {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    transition: color 0.3s ease;
+}
+
+.criterion span {
+    margin-left: 0.5rem;
+}
+
+.criterion.met {
+    color: var(--color-income);
+}
+.criterion.unmet {
+    color: var(--color-expense);
+}
+
+.iconMet, .iconUnmet {
+    flex-shrink: 0;
+}

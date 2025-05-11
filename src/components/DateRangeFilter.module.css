@@ -1,14 +1,14 @@
-/* src/components/DateRangeFilter.module.css */
 .filterContainer {
     display: flex;
-    flex-wrap: wrap; /* Для переноса на маленьких экранах */
+    flex-wrap: wrap;
     align-items: flex-end;
     gap: 1rem;
     padding: 1rem;
-    background-color: #ffffff;
+    background-color: var(--background-secondary);
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.03);
+    box-shadow: var(--shadow-primary);
     margin-bottom: 1.5rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .inputGroup {
@@ -16,57 +16,85 @@
     flex-direction: column;
     gap: 0.25rem;
 }
-
 .inputGroup label {
     font-size: 0.875rem;
-    color: #374151;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
 .dateInput {
     padding: 0.6rem 0.75rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-secondary);
     border-radius: 6px;
     font-size: 0.9rem;
-    background-color: #fff;
-    min-width: 150px; /* Чтобы инпуты не были слишком узкими */
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    min-width: 150px;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
-.dateInput:focus {
+.dateInput:disabled {
+    background-color: var(--background-tertiary);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+html[data-theme='dark'] .dateInput::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+.dateInput:focus:not(:disabled) {
     outline: none;
-    border-color: #4F46E5;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 2px var(--border-accent_alpha);
 }
 
+.allTimeToggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.65rem; /* Для выравнивания с кнопкой */
+    color: var(--text-secondary);
+}
+.allTimeToggle input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: var(--text-accent); /* Для современных браузеров */
+}
+.allTimeToggle label {
+    font-size: 0.9rem;
+    cursor: pointer;
+}
 
 .applyButton {
     padding: 0.65rem 1.25rem;
     font-size: 0.875rem;
     font-weight: 500;
-    color: #fff;
-    background-color: #4F46E5;
+    color: var(--text-on-accent);
+    background-color: var(--text-accent);
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s;
-    /* height: fit-content; */ /* Можно убрать если выравнивание по flex-end работает */
 }
-
 .applyButton:hover {
-    background-color: #4338ca;
+    filter: brightness(0.9);
 }
 
 @media (max-width: 767px) {
     .filterContainer {
-        flex-direction: column; /* Элементы друг под другом */
-        align-items: stretch; /* Растягиваем по ширине */
+        flex-direction: column;
+        align-items: stretch;
     }
     .inputGroup {
-        width: 100%; /* Инпуты на всю ширину */
+        width: 100%;
     }
     .dateInput {
         width: 100%;
     }
+    .allTimeToggle {
+        padding-bottom: 0;
+        margin-top: 0.5rem;
+        justify-content: flex-start;
+    }
     .applyButton {
-        width: 100%; /* Кнопка на всю ширину */
+        width: 100%;
+        margin-top: 0.5rem;
     }
 }

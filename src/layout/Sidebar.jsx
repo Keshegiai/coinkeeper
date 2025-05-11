@@ -26,7 +26,7 @@ const Sidebar = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
     ];
 
     return (
-        <aside className={`${styles.appSidebar} ${isMobileSidebarOpen ? styles.mobileOpen : ''} ${styles.forMobile}`}>
+        <aside className={`${styles.appSidebar} ${isMobileSidebarOpen ? styles.mobileOpen : ''}`}>
             <div className={styles.sidebarHeader}>
                 <button className={styles.mobileCloseButton} onClick={closeMobileSidebar} aria-label="Закрыть меню">
                     <LuX size={24} />

@@ -1,4 +1,3 @@
-/* src/components/TransactionForm.module.css */
 .form {
     display: flex;
     flex-direction: column;
@@ -7,7 +6,7 @@
 
 .typeToggle {
     display: flex;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-secondary);
     border-radius: 6px;
     overflow: hidden;
     width: 100%;
@@ -17,8 +16,8 @@
     flex-grow: 1;
     padding: 0.75rem 1rem;
     border: none;
-    background-color: #f9fafb;
-    color: #374151;
+    background-color: var(--background-tertiary);
+    color: var(--text-secondary);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
@@ -26,16 +25,16 @@
 }
 
 .toggleButton:not(:last-child) {
-    border-right: 1px solid #d1d5db;
+    border-right: 1px solid var(--border-secondary);
 }
 
 .toggleButton.activeExpense {
-    background-color: #fee2e2;
-    color: #c01515;
+    background-color: var(--color-expense_light_bg);
+    color: var(--color-expense_dark_text);
 }
 .toggleButton.activeIncome {
-    background-color: #d1fae5;
-    color: #057839;
+    background-color: var(--color-income_light_bg);
+    color: var(--color-income_dark_text);
 }
 
 .formGroup {
@@ -47,26 +46,30 @@
 .formGroup label {
     font-size: 0.875rem;
     font-weight: 500;
-    color: #374151;
+    color: var(--text-secondary);
 }
 
 .formGroup input[type="number"],
 .formGroup input[type="date"],
-.formGroup textarea {
+.formGroup textarea,
+.newCategoryInput {
     width: 100%;
     padding: 0.65rem 0.75rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-secondary);
     border-radius: 6px;
     font-size: 0.9rem;
     box-sizing: border-box;
-    background-color: #fff;
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
-
-.formGroup input:focus,
-.formGroup textarea:focus {
+.formGroup input::placeholder, .formGroup textarea::placeholder, .newCategoryInput::placeholder {
+    color: var(--text-tertiary);
+}
+.formGroup input:focus, .formGroup textarea:focus, .newCategoryInput:focus {
     outline: none;
-    border-color: #4F46E5;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 2px var(--border-accent_alpha);
 }
 
 .toggleNewCategoryButton {
@@ -77,41 +80,27 @@
     margin-top: 0.5rem;
     padding: 0.5rem;
     font-size: 0.85rem;
-    color: #4F46E5;
+    color: var(--text-accent);
     background-color: transparent;
-    border: 1px dashed #4F46E5;
+    border: 1px dashed var(--text-accent);
     border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 .toggleNewCategoryButton:hover {
-    background-color: #eef2ff; /* Light indigo background on hover */
-    color: #4338ca;
+    background-color: var(--background-tertiary);
 }
 
 .newCategoryForm {
     margin-top: 0.75rem;
     padding: 0.75rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-primary);
     border-radius: 6px;
-    background-color: #f9fafb;
+    background-color: var(--background-tertiary);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-}
-
-.newCategoryInput {
-    width: 100%;
-    padding: 0.65rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    box-sizing: border-box;
-}
-.newCategoryInput:focus {
-    outline: none;
-    border-color: #4F46E5;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .newCategoryColorAndActions {
@@ -119,7 +108,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 0.75rem;
-    flex-wrap: wrap; /* Для переноса на маленьких экранах */
+    flex-wrap: wrap;
 }
 
 .newCategoryColorPickerInline {
@@ -129,23 +118,23 @@
 }
 .newCategoryColorPickerInline label {
     font-size: 0.85rem;
-    color: #374151;
+    color: var(--text-secondary);
 }
 .inlineColorInputSmall {
     padding: 0.1rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-secondary);
     border-radius: 4px;
     height: 32px;
     width: 45px;
     cursor: pointer;
-    background-color: #fff;
+    background-color: var(--background-secondary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .inlineColorInputSmall:focus {
     outline: none;
-    border-color: #4F46E5;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 2px var(--border-accent_alpha);
 }
-
 
 .newCategoryButtons {
     display: flex;
@@ -158,7 +147,7 @@
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
     border: 1px solid transparent;
 }
 .buttonSmall:disabled {
@@ -167,23 +156,23 @@
 }
 
 .saveButtonSmall {
-    background-color: #4F46E5;
-    color: white;
-    border-color: #4F46E5;
+    background-color: var(--text-accent);
+    color: var(--text-on-accent);
+    border-color: var(--text-accent);
 }
 .saveButtonSmall:hover:not(:disabled) {
-    background-color: #4338ca;
+    filter: brightness(0.9);
 }
 
 .cancelButtonSmall {
-    background-color: #f3f4f6;
-    color: #374151;
-    border-color: #d1d5db;
+    background-color: var(--background-tertiary);
+    color: var(--text-secondary);
+    border-color: var(--border-secondary);
 }
 .cancelButtonSmall:hover:not(:disabled) {
-    background-color: #e5e7eb;
+    background-color: var(--border-secondary);
+    color: var(--text-primary);
 }
-
 
 .formActions {
     display: flex;
@@ -191,9 +180,9 @@
     gap: 0.75rem;
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--border-primary);
+    transition: border-color 0.3s ease;
 }
-
 .button {
     padding: 0.65rem 1.25rem;
     border: none;
@@ -201,45 +190,45 @@
     font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, opacity 0.2s, filter 0.2s;
 }
 .button:disabled {
-    background-color: #a5b4fc;
+    background-color: var(--text-tertiary);
+    color: var(--text-secondary);
     cursor: not-allowed;
+    opacity: 0.7;
 }
 
 .cancelButton {
-    background-color: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
+    background-color: var(--background-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-secondary);
 }
 .cancelButton:hover {
-    background-color: #e5e7eb;
+    background-color: var(--border-secondary);
+    color: var(--text-primary);
 }
 
 .submitButton {
-    background-color: #4F46E5;
-    color: white;
+    background-color: var(--text-accent);
+    color: var(--text-on-accent);
 }
 .submitButton:hover {
-    background-color: #4338ca;
+    filter: brightness(0.9);
 }
 
-
 @media (max-width: 767px) {
-    .typeToggle {
-    }
     .toggleButton {
         font-size: 0.85rem;
         padding: 0.6rem 0.5rem;
     }
     .newCategoryColorAndActions {
         flex-direction: column;
-        align-items: stretch; /* Растягиваем элементы */
+        align-items: stretch;
         gap: 0.5rem;
     }
     .newCategoryColorPickerInline {
-        justify-content: space-between; /* Растягиваем label и input color */
+        justify-content: space-between;
         width: 100%;
     }
     .newCategoryButtons {

@@ -1,18 +1,18 @@
-/* src/layout/Sidebar.module.css */
 .appSidebar {
     width: 260px;
-    background-color: #1E2235;
-    color: #A0A3BD;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
     padding: 1.5rem 1rem;
-    height: 100vh; /* Занимает всю высоту */
+    height: 100vh;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    transition: transform 0.3s ease-in-out; /* Анимация выезда */
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease, color 0.3s ease;
     flex-shrink: 0;
-    position: sticky; /* Обычное поведение на десктопе */
+    position: sticky;
     top: 0;
-    z-index: 100; /* Чтобы был выше остального контента на десктопе, если нужно */
+    z-index: 100;
+    border-right: 1px solid var(--border-primary);
 }
 
 .sidebarHeader {
@@ -21,11 +21,11 @@
     gap: 0.75rem;
     padding: 0 0.5rem;
     margin-bottom: 2.5rem;
-    position: relative; /* Для позиционирования кнопки закрытия */
+    position: relative;
 }
 
 .logoIcon {
-    color: #7F56D9;
+    color: var(--sidebar-icon-logo);
     flex-shrink: 0;
 }
 
@@ -33,24 +33,38 @@
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #FFFFFF;
-    white-space: nowrap;
+    color: var(--text-primary);
 }
+html[data-theme='dark'] .sidebarHeader h1 {
+    color: var(--sidebar-text-active);
+}
+
 
 .sidebarNav {
     flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
 }
-.sidebarNav::-webkit-scrollbar { width: 6px; }
-.sidebarNav::-webkit-scrollbar-thumb { background-color: #2a2e45; border-radius: 3px; }
-.sidebarNav::-webkit-scrollbar-track { background-color: transparent; }
+.sidebarNav::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebarNav::-webkit-scrollbar-thumb {
+    background-color: var(--border-secondary);
+    border-radius: 3px;
+}
+html[data-theme='dark'] .sidebarNav::-webkit-scrollbar-thumb {
+    background-color: var(--sidebar-hover-bg);
+}
+.sidebarNav::-webkit-scrollbar-track {
+    background-color: transparent;
+}
 
 .sidebarBottom {
     margin-top: auto;
     padding-top: 1rem;
-    border-top: 1px solid #2a2e45;
+    border-top: 1px solid var(--sidebar-border);
     flex-shrink: 0;
+    transition: border-color 0.3s ease;
 }
 
 .navLink {
@@ -61,17 +75,32 @@
     border-radius: 8px;
     font-weight: 500;
     font-size: 0.9rem;
-    color: #A0A3BD;
+    color: var(--sidebar-text);
     text-decoration: none;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
-.navLink:hover {
-    background-color: #2a2e45;
-    color: #FFFFFF;
+.navLink .navIcon {
+    color: var(--sidebar-icon-nav);
+    transition: color 0.2s ease;
 }
+
+.navLink:hover {
+    background-color: var(--sidebar-hover-bg);
+    color: var(--sidebar-hover-text);
+}
+.navLink:hover .navIcon {
+    color: var(--sidebar-hover-text);
+}
+
 .active {
-    background-color: #7F56D9;
-    color: #FFFFFF;
+    background-color: var(--sidebar-active-bg);
+    color: var(--sidebar-text-active) !important;
+}
+.active .navIcon {
+    color: var(--sidebar-icon-nav-active) !important;
+}
+.active .navLinkText {
+    color: var(--sidebar-text-active) !important;
 }
 
 .navIcon {
@@ -85,71 +114,61 @@
     white-space: nowrap;
 }
 
-.mobileCloseButton { /* Кнопка закрытия на мобильных */
-    display: none; /* Скрыта по умолчанию */
+.mobileCloseButton {
+    display: none;
     position: absolute;
-    top: -0.8rem; /* Скорректируй по месту */
-    right: -0.2rem; /* Скорректируй по месту */
+    top: -0.8rem;
+    right: -0.2rem;
     background: none;
     border: none;
-    color: #A0A3BD;
+    color: var(--sidebar-text);
     cursor: pointer;
     padding: 0.5rem;
 }
 .mobileCloseButton:hover {
-    color: #FFFFFF;
+    color: var(--text-primary);
 }
-
-
-/* --- Адаптивность для выпадающего сайдбара --- */
-/* Только для мобильных стилей - класс forMobile не обязателен, если это единственный @media */
-.appSidebar.forMobile { /* Этот класс будет добавлен в JSX, чтобы стили ниже применялись */
-    /* Но можно обойтись и без него, просто @media (...) .appSidebar */
+html[data-theme='dark'] .mobileCloseButton:hover {
+    color: var(--sidebar-text-active);
 }
-
 
 @media (max-width: 767px) {
     .appSidebar {
-        position: fixed; /* Фиксированное позиционирование для выезда поверх контента */
+        position: fixed;
         left: 0;
         top: 0;
-        transform: translateX(-100%); /* Изначально скрыт за левым краем */
-        z-index: 1002; /* Выше оверлея и хедера */
-        /* Ширина и высота уже заданы выше, они подойдут для выпадающего меню */
-        /* Убедимся, что текст снова виден, если ранее скрывали его для icon-only */
-        padding: 1.5rem 1rem; /* Возвращаем нормальные паддинги */
+        transform: translateX(-100%);
+        z-index: 1002;
+        border-right: none;
+        box-shadow: 3px 0px 15px var(--shadow-modal);
     }
 
-    .appSidebar.mobileOpen { /* Класс для открытого состояния */
-        transform: translateX(0%); /* Выезжает на экран */
-        box-shadow: 3px 0px 15px rgba(0,0,0,0.2); /* Тень для открытого сайдбара */
+    .appSidebar.mobileOpen {
+        transform: translateX(0%);
     }
 
-    /* Показываем кнопку закрытия на мобильных, когда сайдбар открыт */
     .appSidebar.mobileOpen .mobileCloseButton {
         display: block;
     }
 
-
-    /* Текст в ссылках должен быть виден в выпадающем меню */
     .navLinkText {
         opacity: 1;
         visibility: visible;
         width: auto;
     }
     .navIcon {
-        margin-right: 1rem; /* Возвращаем отступ для иконки */
-        font-size: initial; /* Возвращаем нормальный размер иконки */
+        margin-right: 1rem;
+        font-size: initial;
     }
     .navLink {
-        justify-content: flex-start; /* Выравниваем контент по левому краю */
+        justify-content: flex-start;
     }
 
-    .sidebarHeader h1 { /* Текст заголовка снова виден */
+    .sidebarHeader h1 {
         opacity: 1;
         visibility: visible;
     }
-    .sidebarHeader { /* Убираем центрирование лого, если было */
+    .sidebarHeader {
         justify-content: flex-start;
         padding: 0 0.5rem;
     }

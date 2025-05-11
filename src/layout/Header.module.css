@@ -1,6 +1,5 @@
-/* src/layout/Header.module.css */
 .appHeader {
-    background-color: #FFFFFF;
+    background-color: var(--background-secondary);
     padding: 0 2rem;
     display: flex;
     justify-content: space-between;
@@ -8,11 +7,11 @@
     width: 100%;
     box-sizing: border-box;
     height: 70px;
-    border-bottom: 1px solid #F3F4F6;
+    border-bottom: 1px solid var(--border-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .headerLeft {
-    /* Стили для левой части хедера */
 }
 
 .headerRight {
@@ -25,7 +24,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #6B7280;
+    color: var(--text-tertiary);
     padding: 0.5rem;
     border-radius: 50%;
     display: inline-flex;
@@ -36,16 +35,16 @@
 }
 
 .headerIconButton:hover {
-    color: #111827;
-    background-color: #F3F4F6;
+    color: var(--text-primary);
+    background-color: var(--background-tertiary);
 }
 
 .notificationBadge {
     position: absolute;
     top: 5px;
     right: 5px;
-    background-color: #EF4444;
-    color: white;
+    background-color: var(--color-expense);
+    color: var(--text-on-accent);
     font-size: 0.6rem;
     font-weight: bold;
     width: 14px;
@@ -54,7 +53,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid #FFFFFF;
+    border: 1.5px solid var(--background-secondary);
 }
 
 .userProfileContainer {
@@ -68,42 +67,59 @@
 }
 
 .userProfileContainer:hover {
-    background-color: #F3F4F6;
+    background-color: var(--background-tertiary);
 }
 
 .userAvatarIcon {
-    color: #4B5563;
+    color: var(--text-secondary);
 }
 
 .userName {
     font-weight: 500;
     font-size: 0.875rem;
-    color: #374151;
+    color: var(--text-secondary);
 }
 
-.userProfileDropdown { /* Этот класс применяется к headerIconButton */
+.userProfileDropdown {
     padding: 0.25rem;
 }
+.userProfileDropdown svg {
+    color: var(--text-secondary);
+}
+.userProfileContainer:hover .userProfileDropdown svg {
+    color: var(--text-primary);
+}
+
 
 .mobileMenuButton {
-    display: none; /* По умолчанию скрыта на больших экранах */
-    margin-right: 0.5rem; /* Отступ от левого края или других элементов */
+    display: none;
 }
 
 .searchButtonDesktop {
-    /* Стили для кнопки поиска, если мы хотим ее как-то особо позиционировать или скрывать */
+}
+
+.logoutButton {
+}
+.loginLink {
+    color: var(--text-accent);
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.loginLink:hover {
+    background-color: var(--background-tertiary);
+    color: var(--text-accent);
 }
 
 @media (max-width: 767px) {
     .mobileMenuButton {
-        display: inline-flex; /* Показываем на мобильных */
+        display: inline-flex;
     }
-
-    .appHeader { /* Уменьшаем отступы в хедере на мобильных */
+    .appHeader {
         padding: 0 1rem;
     }
-
-    .userName { /* Пример: скрываем имя пользователя на очень маленьких экранах */
-        display: none; /* Раскомментируй, если нужно */
+    .userName {
     }
 }

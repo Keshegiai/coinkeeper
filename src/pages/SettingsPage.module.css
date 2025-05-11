@@ -1,16 +1,16 @@
-/* src/pages/SettingsPage.module.css */
 .settingsSection {
-    background-color: #fff;
+    background-color: var(--background-secondary);
     padding: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.03);
+    box-shadow: var(--shadow-primary);
     margin-bottom: 1.5rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .sectionTitle {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--text-primary);
     margin-top: 0;
     margin-bottom: 1rem;
 }
@@ -22,19 +22,25 @@
     align-items: flex-end;
 }
 
-.categoryInput {
+.categoryInput, .filterInput {
     flex-grow: 1;
     padding: 0.65rem 0.75rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-secondary);
     border-radius: 6px;
     font-size: 0.9rem;
     box-sizing: border-box;
     min-width: 150px;
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
-.categoryInput:focus {
+.categoryInput::placeholder, .filterInput::placeholder {
+    color: var(--text-tertiary);
+}
+.categoryInput:focus, .filterInput:focus {
     outline: none;
-    border-color: #4F46E5;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 2px var(--border-accent_alpha);
 }
 
 .colorInputGroup {
@@ -44,15 +50,21 @@
 }
 .colorLabel {
     font-size: 0.875rem;
-    color: #374151;
+    color: var(--text-secondary);
 }
-.categoryColorInput {
+.categoryColorInput, .categoryColorInputSmall {
     height: 38px;
     width: 50px;
     padding: 0.15rem 0.25rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-secondary);
     border-radius: 6px;
     cursor: pointer;
+    background-color: var(--background-secondary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.categoryColorInputSmall {
+    width: 40px;
+    padding: 0.1rem;
 }
 
 .addButton {
@@ -62,25 +74,24 @@
     padding: 0.65rem 1rem;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #fff;
-    background-color: #4F46E5;
+    color: var(--text-on-accent);
+    background-color: var(--text-accent);
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, filter 0.2s;
     height: 38px;
 }
 .addButton:hover {
-    background-color: #4338ca;
+    filter: brightness(0.9);
 }
 
-/* Стили для заголовка секции с фильтром */
 .sectionHeaderWithFilter {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-    flex-wrap: wrap; /* Для переноса на маленьких экранах */
+    flex-wrap: wrap;
     gap: 0.75rem;
 }
 
@@ -93,23 +104,13 @@
 .filterInputIcon {
     position: absolute;
     left: 10px;
-    color: #9ca3af;
-    pointer-events: none; /* Чтобы иконка не мешала клику на инпут */
+    color: var(--text-tertiary);
+    pointer-events: none;
 }
 
 .filterInput {
-    padding: 0.6rem 0.75rem 0.6rem 2.25rem; /* Отступ слева для иконки */
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    min-width: 200px; /* Минимальная ширина */
+    padding-left: 2.25rem;
 }
-.filterInput:focus {
-    outline: none;
-    border-color: #4F46E5;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
-}
-
 
 .categoryList {
     list-style: none;
@@ -122,7 +123,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.85rem 0;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--border-primary);
+    transition: border-color 0.3s ease;
 }
 .categoryItem:last-child {
     border-bottom: none;
@@ -139,12 +141,13 @@
     height: 20px;
     border-radius: 6px;
     display: inline-block;
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid var(--border-primary);
+    transition: border-color 0.3s ease;
 }
 
 .categoryName {
     font-size: 0.95rem;
-    color: #111827;
+    color: var(--text-primary);
 }
 
 .categoryActions {
@@ -155,7 +158,7 @@
 .actionButton {
     background: none;
     border: none;
-    color: #6b7280;
+    color: var(--text-tertiary);
     padding: 0.4rem;
     border-radius: 6px;
     cursor: pointer;
@@ -165,15 +168,15 @@
     transition: background-color 0.2s, color 0.2s;
 }
 .actionButton:hover {
-    background-color: #f3f4f6;
-    color: #111827;
+    background-color: var(--background-tertiary);
+    color: var(--text-primary);
 }
 .deleteButton:hover {
-    color: #ef4444;
-    background-color: #fee2e2;
+    color: var(--color-expense);
+    background-color: var(--background-tertiary);
 }
 .cancelButton:hover {
-    background-color: #e5e7eb;
+    background-color: var(--border-secondary);
 }
 
 .editForm {
@@ -187,21 +190,13 @@
     flex-grow: 2;
 }
 
-.categoryColorInputSmall {
-    height: 38px;
-    width: 40px;
-    padding: 0.1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    cursor: pointer;
-}
 .editActions {
     display: flex;
     gap: 0.5rem;
     margin-left: auto;
 }
 .noCategoriesMessage {
-    color: #6b7280;
+    color: var(--text-tertiary);
     font-style: italic;
 }
 
@@ -227,10 +222,10 @@
     }
     .sectionHeaderWithFilter {
         flex-direction: column;
-        align-items: stretch; /* Растягиваем элементы по ширине */
+        align-items: stretch;
     }
     .filterInputWrapper {
-        width: 100%; /* Фильтр на всю ширину */
+        width: 100%;
     }
     .filterInput {
         width: 100%;

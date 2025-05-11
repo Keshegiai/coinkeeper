@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'; // Добавляем useState, useEffect
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { Outlet, useLocation } from 'react-router-dom'; // Добавляем useLocation
+import { Outlet, useLocation } from 'react-router-dom';
 import styles from './MainLayout.module.css';
 
 const MainLayout = () => {
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-    const location = useLocation(); // Для закрытия сайдбара при смене роута
+    const location = useLocation();
 
     const toggleMobileSidebar = () => {
         setIsMobileSidebarOpen(!isMobileSidebarOpen);
@@ -16,7 +16,6 @@ const MainLayout = () => {
         setIsMobileSidebarOpen(false);
     };
 
-    // Закрываем мобильный сайдбар при изменении URL (переходе на другую страницу)
     useEffect(() => {
         closeMobileSidebar();
     }, [location]);
@@ -25,14 +24,13 @@ const MainLayout = () => {
         <div className={`${styles.appContainer} ${isMobileSidebarOpen ? styles.mobileSidebarActive : ''}`}>
             <Sidebar
                 isMobileSidebarOpen={isMobileSidebarOpen}
-                closeMobileSidebar={closeMobileSidebar} // Передаем для возможного закрытия изнутри сайдбара
+                closeMobileSidebar={closeMobileSidebar}
             />
-            {/* Оверлей для затемнения контента, когда сайдбар открыт на мобильном */}
             {isMobileSidebarOpen && (
                 <div className={styles.mobileOverlay} onClick={closeMobileSidebar}></div>
             )}
             <div className={styles.mainContentArea}>
-                <Header toggleMobileSidebar={toggleMobileSidebar} /> {/* Передаем функцию в Header */}
+                <Header toggleMobileSidebar={toggleMobileSidebar} />
                 <main className={styles.content}>
                     <Outlet />
                 </main>

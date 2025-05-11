@@ -1,5 +1,99 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+:root {
+  --background-primary: #F7F7FA;
+  --background-secondary: #FFFFFF;
+  --background-tertiary: #F0F2F5;
+  --background-overlay: rgba(0, 0, 0, 0.4);
+
+  --text-primary: #1F2937;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --text-accent: #7F56D9;
+  --text-on-accent: #FFFFFF;
+
+  --border-primary: #E5E7EB;
+  --border-secondary: #D1D5DB;
+  --border-accent: var(--text-accent);
+  --border-accent_alpha: rgba(127, 86, 217, 0.25);
+
+  --shadow-primary: 0px 2px 4px -2px rgba(27, 24, 55, 0.06), 0px 4px 8px -2px rgba(27, 24, 55, 0.1);
+  --shadow-modal: 0px 20px 24px -4px rgba(27, 24, 55, 0.08), 0px 8px 8px -4px rgba(27, 24, 55, 0.03);
+
+  --color-income: #10B981;
+  --color-expense: #F472B6;
+  --color-income-light-theme: #10B981;
+  --color-expense-light-theme: #F472B6;
+  --color-income-dark-theme: #2DD4BF;
+  --color-expense-dark-theme: #F472B6;
+
+  --color-expense_light_bg: rgba(244, 114, 182, 0.1);
+  --color-expense_dark_text:  #9D174D;
+  --color-income_light_bg: #D1FAE5;
+  --color-income_dark_text: #047857;
+
+  --sidebar-bg: #F7F8FC;
+  --sidebar-text: #696E84;
+  --sidebar-text-active: #ffffff;
+  --sidebar-icon-logo: #7F56D9;
+  --sidebar-icon-nav: #9398AE;
+  --sidebar-icon-nav-active: #ffffff;
+  --sidebar-active-bg: var(--text-accent);
+  --sidebar-hover-bg: #c4badf;
+  --sidebar-hover-text: var(--text-accent);
+  --sidebar-border: #E4E6EF;
+
+  --icon-default-bg: #E5E7EB;
+  --icon-default-text: #6B7280;
+  --icon-balance-bg: #1F2937;
+  --icon-balance-text: #FFFFFF;
+}
+
+html[data-theme='dark'] {
+  --background-primary: #0D1117;
+  --background-secondary: #161B22;
+  --background-tertiary: #21262D;
+  --background-overlay: rgba(22, 27, 34, 0.8);
+
+  --text-primary: #C9D1D9;
+  --text-secondary: #8B949E;
+  --text-tertiary: #6E7681;
+  --text-accent: #7F56D9;
+  --text-on-accent: #FFFFFF;
+
+  --border-primary: #30363D;
+  --border-secondary: #484F58;
+  --border-accent: var(--text-accent);
+  --border-accent_alpha: rgba(127, 86, 217, 0.3);
+
+  --shadow-primary: 0 1px 2px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.4);
+  --shadow-modal: 0 8px 24px rgba(0,0,0,0.5);
+
+  --color-income: var(--color-income-dark-theme);
+  --color-expense: var(--color-expense-dark-theme);
+
+  --color-expense_light_bg: rgba(244, 114, 182, 0.15);
+  --color-expense_dark_text:  var(--color-expense-dark-theme);
+  --color-income_light_bg: rgba(45, 212, 191, 0.15);
+  --color-income_dark_text: var(--color-income-dark-theme);
+
+  --sidebar-bg: #161B22;
+  --sidebar-text: var(--text-secondary);
+  --sidebar-text-active: #FFFFFF;
+  --sidebar-icon-logo: var(--text-accent);
+  --sidebar-icon-nav: var(--text-tertiary);
+  --sidebar-icon-nav-active: #FFFFFF;
+  --sidebar-active-bg: var(--text-accent);
+  --sidebar-hover-bg: #21262D;
+  --sidebar-hover-text: var(--text-primary);
+  --sidebar-border: var(--border-primary);
+
+  --icon-default-bg: var(--background-tertiary);
+  --icon-default-text: var(--text-secondary);
+  --icon-balance-bg: var(--background-secondary);
+  --icon-balance-text: var(--text-primary);
+}
+
 *,
 *::before,
 *::after {
@@ -8,32 +102,45 @@
 
 html,
 body,
-#root { /* #root - это div, в который рендерится твое React-приложение */
+#root {
   width: 100%;
   height: 100%;
-  margin: 0;   /* <--- Убираем стандартные внешние отступы */
-  padding: 0;  /* <--- Убираем стандартные внутренние отступы */
-  overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку на самом верхнем уровне */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 body {
-  margin: 0; /* Дублирование margin: 0 для body не повредит */
+  margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
   'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
   sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #F9FAFB;
-  color: #111827;
+
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
   monospace;
+  background-color: var(--background-tertiary);
+  color: var(--text-secondary);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
 }
 
 a {
   text-decoration: none;
-  color: inherit;
+  color: var(--text-accent);
+}
+a:hover {
+  text-decoration: underline;
+  filter: brightness(1.1);
+}
+html[data-theme='dark'] a:hover {
+  filter: brightness(1.2);
 }
 
 ul {
@@ -44,4 +151,21 @@ ul {
 
 button {
   font-family: inherit;
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+input[type="color"]::-webkit-color-swatch {
+  border-radius: 4px;
+  border: 1px solid var(--border-secondary);
+}
+input[type="color"]::-moz-color-swatch {
+  border-radius: 4px;
+  border: 1px solid var(--border-secondary);
 }

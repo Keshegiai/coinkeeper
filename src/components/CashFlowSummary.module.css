@@ -1,32 +1,26 @@
-/* src/components/CashFlowSummary.module.css */
-.cashFlowSummarySection { /* Используется как дополнительный класс к .dashboardSection */
-    /* Специфичные стили могут быть здесь, если .dashboardSection будет глобальным или из другого модуля */
+.cashFlowSummarySection {
 }
 
-/* Если .dashboardSection тоже должен стать модульным, его нужно импортировать из HomePage.module.css */
-/* и применять оба класса в CashFlowSummary.jsx */
-
-.sectionHeader { /* Если этот класс должен быть уникальным для этого модуля */
-    /* Если он берется из HomePage.module.css, то импортировать оттуда */
+.sectionHeader {
     margin-bottom: 1.5rem;
-    /* Предположим, .sectionHeader и .sectionTitle будут общими, импортируемыми из HomePage.module.css */
 }
 
 .sectionControls {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .cashFlowLegend {
     font-size: 0.875rem;
-    color: #374151;
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
-    cursor: pointer;
+    cursor: default;
 }
 
-.legendDot { /* Был .cash-flow-legend .legend-dot, теперь отдельный класс */
+.legendDot {
     display: inline-block;
     width: 10px;
     height: 10px;
@@ -34,50 +28,49 @@
     margin-right: 0.5rem;
 }
 
-.income .legendDot { /* .cash-flow-legend.income .legend-dot -> .income .legendDot */
-    background-color: #34D399;
+.income .legendDot {
+    background-color: var(--color-income);
 }
 
-.expenses .legendDot { /* .cash-flow-legend.expenses .legend-dot -> .expenses .legendDot */
-    background-color: #A0A3BD;
+.expenses .legendDot {
+    background-color: var(--color-expense);
 }
 
 .timeFilterDropdown {
     font-size: 0.875rem;
     padding: 0.45rem 0.75rem;
-    border: 1px solid #D1D5DB;
+    border: 1px solid var(--border-secondary);
     border-radius: 6px;
-    background-color: #FFFFFF;
-    color: #374151;
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
     cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.timeFilterDropdown:focus {
+    outline: none;
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 2px var(--border-accent_alpha);
 }
 
-.chartPlaceholderSummary { /* Этот класс мы заменяем на chartContainerForSummary */
-    /* ... его стили можно удалить или переименовать ... */
-}
-
-.chartContainerForSummary { /* Новый класс */
-    height: 280px; /* Высота для графика на главной странице */
-    width: 100%;   /* График должен занимать всю ширину контейнера */
-    margin-top: 1rem; /* Небольшой отступ сверху от контролов */
-}
-
-.noDataPlaceholder { /* Стиль для сообщения об отсутствии данных */
-    height: 280px;
+.noDataPlaceholder {
+    height: 260px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #F9FAFB;
+    background-color: var(--background-tertiary);
     border-radius: 8px;
-    color: #9CA3AF;
-    border: 1px dashed #E5E7EB;
+    color: var(--text-tertiary);
+    border: 1px dashed var(--border-secondary);
     font-size: 0.9rem;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-
 @media (max-width: 768px) {
-    .chartContainerForSummary, .noDataPlaceholder {
-        height: 220px; /* Уменьшаем высоту графика на мобильных */
+    .sectionControls {
+        gap: 0.5rem;
+        justify-content: flex-start;
     }
-    /* ... остальные медиа-запросы ... */
+    .noDataPlaceholder {
+        height: 220px;
+    }
 }

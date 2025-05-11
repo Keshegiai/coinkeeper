@@ -1,78 +1,106 @@
 {
+  "users": [
+    {
+      "id": "9450",
+      "name": "Aidyn",
+      "email": "mralmaz.09@gmail.com",
+      "password": "12345Aa+"
+    }
+  ],
   "categories": [
     {
-      "id": "cat1",
+      "id": "8445",
       "name": "Продукты",
-      "icon": "LuShoppingCart",
-      "color": "#22c55e"
+      "icon": "LuShapes",
+      "color": "#289013",
+      "userId": "9450"
     },
     {
-      "id": "cat2",
-      "name": "Транспорт",
-      "icon": "LuCar",
-      "color": "#3b82f6"
-    },
-    {
-      "id": "cat3",
+      "id": "52df",
       "name": "Зарплата",
-      "icon": "LuLandmark",
-      "color": "#10b981"
+      "icon": "LuShapes",
+      "color": "#0c9748",
+      "userId": "9450"
     },
     {
-      "id": "cat4",
-      "name": "Развлечения",
-      "icon": "LuGamepad2",
-      "color": "#8b5cf6"
+      "id": "266a",
+      "name": "Транспорт",
+      "icon": "LuShapes",
+      "color": "#808080",
+      "userId": "9450"
     },
     {
-      "id": "cat5",
-      "name": "Счета и коммуналка",
-      "icon": "LuFileText",
-      "color": "#ef4444"
+      "id": "4d4c",
+      "name": "Интернет",
+      "icon": "LuShapes",
+      "color": "#a92d2d",
+      "userId": "9450"
     }
   ],
   "transactions": [
     {
-      "id": "c068",
+      "type": "expense",
+      "amount": 550,
+      "category": {
+        "id": "8445",
+        "name": "Продукты",
+        "icon": "LuShapes",
+        "color": "#289013",
+        "userId": "9450"
+      },
+      "date": "2025-05-07",
+      "comment": "",
+      "createdAt": 1746918477331,
+      "userId": "9450",
+      "id": "6ef5"
+    },
+    {
+      "id": "0ed3",
       "type": "income",
       "amount": 1500,
       "category": {
-        "id": "cat3",
+        "id": "52df",
         "name": "Зарплата",
-        "icon": "LuLandmark",
-        "color": "#10b981"
+        "icon": "LuShapes",
+        "color": "#0c9748",
+        "userId": "9450"
       },
       "date": "2025-05-10",
       "comment": "",
-      "createdAt": 1746909889363
+      "createdAt": 1746918499844,
+      "userId": "9450"
     },
     {
-      "id": "3015",
+      "id": "2345",
       "type": "expense",
       "amount": 200,
       "category": {
-        "id": "cat1",
-        "name": "Продукты",
-        "icon": "LuShoppingCart",
-        "color": "#22c55e"
+        "id": "266a",
+        "name": "Транспорт",
+        "icon": "LuShapes",
+        "color": "#808080",
+        "userId": "9450"
       },
-      "date": "2025-05-11",
+      "date": "2025-05-01",
       "comment": "",
-      "createdAt": 1746909900336
+      "createdAt": 1746918524289,
+      "userId": "9450"
     },
     {
-      "id": "bb06",
+      "id": "abd3",
       "type": "expense",
-      "amount": 300,
+      "amount": 150,
       "category": {
-        "id": "cat4",
-        "name": "Развлечения",
-        "icon": "LuGamepad2",
-        "color": "#8b5cf6"
+        "id": "4d4c",
+        "name": "Интернет",
+        "icon": "LuShapes",
+        "color": "#a92d2d",
+        "userId": "9450"
       },
-      "date": "2025-05-12",
+      "date": "2025-04-30",
       "comment": "",
-      "createdAt": 1746909916404
+      "createdAt": 1746918543510,
+      "userId": "9450"
     }
   ]
 }

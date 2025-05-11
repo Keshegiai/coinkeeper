@@ -1,14 +1,24 @@
 import React from 'react';
 import styles from './Header.module.css';
-import { LuSearch, LuBell, LuChevronDown, LuMenu } from "react-icons/lu"; // <--- Добавляем LuMenu
+import { LuSearch, LuBell, LuChevronDown, LuMenu, LuLogOut, LuSun, LuMoon } from "react-icons/lu";
 import { FaUserCircle } from "react-icons/fa";
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+import { Link, useNavigate } from 'react-router-dom';
 
-// Принимаем toggleMobileSidebar как проп
 const Header = ({ toggleMobileSidebar }) => {
+    const { currentUser, logout } = useAuth();
+    const { theme, toggleTheme } = useTheme();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
     return (
         <header className={styles.appHeader}>
             <div className={styles.headerLeft}>
-                {/* Кнопка "бургер" для мобильных */}
                 <button
                     className={`${styles.headerIconButton} ${styles.mobileMenuButton}`}
                     onClick={toggleMobileSidebar}
@@ -16,23 +26,36 @@ const Header = ({ toggleMobileSidebar }) => {
                 >
                     <LuMenu size={22} />
                 </button>
-                {/* Сюда можно вернуть название страницы или хлебные крошки, если они нужны на десктопе */}
             </div>
             <div className={styles.headerRight}>
-                <button className={`${styles.headerIconButton} ${styles.searchButtonDesktop}`} aria-label="Search"> {/* Добавим класс для скрытия на мобильных если нужно */}
+                <button className={`${styles.headerIconButton} ${styles.searchButtonDesktop}`} aria-label="Search">
                     <LuSearch size={20} />
                 </button>
+
+                <button
+                    className={styles.headerIconButton}
+                    onClick={toggleTheme}
+                    title={theme === 'light' ? 'Переключить на темную тему' : 'Переключить на светлую тему'}
+                    aria-label="Переключить тему"
+                >
+                    {theme === 'light' ? <LuMoon size={20} /> : <LuSun size={20} />}
+                </button>
+
                 <button className={styles.headerIconButton} aria-label="Notifications">
                     <LuBell size={20} />
-                    <span className={styles.notificationBadge}>3</span>
                 </button>
-                <div className={styles.userProfileContainer}>
-                    <FaUserCircle size={28} className={styles.userAvatarIcon} />
-                    <span className={styles.userName}>Maksim Kirievski</span> {/* Этот текст можно скрыть на очень маленьких экранах */}
-                    <button className={`${styles.headerIconButton} ${styles.userProfileDropdown}`} aria-label="User menu">
-                        <LuChevronDown size={18} />
-                    </button>
-                </div>
+
+                {currentUser ? (
+                    <div className={styles.userProfileContainer}>
+                        <FaUserCircle size={28} className={styles.userAvatarIcon} />
+                        <span className={styles.userName}>{currentUser.name || currentUser.email}</span>
+                        <button onClick={handleLogout} className={`${styles.headerIconButton} ${styles.logoutButton}`} title="Выйти">
+                            <LuLogOut size={20} />
+                        </button>
+                    </div>
+                ) : (
+                    <Link to="/login" className={styles.loginLink}>Войти</Link>
+                )}
             </div>
         </header>
     );

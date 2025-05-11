@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Select, { components } from 'react-select'; // Используем обычный Select
+import Select, { components } from 'react-select';
 import styles from './TransactionForm.module.css';
-import { FiPlusCircle } from 'react-icons/fi'; // Для кнопки "Добавить"
+import { FiPlusCircle } from 'react-icons/fi';
 
 const TransactionForm = ({ onSubmit, onCancel, categories, addCategory, initialData }) => {
     const [type, setType] = useState(initialData?.type || 'expense');
@@ -67,7 +67,7 @@ const TransactionForm = ({ onSubmit, onCancel, categories, addCategory, initialD
     const handleAddNewCategoryToggle = () => {
         setShowNewCategoryForm(!showNewCategoryForm);
         if (!showNewCategoryForm) {
-            setSelectedCategoryOption(null); // Сбрасываем выбор, если открываем форму добавления
+            setSelectedCategoryOption(null);
         }
     };
 
@@ -86,7 +86,6 @@ const TransactionForm = ({ onSubmit, onCancel, categories, addCategory, initialD
 
         if (addedCategory) {
             const newOption = { value: addedCategory.id, label: addedCategory.name, color: addedCategory.color };
-            setCategories(prev => [...prev, addedCategory]); // Обновляем локальный список для Select
             setSelectedCategoryOption(newOption);
             setShowNewCategoryForm(false);
             setNewCategoryName('');
@@ -133,27 +132,76 @@ const TransactionForm = ({ onSubmit, onCancel, categories, addCategory, initialD
                 borderRadius: '50%',
                 marginRight: '8px',
                 display: 'inline-block',
-                border: '1px solid #eee'
+                border: '1px solid var(--border-primary)'
             }}></span>
             {label}
         </div>
     );
 
     const customReactSelectStyles = {
-        option: (provided) => ({
-            ...provided,
+        control: (base, state) => ({
+            ...base,
+            backgroundColor: 'var(--background-secondary)',
+            borderColor: state.isFocused ? 'var(--border-accent)' : 'var(--border-secondary)',
+            boxShadow: state.isFocused ? `0 0 0 1px var(--border-accent)` : 'none',
+            '&:hover': {
+                borderColor: state.isFocused ? 'var(--border-accent)' : 'var(--border-secondary)',
+            },
+            color: 'var(--text-primary)',
+            transition: 'background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease',
+        }),
+        menu: (base) => ({
+            ...base,
+            backgroundColor: 'var(--background-secondary)',
+            color: 'var(--text-primary)',
+            zIndex: 3,
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isSelected ? 'var(--text-accent)' : state.isFocused ? 'var(--background-tertiary)' : 'var(--background-secondary)',
+            color: state.isSelected ? 'var(--text-on-accent)' : 'var(--text-primary)',
+            '&:active': {
+                backgroundColor: 'var(--text-accent)',
+            },
             display: 'flex',
             alignItems: 'center',
         }),
-        singleValue: (provided, state) => ({
-            ...provided,
+        singleValue: (base, state) => ({
+            ...base,
+            color: 'var(--text-primary)',
             display: 'flex',
             alignItems: 'center'
         }),
-        // Можно добавить стили для поля ввода, если необходимо
-        // input: (provided) => ({ ...provided, ... }),
-        // placeholder: (provided) => ({ ...provided, ... }),
-        // container: (provided) => ({...provided, ...})
+        input: (base) => ({
+            ...base,
+            color: 'var(--text-primary)',
+        }),
+        placeholder: (base) => ({
+            ...base,
+            color: 'var(--text-tertiary)',
+        }),
+        clearIndicator: (base, state) => ({
+            ...base,
+            color: state.isFocused ? 'var(--text-accent)' : 'var(--text-tertiary)',
+            '&:hover': {
+                color: state.isFocused ? 'var(--text-accent)' : 'var(--text-primary)',
+            }
+        }),
+        dropdownIndicator: (base, state) => ({
+            ...base,
+            color: state.isFocused ? 'var(--text-accent)' : 'var(--text-tertiary)',
+            '&:hover': {
+                color: state.isFocused ? 'var(--text-accent)' : 'var(--text-primary)',
+            }
+        }),
+        indicatorSeparator: (base) => ({
+            ...base,
+            backgroundColor: 'var(--border-secondary)',
+        }),
+        noOptionsMessage: (base) => ({
+            ...base,
+            color: 'var(--text-tertiary)',
+        }),
     };
 
     return (
@@ -201,7 +249,7 @@ const TransactionForm = ({ onSubmit, onCancel, categories, addCategory, initialD
                             formatOptionLabel={formatOptionLabel}
                             styles={customReactSelectStyles}
                             isClearable
-                            noOptionsMessage={() => "Нет доступных категорий"}
+                            noOptionsMessage={(obj) => obj.inputValue ? 'Категория не найдена' : 'Нет доступных категорий'}
                         />
                         <button
                             type="button"

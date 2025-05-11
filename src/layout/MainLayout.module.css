@@ -1,8 +1,7 @@
-/* src/layout/MainLayout.module.css */
 .appContainer {
     display: flex;
     height: 100vh;
-    background-color: #F9FAFB;
+    background-color: var(--background-primary);
 }
 
 .mainContentArea {
@@ -14,18 +13,18 @@
 }
 
 .content {
-    padding: 1.5rem 1.5rem; /* По умолчанию: 1.5rem сверху/снизу, 2rem слева/справа */
+    padding: 1.5rem 1.5rem;
     flex-grow: 1;
     overflow-y: auto;
-    overflow-x: hidden; /* Важно, чтобы сам контент не создавал горизонтальный скролл */
-    background-color: #F9FAFB;
-    width: 100%; /* Убедимся, что он пытается занять всю доступную ширину */
+    overflow-x: hidden;
+    background-color: var(--background-primary);
+    width: 100%;
+    transition: background-color 0.3s ease;
 }
 
-/* --- Адаптивность для .content --- */
 @media (max-width: 767px) {
     .content {
-        padding: 1rem; /* Уменьшаем отступы и делаем их одинаковыми со всех сторон на мобильных */
+        padding: 1rem;
     }
 }
 
@@ -35,16 +34,13 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный */
-    z-index: 1001; /* Ниже сайдбара, но выше контента */
-    display: none; /* По умолчанию скрыт */
+    background-color: var(--background-overlay);
+    z-index: 1001;
+    display: none;
 }
 
-/* Показываем оверлей только на мобильных, когда сайдбар активен */
 @media (max-width: 767px) {
-    .appContainer.mobileSidebarActive .mobileOverlay { /* Используем родительский класс для показа */
+    .appContainer.mobileSidebarActive .mobileOverlay {
         display: block;
     }
-    /* Можно добавить эффект сдвига для .mainContentArea, если сайдбар не position:fixed */
-    /* Но с fixed этого не нужно, сайдбар будет поверх */
 }

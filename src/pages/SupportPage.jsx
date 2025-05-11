@@ -1,5 +1,5 @@
 import React from 'react';
-import './HomePage.module.css'; // Используем те же стили
+import './HomePage.module.css';
 
 const SupportPage = () => {
     return (
