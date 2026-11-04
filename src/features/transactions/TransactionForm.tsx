@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, type FormEvent } from 'react';
-import { Check, Plus, Trash2 } from 'lucide-react';
-import type { Transaction, TransactionType } from '@/domain/types';
+import { Check, Copy, Plus, Trash2 } from 'lucide-react';
+import type { Transaction, TransactionDraft, TransactionType } from '@/domain/types';
 import { addDays, isValidISODate, today } from '@/lib/date';
 import { CURRENCY_META, formatAmount, parseAmount } from '@/lib/money';
 import { cn } from '@/lib/cn';
@@ -16,8 +16,9 @@ import styles from './TransactionForm.module.css';
 
 interface Props {
   initial?: Transaction;
-  defaultType?: TransactionType;
+  defaults?: Partial<TransactionDraft>;
   onDone: () => void;
+  onDuplicate?: (t: Transaction) => void;
 }
 
 type Errors = Partial<Record<'amount' | 'categoryId' | 'date', string>>;
@@ -36,7 +37,7 @@ export function validateTransaction(input: { amount: string; categoryId: string;
   return errors;
 }
 
-export function TransactionForm({ initial, defaultType = 'expense', onDone }: Props) {
+export function TransactionForm({ initial, defaults, onDone, onDuplicate }: Props) {
   const { currency } = usePreferences();
   const { categories } = useCategories();
   const { transactions } = useTransactions();
@@ -46,11 +47,12 @@ export function TransactionForm({ initial, defaultType = 'expense', onDone }: Pr
   const createCategory = useCreateCategory();
   const confirm = useConfirm();
 
-  const [type, setType] = useState<TransactionType>(initial?.type ?? defaultType);
-  const [amount, setAmount] = useState(initial ? formatAmount(initial.amount).replace(/\s/g, '') : '');
-  const [categoryId, setCategoryId] = useState(initial?.categoryId ?? '');
-  const [date, setDate] = useState(initial?.date ?? today());
-  const [comment, setComment] = useState(initial?.comment ?? '');
+  const seed = initial ?? defaults;
+  const [type, setType] = useState<TransactionType>(seed?.type ?? 'expense');
+  const [amount, setAmount] = useState(seed?.amount ? formatAmount(seed.amount).replace(/\s/g, '') : '');
+  const [categoryId, setCategoryId] = useState(seed?.categoryId ?? '');
+  const [date, setDate] = useState(seed?.date ?? today());
+  const [comment, setComment] = useState(seed?.comment ?? '');
   const [errors, setErrors] = useState<Errors>({});
   const [newCat, setNewCat] = useState<string | null>(null);
   const amountRef = useRef<HTMLInputElement>(null);
@@ -233,9 +235,16 @@ export function TransactionForm({ initial, defaultType = 'expense', onDone }: Pr
 
       <div className={styles.footer}>
         {initial ? (
-          <Button variant="danger" icon={<Trash2 size={14} />} onClick={onDelete}>
-            Удалить
-          </Button>
+          <span className={styles.footerLeft}>
+            <Button variant="danger" icon={<Trash2 size={14} />} onClick={onDelete}>
+              Удалить
+            </Button>
+            {onDuplicate && (
+              <Button variant="ghost" icon={<Copy size={14} />} onClick={() => onDuplicate(initial)} title="Создать такую же операцию сегодня">
+                Повторить
+              </Button>
+            )}
+          </span>
         ) : (
           <span className={cn('label', styles.kbdHint)}>
             <kbd>Enter</kbd> сохранить · <kbd>Esc</kbd> закрыть

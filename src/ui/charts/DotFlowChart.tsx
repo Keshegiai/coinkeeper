@@ -11,6 +11,8 @@ interface DotFlowChartProps {
   granularity: Granularity;
   rows?: number;
   label?: string;
+  /** Called with the clicked bucket — e.g. to open its transactions. */
+  onSelect?: (bucket: FlowBucket) => void;
 }
 
 const ROW_STEP = 11;
@@ -20,7 +22,7 @@ const AXIS_GAP = 10;
  * Diverging dot-matrix histogram: income rises above the axis (foreground),
  * expenses drop below it (signal red). Every column is a time bucket.
  */
-export function DotFlowChart({ buckets, granularity, rows = 7, label = 'Денежный поток' }: DotFlowChartProps) {
+export function DotFlowChart({ buckets, granularity, rows = 7, label = 'Денежный поток', onSelect }: DotFlowChartProps) {
   const { money } = usePreferences();
   const [ref, width] = useElementWidth<HTMLDivElement>();
   const [active, setActive] = useState<number | null>(null);
@@ -46,6 +48,7 @@ export function DotFlowChart({ buckets, granularity, rows = 7, label = 'Дене
     else if (e.key === 'ArrowLeft') setActive((a) => Math.max(0, (a ?? n) - 1));
     else if (e.key === 'Home') setActive(0);
     else if (e.key === 'End') setActive(n - 1);
+    else if (e.key === 'Enter' && active !== null && buckets[active]) onSelect?.(buckets[active]);
     else return;
     e.preventDefault();
   };
@@ -76,7 +79,13 @@ export function DotFlowChart({ buckets, granularity, rows = 7, label = 'Дене
               const down = dotsFor(b.expense);
               const isActive = active === i;
               return (
-                <g key={b.key} className={cn(styles.col, active !== null && !isActive && styles.dim)} onMouseEnter={() => setActive(i)}>
+                <g
+                  key={b.key}
+                  className={cn(styles.col, active !== null && !isActive && styles.dim, onSelect && styles.clickable)}
+                  style={{ animationDelay: `${Math.min(i * (700 / Math.max(1, n)), 700)}ms` }}
+                  onMouseEnter={() => setActive(i)}
+                  onClick={() => onSelect?.(b)}
+                >
                   <rect x={colStep * i} y={0} width={colStep} height={height} fill="transparent" />
                   {Array.from({ length: rows }, (_, k) => (
                     <circle
@@ -114,6 +123,10 @@ export function DotFlowChart({ buckets, granularity, rows = 7, label = 'Дене
             <span className={styles.tipRow}>
               <i className={styles.keyExpense} /> {money(activeBucket.expense)}
             </span>
+            <span className={cn(styles.tipRow, styles.tipNet)}>
+              Итог {money(activeBucket.income - activeBucket.expense, { signed: true })}
+            </span>
+            {onSelect && <span className={styles.tipHint}>Клик — операции</span>}
           </div>
         )}
       </div>

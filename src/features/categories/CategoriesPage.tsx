@@ -25,7 +25,7 @@ export function CategoriesPage() {
   return (
     <>
       <PageHeader
-        index="04"
+        index="05"
         subtitle="Структура и лимиты"
         title="Категории"
         actions={

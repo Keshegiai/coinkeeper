@@ -1,11 +1,22 @@
 .stat {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-width: 0;
 }
 .value {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
   min-height: 34px;
+}
+.chart {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 4px;
+  opacity: 0.9;
 }
 .foot {
   display: flex;
@@ -35,4 +46,11 @@
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--fg-3);
+}
+
+/* Not enough room for the figure and the sparkline side by side. */
+@container (max-width: 300px) {
+  .chart {
+    display: none;
+  }
 }

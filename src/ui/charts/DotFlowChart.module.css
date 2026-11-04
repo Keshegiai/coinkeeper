@@ -14,6 +14,10 @@
   display: block;
   overflow: visible;
 }
+.svg g {
+  transform-box: view-box;
+  transform-origin: center;
+}
 .axis {
   stroke: var(--line);
   stroke-width: 1;
@@ -28,8 +32,30 @@
 .expense {
   fill: var(--accent);
 }
+.col {
+  animation: col-in 480ms var(--ease-out) both;
+}
+@keyframes col-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0.6);
+  }
+}
 .col circle {
   transition: opacity 140ms var(--ease-out);
+}
+.clickable {
+  cursor: pointer;
+}
+.tipNet {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px dashed color-mix(in srgb, var(--inverse-fg) 25%, transparent);
+}
+.tipHint {
+  margin-top: 2px;
+  font-size: 10px;
+  opacity: 0.5;
 }
 .dim circle {
   opacity: 0.35;

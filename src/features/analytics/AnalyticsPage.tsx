@@ -1,13 +1,15 @@
 import { useMemo, useState } from 'react';
-import type { Category, TransactionType } from '@/domain/types';
+import { useLocation, useNavigate } from 'react-router-dom';
+import type { TransactionType } from '@/domain/types';
 import { useFinanceData } from '@/features/useFinanceData';
 import { usePeriod } from '@/features/transactions/usePeriod';
 import { PeriodPicker } from '@/features/transactions/PeriodPicker';
+import { transactionsHref } from '@/features/transactions/links';
 import { CategoryIcon } from '@/features/categories/icons';
 import { usePreferences } from '@/features/settings/PreferencesProvider';
-import { breakdownByCategory, cashFlowSeries, delta, filterByPeriod, totals, type CategorySlice } from '@/lib/finance';
+import { balanceSeries, breakdownByCategory, cashFlowSeries, categoryChanges, dailyTotals, delta, filterByPeriod, totals } from '@/lib/finance';
 import { previousPeriod } from '@/lib/period';
-import { formatDay } from '@/lib/date';
+import { formatDay, parseISODate } from '@/lib/date';
 import { formatPercent } from '@/lib/money';
 import { cn } from '@/lib/cn';
 import { Amount } from '@/ui/Amount';
@@ -17,8 +19,12 @@ import { PageHeader } from '@/ui/PageHeader';
 import { Panel } from '@/ui/Panel';
 import { Segmented } from '@/ui/Segmented';
 import { Stat } from '@/ui/Stat';
+import { BalanceChart } from '@/ui/charts/BalanceChart';
+import { CalendarHeatmap } from '@/ui/charts/CalendarHeatmap';
 import { DotFlowChart } from '@/ui/charts/DotFlowChart';
-import { Waffle } from '@/ui/charts/Waffle';
+import { Sparkline } from '@/ui/charts/Sparkline';
+import { CategoryBreakdown } from './CategoryBreakdown';
+import { MonthPaceView } from './MonthPaceView';
 import { computeInsights, WEEKDAYS_LONG, WEEKDAYS_SHORT } from './insights';
 import styles from './AnalyticsPage.module.css';
 
@@ -34,24 +40,34 @@ export function AnalyticsPage() {
   );
 }
 
-function Analytics({ transactions, categoryMap }: ReturnType<typeof useFinanceData>) {
+type FlowMode = 'flow' | 'balance';
+
+function Analytics({ transactions, categories, categoryMap }: ReturnType<typeof useFinanceData>) {
   const { period } = usePeriod();
   const { money } = usePreferences();
+  const { search } = useLocation();
+  const navigate = useNavigate();
   const [structure, setStructure] = useState<TransactionType>('expense');
+  const [flowMode, setFlowMode] = useState<FlowMode>('flow');
 
   const m = useMemo(() => {
     const cur = filterByPeriod(transactions, period.from, period.to);
     const prev = previousPeriod(period);
-    const prevTotals = prev ? totals(filterByPeriod(transactions, prev.from, prev.to)) : null;
+    const prevTx = prev ? filterByPeriod(transactions, prev.from, prev.to) : [];
+    const prevTotals = prev ? totals(prevTx) : null;
     const t = totals(cur);
+    const series = cashFlowSeries(cur, period.from, period.to);
     return {
       t,
       cur,
       prevTotals,
-      series: cashFlowSeries(cur, period.from, period.to),
+      series,
+      balance: balanceSeries(transactions, period.from, period.to),
       expense: breakdownByCategory(cur, 'expense', categoryMap),
       income: breakdownByCategory(cur, 'income', categoryMap),
       insights: computeInsights(cur, period.from, period.to),
+      daily: dailyTotals(transactions, 'expense'),
+      changes: prev ? categoryChanges(cur, prevTx, categoryMap).slice(0, 6) : [],
     };
   }, [transactions, period, categoryMap]);
 
@@ -66,24 +82,62 @@ function Analytics({ transactions, categoryMap }: ReturnType<typeof useFinanceDa
   const slices = structure === 'expense' ? m.expense : m.income;
   const savings = m.t.income > 0 ? m.t.net / m.t.income : null;
   const maxWeekday = Math.max(1, ...m.insights.weekdayTotals);
+  const maxChange = Math.max(1, ...m.changes.map((c) => Math.abs(c.diff)));
+  // The pace view compares calendar months: use the period's month when it is one, otherwise today's.
+  const paceMonth = period.preset === 'month' && period.from ? parseISODate(period.from) : new Date();
 
   return (
-    <div className={styles.grid}>
+    <div className={cn(styles.grid, 'stagger')}>
       <Panel className={styles.kpis} aria-label="Ключевые показатели">
-        <Stat label="Доходы" value={<Amount value={m.t.income} />} delta={m.prevTotals ? delta(m.t.income, m.prevTotals.income) : null} />
-        <Stat label="Расходы" value={<Amount value={m.t.expense} />} delta={m.prevTotals ? delta(m.t.expense, m.prevTotals.expense) : null} goodWhen="down" />
+        <Stat
+          label="Доходы"
+          value={<Amount value={m.t.income} />}
+          delta={m.prevTotals ? delta(m.t.income, m.prevTotals.income) : null}
+          chart={<Sparkline values={m.series.buckets.map((b) => b.income)} />}
+        />
+        <Stat
+          label="Расходы"
+          value={<Amount value={m.t.expense} />}
+          delta={m.prevTotals ? delta(m.t.expense, m.prevTotals.expense) : null}
+          goodWhen="down"
+          chart={<Sparkline values={m.series.buckets.map((b) => b.expense)} tone="accent" />}
+        />
         <Stat label="Итог" value={<Amount value={m.t.net} signed tone="auto" />} delta={m.prevTotals ? delta(m.t.net, m.prevTotals.net) : null} />
         <Stat
           label="Норма сбережений"
-          value={
-            <span className={cn('dot-num', styles.bigPct, savings !== null && savings < 0 && 'accent')}>{savings === null ? '—' : formatPercent(savings)}</span>
-          }
+          value={<span className={cn('dot-num', styles.bigPct, savings !== null && savings < 0 && 'accent')}>{savings === null ? '—' : formatPercent(savings)}</span>}
           footnote="Итог / доходы"
         />
       </Panel>
 
-      <Panel className={styles.flow} index="01" title={`Поток · ${period.label}`}>
-        <DotFlowChart buckets={m.series.buckets} granularity={m.series.granularity} rows={9} />
+      <Panel
+        className={styles.flow}
+        index="01"
+        title={`${flowMode === 'flow' ? 'Поток' : 'Баланс'} · ${period.label}`}
+        action={
+          <Segmented<FlowMode>
+            label="Вид графика"
+            size="sm"
+            value={flowMode}
+            onChange={setFlowMode}
+            options={[
+              { value: 'flow', label: 'Поток' },
+              { value: 'balance', label: 'Баланс' },
+            ]}
+          />
+        }
+      >
+        {flowMode === 'flow' ? (
+          <DotFlowChart
+            key={period.label}
+            buckets={m.series.buckets}
+            granularity={m.series.granularity}
+            rows={9}
+            onSelect={(b) => navigate(transactionsHref({ from: b.start, to: b.end }))}
+          />
+        ) : (
+          <BalanceChart key={period.label} points={m.balance.points} granularity={m.balance.granularity} rows={12} />
+        )}
       </Panel>
 
       <Panel
@@ -103,7 +157,12 @@ function Analytics({ transactions, categoryMap }: ReturnType<typeof useFinanceDa
           />
         }
       >
-        <Breakdown slices={slices} money={money} />
+        <CategoryBreakdown
+          key={structure}
+          slices={slices}
+          totalLabel={structure === 'expense' ? 'Расходы' : 'Доходы'}
+          onSelect={(id) => navigate(transactionsHref({ cat: id, type: structure, search }))}
+        />
       </Panel>
 
       <Panel className={styles.insights} index="03" title="Наблюдения">
@@ -147,7 +206,11 @@ function Analytics({ transactions, categoryMap }: ReturnType<typeof useFinanceDa
                 <div key={i} className={styles.weekCol} title={`${WEEKDAYS_LONG[i]}: ${money(v)}`}>
                   <div className={styles.weekDots}>
                     {Array.from({ length: 10 }, (_, k) => (
-                      <span key={k} className={cn(k < filled && styles.on, k < filled && i === m.insights.busiestWeekday?.index && styles.peak)} />
+                      <span
+                        key={k}
+                        style={{ animationDelay: `${i * 40 + k * 25}ms` }}
+                        className={cn(k < filled && styles.on, k < filled && i === m.insights.busiestWeekday?.index && styles.peak)}
+                      />
                     ))}
                   </div>
                   <span className="label">{WEEKDAYS_SHORT[i]}</span>
@@ -157,34 +220,53 @@ function Analytics({ transactions, categoryMap }: ReturnType<typeof useFinanceDa
           </div>
         </div>
       </Panel>
-    </div>
-  );
-}
 
-function Breakdown({ slices, money }: { slices: CategorySlice[]; money: (v: number) => string }) {
-  const [hl, setHl] = useState<string | null>(null);
-  if (!slices.length) return <EmptyState title="Нет данных" />;
-  const color = (c: Category | undefined) => c?.color ?? '#8A8A8A';
-  return (
-    <div className={styles.breakdown}>
-      <Waffle
-        slices={slices.map((s) => ({ id: s.categoryId, share: s.share, color: color(s.category) }))}
-        highlight={hl}
-        onHighlight={setHl}
-        label={slices.map((s) => `${s.category?.name ?? 'Без категории'} ${formatPercent(s.share)}`).join(', ')}
-      />
-      <ul className={styles.legend} onMouseLeave={() => setHl(null)}>
-        {slices.map((s) => (
-          <li key={s.categoryId} className={cn(styles.legendRow, hl && hl !== s.categoryId && styles.dim)} onMouseEnter={() => setHl(s.categoryId)}>
-            <span className={styles.swatch} style={{ background: color(s.category) }} />
-            <CategoryIcon icon={s.category?.icon ?? 'shapes'} size={15} />
-            <span className={styles.legendName}>{s.category?.name ?? 'Без категории'}</span>
-            <span className={cn('mono', styles.legendCount)}>×{s.count}</span>
-            <span className={cn('mono', styles.legendPct)}>{formatPercent(s.share)}</span>
-            <span className={cn('mono', styles.legendAmt)}>{money(s.amount)}</span>
-          </li>
-        ))}
-      </ul>
+      <Panel className={styles.calendar} index="04" title="Календарь трат">
+        <CalendarHeatmap values={m.daily} from={period.from} to={period.to} onSelect={(d) => navigate(transactionsHref({ from: d, to: d }))} />
+      </Panel>
+
+      <Panel className={styles.pace} index="05" title={`Темп · ${paceMonth.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })}`}>
+        <MonthPaceView transactions={transactions} categories={categories} month={paceMonth} />
+      </Panel>
+
+      <Panel className={styles.changes} index="06" title="Что изменилось">
+        {m.changes.length ? (
+          <ul className={styles.changeList}>
+            {m.changes.map((c) => {
+              const up = c.diff > 0;
+              const cells = Math.max(1, Math.round((Math.abs(c.diff) / maxChange) * 12));
+              return (
+                <li key={c.categoryId}>
+                  <button
+                    type="button"
+                    className={styles.change}
+                    onClick={() => navigate(transactionsHref({ cat: c.categoryId, type: 'expense', search }))}
+                    title={`${c.category?.name ?? 'Без категории'}: ${money(c.previous)} → ${money(c.current)}`}
+                  >
+                    <span className={styles.changeName}>
+                      <CategoryIcon icon={c.category?.icon ?? 'shapes'} size={14} />
+                      {c.category?.name ?? 'Без категории'}
+                    </span>
+                    <span className={styles.changeBar} aria-hidden>
+                      <span className={styles.changeHalf}>
+                        {!up && Array.from({ length: cells }, (_, k) => <i key={k} className={styles.down} style={{ animationDelay: `${k * 30}ms` }} />)}
+                      </span>
+                      <span className={styles.changeAxis} />
+                      <span className={styles.changeHalf}>
+                        {up && Array.from({ length: cells }, (_, k) => <i key={k} className={styles.up} style={{ animationDelay: `${k * 30}ms` }} />)}
+                      </span>
+                    </span>
+                    <span className={cn('mono', styles.changeValue, up && 'accent')}>{money(c.diff, { signed: true })}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <EmptyState title="Не с чем сравнить" text="Выберите неделю, месяц или год — покажем, какие траты выросли, а какие сократились." />
+        )}
+        {m.changes.length > 0 && <p className={cn('label', styles.changeNote)}>Расходы к предыдущему периоду · красным — рост</p>}
+      </Panel>
     </div>
   );
 }

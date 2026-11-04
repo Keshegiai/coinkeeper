@@ -1,0 +1,29 @@
+.root {
+  position: relative;
+  flex-shrink: 0;
+}
+.root svg {
+  display: block;
+  overflow: visible;
+}
+.on {
+  fill: var(--ring, var(--accent));
+  animation: light 300ms var(--ease-out) both;
+}
+.off {
+  fill: var(--surface-3);
+}
+@keyframes light {
+  from {
+    fill: var(--surface-3);
+  }
+}
+.center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}

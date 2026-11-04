@@ -1,0 +1,36 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  margin: 0;
+}
+.facts dd {
+  margin: 8px 0 0;
+}
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-dot);
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1;
+}
+.bad {
+  color: var(--accent);
+}
+.chipNote {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--fg-2);
+}
+.daily {
+  font-size: 15px;
+  line-height: 22px;
+}

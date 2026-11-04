@@ -32,3 +32,17 @@
     margin-bottom: 20px;
   }
 }
+
+/* The title "boots" like a dot-matrix display scanning left to right. */
+.title :global(.dotted) {
+  display: inline-block;
+  animation: scan 820ms steps(18, end) backwards;
+}
+@keyframes scan {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}

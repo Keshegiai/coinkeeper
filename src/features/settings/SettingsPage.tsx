@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Download, LogOut, Monitor, Moon, Sun } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, Download, LogOut, Monitor, Moon, Sun } from 'lucide-react';
 import { CURRENCIES, type Currency } from '@/domain/types';
 import { useAuth, useUser } from '@/features/auth/AuthProvider';
 import { useFinanceData } from '@/features/useFinanceData';
 import { transactionsToCsv, downloadFile } from '@/lib/csv';
 import { CURRENCY_META } from '@/lib/money';
 import { today } from '@/lib/date';
-import { Button } from '@/ui/Button';
+import { Button, buttonClass } from '@/ui/Button';
 import { PageHeader } from '@/ui/PageHeader';
 import { Panel } from '@/ui/Panel';
 import { Segmented } from '@/ui/Segmented';
@@ -16,6 +16,7 @@ import { usePreferences, type ThemePref } from './PreferencesProvider';
 import styles from './SettingsPage.module.css';
 
 const SHORTCUTS = [
+  ['Ctrl K', 'Поиск и команды'],
   ['N', 'Новая операция'],
   ['/', 'Поиск по операциям'],
   ['Esc', 'Закрыть окно'],
@@ -39,7 +40,7 @@ export function SettingsPage() {
 
   return (
     <>
-      <PageHeader index="05" subtitle="Профиль и интерфейс" title="Настройки" />
+      <PageHeader index="06" subtitle="Профиль и интерфейс" title="Настройки" />
       <div className={styles.grid}>
         <Panel index="01" title="Профиль" className={styles.profile}>
           <div className={styles.user}>
@@ -80,6 +81,11 @@ export function SettingsPage() {
         </Panel>
 
         <Panel index="03" title="Данные">
+          <Row title="Категории и бюджеты" hint="Иконки, цвета и месячные лимиты">
+            <Link to="/categories" className={buttonClass()}>
+              Открыть <ArrowRight size={14} />
+            </Link>
+          </Row>
           <Row title="Экспорт" hint={`${transactions.length} операций в CSV (UTF-8, открывается в Excel)`}>
             <Button
               icon={<Download size={14} />}
@@ -103,7 +109,7 @@ export function SettingsPage() {
         </Panel>
       </div>
       <p className={styles.version}>
-        <span className="dot-num">COINKEEPER</span> <span className="label">v2.0</span>
+        <span className="dot-num">COINKEEPER</span> <span className="label">v2.1</span>
       </p>
     </>
   );
