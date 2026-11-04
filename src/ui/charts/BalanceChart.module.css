@@ -1,0 +1,70 @@
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.plot {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  outline-offset: 6px;
+}
+.svg {
+  display: block;
+  overflow: visible;
+}
+.off {
+  fill: var(--surface-3);
+}
+.compact .off {
+  fill: color-mix(in srgb, var(--fg) 9%, transparent);
+}
+.fill {
+  fill: color-mix(in srgb, var(--fg) 38%, transparent);
+}
+.head {
+  fill: var(--fg);
+}
+.fillNeg {
+  fill: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.headNeg {
+  fill: var(--accent);
+}
+.col {
+  animation: col-in 520ms var(--ease-out) both;
+}
+.col circle {
+  transition: opacity 140ms var(--ease-out);
+}
+.dim circle {
+  opacity: 0.4;
+}
+@keyframes col-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.zero {
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+  opacity: 0.6;
+}
+.cross {
+  stroke: var(--fg);
+  stroke-width: 1;
+  stroke-dasharray: 1 3;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.ticks {
+  display: flex;
+  justify-content: space-between;
+}
+.ticks :global(.label) {
+  font-size: 10px;
+  color: var(--fg-3);
+}

@@ -109,6 +109,31 @@
   display: none;
 }
 
+.search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 8px 0 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  color: var(--fg-2);
+  transition:
+    border-color 140ms var(--ease-out),
+    color 140ms var(--ease-out);
+}
+.search:hover {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+.searchKbd {
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
 @media (max-width: 1020px) {
   .navCode {
     display: none;
@@ -121,8 +146,14 @@
     padding: 0 16px;
   }
   .nav,
-  .addDesktop {
+  .addDesktop,
+  .searchKbd {
     display: none;
+  }
+  .search {
+    width: 34px;
+    padding: 0;
+    justify-content: center;
   }
   .main {
     padding: 20px 16px calc(var(--bottom-nav-h) + 32px + env(safe-area-inset-bottom));

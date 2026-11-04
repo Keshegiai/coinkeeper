@@ -1,7 +1,8 @@
 import { NavLink, Outlet, Link } from 'react-router-dom';
-import { ChartColumn, LayoutGrid, List, Plus, Tag } from 'lucide-react';
+import { ChartColumn, LayoutGrid, List, Plus, Search, Tag, Target } from 'lucide-react';
 import { useTransactionEditor } from '@/features/transactions/TransactionEditor';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { useCommandPalette } from '@/features/command/CommandPalette';
 import { Button } from '@/ui/Button';
 import { cn } from '@/lib/cn';
 import { Logo } from './Logo';
@@ -12,11 +13,16 @@ const NAV = [
   { to: '/', label: 'Обзор', code: '01', icon: LayoutGrid, end: true },
   { to: '/transactions', label: 'Операции', code: '02', icon: List },
   { to: '/analytics', label: 'Аналитика', code: '03', icon: ChartColumn },
-  { to: '/categories', label: 'Категории', code: '04', icon: Tag },
+  { to: '/goals', label: 'Цели', code: '04', icon: Target },
+  { to: '/categories', label: 'Категории', code: '05', icon: Tag },
 ] as const;
+
+/** Phones get the four most-used screens; categories live in ⌘K, settings and budget links. */
+const BOTTOM = NAV.filter((n) => n.to !== '/categories');
 
 export function AppShell() {
   const { openNew } = useTransactionEditor();
+  const openPalette = useCommandPalette();
   const { user } = useAuth();
   const initial = (user?.name || user?.email || '?').trim().charAt(0).toUpperCase();
 
@@ -41,6 +47,10 @@ export function AppShell() {
           </nav>
 
           <div className={styles.actions}>
+            <button type="button" className={styles.search} onClick={openPalette} aria-label="Поиск и команды (Ctrl+K)" title="Поиск и команды">
+              <Search size={15} />
+              <kbd className={styles.searchKbd}>⌘K</kbd>
+            </button>
             <Button variant="accent" size="sm" icon={<Plus size={14} />} onClick={() => openNew()} className={styles.addDesktop} title="Новая операция (N)">
               Операция
             </Button>
@@ -62,13 +72,13 @@ export function AppShell() {
       </main>
 
       <nav className={styles.bottomNav} aria-label="Навигация">
-        {NAV.slice(0, 2).map((item) => (
+        {BOTTOM.slice(0, 2).map((item) => (
           <BottomLink key={item.to} {...item} />
         ))}
         <button className={styles.fab} onClick={() => openNew()} aria-label="Новая операция">
           <Plus size={24} strokeWidth={2} />
         </button>
-        {NAV.slice(2).map((item) => (
+        {BOTTOM.slice(2).map((item) => (
           <BottomLink key={item.to} {...item} />
         ))}
       </nav>

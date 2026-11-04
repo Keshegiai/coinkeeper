@@ -6,9 +6,21 @@
 .hero {
   grid-column: span 7;
   justify-content: space-between;
-  min-height: 300px;
-  background-image: radial-gradient(var(--bg-dot) 1px, transparent 1.3px);
-  background-size: 14px 14px;
+  min-height: 340px;
+  overflow: hidden;
+}
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-size: 10px;
+  animation: blink 2.4s steps(2, jump-none) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
 }
 .heroBody {
   display: flex;
@@ -16,9 +28,13 @@
   gap: 14px;
   margin-top: auto;
 }
+.heroChart {
+  margin: 4px 0 2px;
+}
 .heroMeta {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 6px 16px;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -41,15 +57,27 @@
 .flow {
   grid-column: span 12;
 }
+.pace {
+  grid-column: span 7;
+}
+.structure {
+  grid-column: span 5;
+}
 .recent {
   grid-column: span 7;
+  align-self: start;
+}
+.side {
+  grid-column: span 5;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
 }
 .recentBody {
   padding: 0 calc(var(--space-5) - 10px) calc(var(--space-5) - 10px);
 }
-.budgets {
-  grid-column: span 5;
-}
+
 .budgetList {
   display: flex;
   flex-direction: column;
@@ -89,7 +117,9 @@
   .hero,
   .stats,
   .recent,
-  .budgets {
+  .side,
+  .pace,
+  .structure {
     grid-column: span 12;
   }
   .stats {
@@ -110,6 +140,9 @@
 @media (max-width: 760px) {
   .grid {
     gap: 12px;
+  }
+  .hideSm {
+    display: none;
   }
   .hero {
     min-height: 240px;

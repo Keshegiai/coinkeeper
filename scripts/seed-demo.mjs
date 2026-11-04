@@ -14,6 +14,7 @@ const USER_ID = 'demo';
 db.users = (db.users ?? []).filter((u) => u.id !== USER_ID);
 db.categories = (db.categories ?? []).filter((c) => c.userId !== USER_ID);
 db.transactions = (db.transactions ?? []).filter((t) => t.userId !== USER_ID);
+db.goals = (db.goals ?? []).filter((g) => g.userId !== USER_ID);
 
 db.users.push({ id: USER_ID, name: 'Demo', email: 'demo@coinkeeper.app', password: 'Demo1234' });
 
@@ -49,7 +50,7 @@ const add = (date, type, cat, amount, comment = '') =>
   });
 
 const today = new Date();
-const start = new Date(today.getFullYear(), today.getMonth() - 3, 1);
+const start = new Date(today.getFullYear(), today.getMonth() - 5, 1);
 for (let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
   const day = new Date(d);
   const dom = day.getDate();
@@ -64,6 +65,13 @@ for (let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
   if ((dow === 5 || dow === 6) && rnd() > 0.5) add(day, 'expense', 'fun', 4000 + rnd() * 12000, pick(['Кино', 'Концерт', 'Боулинг']));
   if (rnd() > 0.95) add(day, 'expense', 'health', 5000 + rnd() * 30000, pick(['Аптека', 'Стоматолог']));
 }
+
+const inMonths = (m) => iso(new Date(today.getFullYear(), today.getMonth() + m, 15));
+db.goals.push(
+  { id: 'demo-g1', userId: USER_ID, name: 'Подушка безопасности', target: 1500000, saved: 620000, deadline: inMonths(10), icon: 'savings', color: '#D71921', createdAt: 1 },
+  { id: 'demo-g2', userId: USER_ID, name: 'Отпуск в Турции', target: 650000, saved: 410000, deadline: inMonths(4), icon: 'plane', color: '#1C7ED6', createdAt: 2 },
+  { id: 'demo-g3', userId: USER_ID, name: 'Новый ноутбук', target: 480000, saved: 480000, deadline: null, icon: 'phone', color: '#111111', createdAt: 3 },
+);
 
 writeFileSync(file, JSON.stringify(db, null, 2) + '\n');
 console.log(`Seeded ${n} demo transactions into ${file}. Login: demo@coinkeeper.app / Demo1234`);

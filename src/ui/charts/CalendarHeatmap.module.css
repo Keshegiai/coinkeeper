@@ -1,0 +1,71 @@
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.measure {
+  width: 100%;
+  min-width: 0;
+}
+.plot {
+  position: relative;
+}
+.plot svg {
+  display: block;
+  overflow: visible;
+}
+.month {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  fill: var(--fg-3);
+}
+.cell {
+  animation: cell-in 380ms var(--ease-out) backwards;
+}
+.outside .dot {
+  opacity: 0.32;
+}
+@keyframes cell-in {
+  from {
+    opacity: 0;
+  }
+}
+.dot {
+  transition:
+    r 140ms var(--ease-out),
+    opacity 140ms var(--ease-out);
+  pointer-events: none;
+}
+.zero {
+  fill: var(--surface-3);
+}
+.on {
+  fill: var(--fg);
+}
+.hot {
+  fill: var(--accent);
+}
+.active {
+  stroke: var(--fg);
+  stroke-width: 1.5;
+  paint-order: stroke;
+}
+.clickable {
+  cursor: pointer;
+}
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.legend :global(.label) {
+  font-size: 10px;
+  color: var(--fg-3);
+}
+.hint {
+  margin-left: auto;
+}

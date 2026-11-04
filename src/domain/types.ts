@@ -34,3 +34,20 @@ export type CategoryDraft = Pick<Category, 'name' | 'icon' | 'color'> & { budget
 
 export const CURRENCIES = ['KZT', 'USD', 'EUR', 'RUB'] as const;
 export type Currency = (typeof CURRENCIES)[number];
+
+export interface Goal {
+  id: string;
+  userId: string;
+  name: string;
+  /** Amount to reach. */
+  target: number;
+  /** Amount put aside so far. */
+  saved: number;
+  /** Optional target date. */
+  deadline: ISODate | null;
+  icon: string;
+  color: string;
+  createdAt: number;
+}
+
+export type GoalDraft = Pick<Goal, 'name' | 'target' | 'saved' | 'deadline' | 'icon' | 'color'>;

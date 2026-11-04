@@ -163,6 +163,10 @@
   gap: 12px;
   padding-top: 6px;
 }
+.footerLeft {
+  display: flex;
+  gap: 6px;
+}
 .kbdHint {
   color: var(--fg-3);
   font-size: 10px;
@@ -178,7 +182,16 @@
   .kbdHint {
     display: none;
   }
+  .footer {
+    flex-wrap: wrap;
+  }
   .footer > :last-child {
+    flex: 1;
+  }
+  .footerLeft {
+    flex-basis: 100%;
+  }
+  .footerLeft > * {
     flex: 1;
   }
   .amountInput {

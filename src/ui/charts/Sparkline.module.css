@@ -1,0 +1,22 @@
+.spark {
+  display: block;
+  flex-shrink: 0;
+}
+.col {
+  animation: rise 420ms var(--ease-out) both;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+}
+.on {
+  fill: var(--fg);
+}
+.accent {
+  fill: var(--accent);
+}
+.off {
+  fill: var(--surface-3);
+}

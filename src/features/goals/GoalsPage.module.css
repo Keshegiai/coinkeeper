@@ -1,0 +1,121 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.summary {
+  grid-column: 1 / -1;
+  background-image: radial-gradient(var(--bg-dot) 1px, transparent 1.3px);
+  background-size: 14px 14px;
+}
+.summaryBody {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.ringPct {
+  font-size: 34px;
+}
+.summaryNums {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.summaryFacts {
+  display: flex;
+  gap: 28px;
+  margin: 12px 0 0;
+}
+.summaryFacts dd {
+  margin: 6px 0 0;
+  font-size: 20px;
+}
+.card {
+  gap: 18px;
+  transition: border-color 160ms var(--ease-out);
+}
+.card:hover {
+  border-color: var(--fg-3);
+}
+.done {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+}
+.cardTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.cardBody {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.cardPct {
+  font-size: 22px;
+}
+.cardNums {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.status {
+  margin-top: 6px;
+  color: var(--fg);
+  line-height: 1.5;
+}
+.cardActions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+.addCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 220px;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--line);
+  color: var(--fg-2);
+  transition:
+    border-color 160ms var(--ease-out),
+    color 160ms var(--ease-out);
+}
+.addCard:hover {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+.templates {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 520px;
+}
+.template {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  font-size: 13px;
+  transition: border-color 140ms var(--ease-out);
+}
+.template:hover {
+  border-color: var(--fg);
+}
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .summaryBody {
+    gap: 20px;
+  }
+}

@@ -162,3 +162,141 @@ export function groupByDay<T extends Pick<Transaction, 'date'>>(ts: readonly T[]
   }
   return groups;
 }
+
+// ---- Series for charts -----------------------------------------------------
+
+export interface BalancePoint extends FlowBucket {
+  /** Running balance at the end of the bucket. */
+  balance: number;
+  net: number;
+}
+
+/**
+ * Running balance across a period, starting from everything that happened
+ * before it (so the line sits at the real account level, not at zero).
+ * Future buckets are dropped — a flat line into next week says nothing.
+ */
+export function balanceSeries(
+  all: readonly Transaction[],
+  from: ISODate | null,
+  to: ISODate | null,
+  now: ISODate = today(),
+): { granularity: Granularity; opening: number; points: BalancePoint[] } {
+  const end = to && to < now ? to : now;
+  const opening = from ? totals(all.filter((t) => t.date < from)).net : 0;
+  const { granularity, buckets } = cashFlowSeries(filterByPeriod(all, from, end), from, end);
+  let bal = opening;
+  const points = buckets.map((b) => {
+    const net = b.income - b.expense;
+    bal += net;
+    return { ...b, income: round2(b.income), expense: round2(b.expense), net: round2(net), balance: round2(bal) };
+  });
+  return { granularity, opening: round2(opening), points };
+}
+
+/** Sum of one transaction type per calendar day. */
+export function dailyTotals(ts: readonly Transaction[], type: Transaction['type'] = 'expense'): Map<ISODate, number> {
+  const out = new Map<ISODate, number>();
+  for (const t of ts) if (t.type === type) out.set(t.date, round2((out.get(t.date) ?? 0) + t.amount));
+  return out;
+}
+
+export interface MonthPace {
+  /** Days in the month. */
+  days: number;
+  /** Days that have already happened (0 for a future month, `days` for a past one). */
+  elapsed: number;
+  /** Cumulative spending by day, for elapsed days only. */
+  current: number[];
+  /** Cumulative spending by day for the whole previous month. */
+  previous: number[];
+  spent: number;
+  /** Previous month's spending by the same day-of-month. */
+  previousToDate: number;
+  previousTotal: number;
+  /** Projection to month end; `null` once the month is over (or hasn't started). */
+  forecast: number | null;
+}
+
+function cumulativeByDay(ts: readonly Transaction[], monthStart: Date, days: number): number[] {
+  const prefix = toISODate(monthStart).slice(0, 8);
+  const perDay = Array.from({ length: days }, () => 0);
+  for (const t of ts) {
+    if (t.type !== 'expense' || !t.date.startsWith(prefix)) continue;
+    const d = Number(t.date.slice(8, 10)) - 1;
+    if (d >= 0 && d < days) perDay[d]! += t.amount;
+  }
+  let acc = 0;
+  return perDay.map((v) => (acc = round2(acc + v)));
+}
+
+/** How this month's spending compares with last month at the same point in time. */
+export function monthPace(ts: readonly Transaction[], month: Date = new Date(), now: Date = new Date()): MonthPace {
+  const start = startOfMonth(month);
+  const days = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate();
+  const prevStart = addMonths(start, -1);
+  const prevDays = new Date(prevStart.getFullYear(), prevStart.getMonth() + 1, 0).getDate();
+
+  const monthKey = start.getFullYear() * 12 + start.getMonth();
+  const nowKey = now.getFullYear() * 12 + now.getMonth();
+  const elapsed = monthKey < nowKey ? days : monthKey > nowKey ? 0 : now.getDate();
+
+  const full = cumulativeByDay(ts, start, days);
+  const previous = cumulativeByDay(ts, prevStart, prevDays);
+  const current = full.slice(0, elapsed);
+  const spent = current.at(-1) ?? 0;
+  const previousTotal = previous.at(-1) ?? 0;
+  const previousToDate = elapsed ? previous[Math.min(elapsed, prevDays) - 1] ?? 0 : 0;
+  // Project the rest of the month from last month's rhythm when we have it (rent on the 1st
+  // shouldn't be extrapolated 30 times); fall back to the current daily average.
+  let forecast: number | null = null;
+  if (elapsed > 0 && elapsed < days) {
+    const rest = previousTotal > 0 ? Math.max(0, previousTotal - previousToDate) * ((days - elapsed) / Math.max(1, prevDays - Math.min(elapsed, prevDays))) : (spent / elapsed) * (days - elapsed);
+    forecast = Math.round(spent + rest);
+  }
+  return { days, elapsed, current, previous, spent, previousToDate, previousTotal, forecast };
+}
+
+export interface CategoryChange {
+  categoryId: string;
+  category: Category | undefined;
+  current: number;
+  previous: number;
+  diff: number;
+}
+
+/** Per-category movement between two sets of transactions, biggest swings first. */
+export function categoryChanges(
+  current: readonly Transaction[],
+  previous: readonly Transaction[],
+  categories: ReadonlyMap<string, Category>,
+  type: Transaction['type'] = 'expense',
+): CategoryChange[] {
+  const sum = (ts: readonly Transaction[]) => {
+    const m = new Map<string, number>();
+    for (const t of ts) if (t.type === type) m.set(t.categoryId, (m.get(t.categoryId) ?? 0) + t.amount);
+    return m;
+  };
+  const a = sum(current);
+  const b = sum(previous);
+  return [...new Set([...a.keys(), ...b.keys()])]
+    .map((id) => {
+      const cur = round2(a.get(id) ?? 0);
+      const prev = round2(b.get(id) ?? 0);
+      return { categoryId: id, category: categories.get(id), current: cur, previous: prev, diff: round2(cur - prev) };
+    })
+    .filter((c) => c.diff !== 0)
+    .sort((x, y) => Math.abs(y.diff) - Math.abs(x.diff));
+}
+
+/** Squeeze a series into at most `max` points (sum or keep-last per chunk). */
+export function resample(values: readonly number[], max: number, mode: 'sum' | 'last' = 'sum'): number[] {
+  if (values.length <= max || max <= 0) return [...values];
+  const size = Math.ceil(values.length / max);
+  const out: number[] = [];
+  for (let i = 0; i < values.length; i += size) {
+    const chunk = values.slice(i, i + size);
+    out.push(mode === 'sum' ? chunk.reduce((s, v) => s + v, 0) : chunk.at(-1)!);
+  }
+  return out;
+}

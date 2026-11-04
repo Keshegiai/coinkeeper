@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { TransactionEditorProvider } from '@/features/transactions/TransactionEditor';
+import { CommandPaletteProvider } from '@/features/command/CommandPalette';
 import { AppShell } from '@/layout/AppShell';
 import { Loader } from '@/ui/EmptyState';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
@@ -12,6 +13,7 @@ import { RegisterPage } from '@/features/auth/RegisterPage';
 const TransactionsPage = lazy(() => import('@/features/transactions/TransactionsPage').then((m) => ({ default: m.TransactionsPage })));
 const AnalyticsPage = lazy(() => import('@/features/analytics/AnalyticsPage').then((m) => ({ default: m.AnalyticsPage })));
 const CategoriesPage = lazy(() => import('@/features/categories/CategoriesPage').then((m) => ({ default: m.CategoriesPage })));
+const GoalsPage = lazy(() => import('@/features/goals/GoalsPage').then((m) => ({ default: m.GoalsPage })));
 const SettingsPage = lazy(() => import('@/features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 
 function RequireAuth() {
@@ -20,7 +22,9 @@ function RequireAuth() {
   if (!user) return <Navigate to="/login" replace state={{ from: location }} />;
   return (
     <TransactionEditorProvider>
-      <Outlet />
+      <CommandPaletteProvider>
+        <Outlet />
+      </CommandPaletteProvider>
     </TransactionEditorProvider>
   );
 }
@@ -49,6 +53,7 @@ export function App() {
           >
             <Route path="transactions" element={<TransactionsPage />} />
             <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="goals" element={<GoalsPage />} />
             <Route path="categories" element={<CategoriesPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
