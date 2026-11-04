@@ -3,6 +3,7 @@ import type { Currency } from '@/domain/types';
 import { CURRENCIES } from '@/domain/types';
 import { formatMoney } from '@/lib/money';
 import { storage } from '@/lib/storage';
+import { switchTheme } from '@/lib/themeTransition';
 
 export type ThemePref = 'system' | 'light' | 'dark';
 
@@ -28,7 +29,9 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const m = media();
-    const onChange = (e: MediaQueryListEvent) => setSystemDark(e.matches);
+    // Only animates when the app follows the system theme (otherwise nothing visible changes).
+    const onChange = (e: MediaQueryListEvent) =>
+      storage.get<ThemePref>('ck.theme', 'system') === 'system' ? switchTheme(e.matches ? 'dark' : 'light', () => setSystemDark(e.matches)) : setSystemDark(e.matches);
     m.addEventListener('change', onChange);
     return () => m.removeEventListener('change', onChange);
   }, []);
@@ -40,7 +43,8 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
 
   const setTheme = useCallback((t: ThemePref) => {
     storage.set('ck.theme', t);
-    setThemeState(t);
+    const next = t === 'system' ? (media().matches ? 'dark' : 'light') : t;
+    switchTheme(next, () => setThemeState(t));
   }, []);
   const setCurrency = useCallback((c: Currency) => {
     storage.set('ck.currency', c);

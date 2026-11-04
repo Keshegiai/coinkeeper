@@ -224,3 +224,47 @@ input[type='date']::-webkit-calendar-picker-indicator {
     transform: translateY(14px);
   }
 }
+
+/* ---- Theme switch: the new theme "wakes up" from the centre ------------- */
+
+/* Freeze regular colour transitions so the snapshot is the final state. */
+html.theme-vt *,
+html.theme-vt *::before,
+html.theme-vt *::after {
+  transition: none !important;
+}
+html.theme-vt::view-transition-old(root),
+html.theme-vt::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+html.theme-vt::view-transition-old(root) {
+  animation: vt-recede 860ms var(--ease-in-out) both;
+}
+html.theme-vt::view-transition-new(root) {
+  animation: vt-curtain 860ms both;
+}
+@keyframes vt-curtain {
+  /* A dot in the middle… */
+  0% {
+    clip-path: inset(49.6% 49.8% 49.6% 49.8% round 50%);
+    filter: brightness(1.8);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.2, 1);
+  }
+  /* …stretches into a thin vertical line… */
+  32% {
+    clip-path: inset(0 49.7% 0 49.7%);
+    filter: brightness(1.4);
+    animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  /* …and the curtains open to both sides. */
+  100% {
+    clip-path: inset(0 0 0 0);
+    filter: brightness(1);
+  }
+}
+@keyframes vt-recede {
+  to {
+    filter: brightness(0.7);
+    transform: scale(0.985);
+  }
+}
