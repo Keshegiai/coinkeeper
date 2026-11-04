@@ -1,0 +1,129 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+}
+.hero {
+  grid-column: span 7;
+  justify-content: space-between;
+  min-height: 300px;
+  background-image: radial-gradient(var(--bg-dot) 1px, transparent 1.3px);
+  background-size: 14px 14px;
+}
+.heroBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: auto;
+}
+.heroMeta {
+  display: flex;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.heroActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.stats {
+  grid-column: span 5;
+  justify-content: space-between;
+}
+.stats > :not(header) + :not(header) {
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+}
+.flow {
+  grid-column: span 12;
+}
+.recent {
+  grid-column: span 7;
+}
+.recentBody {
+  padding: 0 calc(var(--space-5) - 10px) calc(var(--space-5) - 10px);
+}
+.budgets {
+  grid-column: span 5;
+}
+.budgetList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.budget {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.budgetHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.budgetName {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  min-width: 0;
+}
+.budgetNums {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.budgetOf {
+  color: var(--fg-3);
+}
+.budgetFoot {
+  font-size: 10px;
+  color: var(--fg-3);
+}
+
+@media (max-width: 1020px) {
+  .hero,
+  .stats,
+  .recent,
+  .budgets {
+    grid-column: span 12;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .stats > header {
+    grid-column: 1 / -1;
+  }
+  .stats > :not(header) + :not(header) {
+    padding-top: 0;
+    border-top: 0;
+    padding-left: 16px;
+    border-left: 1px dashed var(--line);
+  }
+}
+@media (max-width: 760px) {
+  .grid {
+    gap: 12px;
+  }
+  .hero {
+    min-height: 240px;
+  }
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  .stats > :not(header) + :not(header) {
+    padding-left: 0;
+    border-left: 0;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+  }
+  .recentBody {
+    padding: 0 6px 6px;
+  }
+}

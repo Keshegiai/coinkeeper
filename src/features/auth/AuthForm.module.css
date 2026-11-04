@@ -1,0 +1,57 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.alert {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.switch {
+  text-align: center;
+  font-size: 14px;
+  color: var(--fg-2);
+  margin-top: 8px;
+}
+.switch a {
+  color: var(--fg);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.eye {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--fg-2);
+}
+.eye:hover {
+  color: var(--fg);
+}
+.strength {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin-top: -6px;
+}
+.strength span {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface-3);
+}
+.strength .on {
+  background: var(--fg);
+}
+.strength.weak .on {
+  background: var(--accent);
+}

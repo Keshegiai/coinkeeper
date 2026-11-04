@@ -1,0 +1,75 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.label {
+  display: block;
+}
+.control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+.control:hover {
+  border-color: color-mix(in srgb, var(--fg) 40%, var(--line));
+}
+.control:focus-within {
+  border-color: var(--fg);
+}
+.invalid .control {
+  border-color: var(--accent);
+}
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 15px;
+}
+.input::placeholder {
+  color: var(--fg-3);
+}
+.input:focus-visible {
+  outline: none;
+}
+.select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 20px;
+}
+.select option {
+  background: var(--surface);
+  color: var(--fg);
+}
+.chevron {
+  position: absolute;
+  right: 14px;
+  pointer-events: none;
+  color: var(--fg-2);
+}
+.adornment {
+  display: inline-flex;
+  color: var(--fg-2);
+}
+.hint,
+.error {
+  font-size: 12px;
+  color: var(--fg-2);
+}
+.error {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}

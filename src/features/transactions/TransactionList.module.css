@@ -1,0 +1,104 @@
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dayHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px 6px;
+  border-bottom: 1px dashed var(--line);
+  margin-bottom: 4px;
+}
+.dayNet {
+  color: var(--fg-3);
+}
+.list {
+  display: flex;
+  flex-direction: column;
+}
+.row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  transition: background-color 140ms var(--ease-out);
+}
+.row:hover {
+  background: var(--surface-2);
+}
+.pending {
+  opacity: 0.5;
+  cursor: progress;
+}
+.icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+}
+.icon::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--cat);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.row:hover .icon::after {
+  box-shadow: 0 0 0 2px var(--surface-2);
+}
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+.name {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.meta {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--fg-2);
+}
+.comment {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.amount {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.income {
+  color: var(--fg);
+}
+.expense {
+  color: var(--fg-2);
+}

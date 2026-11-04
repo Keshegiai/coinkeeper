@@ -1,0 +1,169 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+}
+.kpis {
+  grid-column: span 12;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+}
+.kpis > * + * {
+  padding-left: 24px;
+  border-left: 1px dashed var(--line);
+}
+.kpis > * {
+  padding-right: 16px;
+}
+.bigPct {
+  font-size: 34px;
+}
+.flow {
+  grid-column: span 12;
+}
+.structure {
+  grid-column: span 7;
+}
+.insights {
+  grid-column: span 5;
+}
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.legend {
+  display: flex;
+  flex-direction: column;
+}
+.legendRow {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 4px;
+  border-bottom: 1px dashed var(--line);
+  transition: opacity 160ms var(--ease-out);
+}
+.legendRow:last-child {
+  border-bottom: 0;
+}
+.dim {
+  opacity: 0.35;
+}
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 15%, transparent);
+}
+.legendName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.legendCount {
+  font-size: 11px;
+  color: var(--fg-3);
+}
+.legendPct {
+  font-size: 12px;
+  color: var(--fg-2);
+  min-width: 40px;
+  text-align: right;
+}
+.legendAmt {
+  font-size: 13px;
+  min-width: 90px;
+  text-align: right;
+}
+.facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 16px;
+  margin: 0;
+}
+.facts dd {
+  margin: 8px 0 0;
+}
+.factWide {
+  grid-column: 1 / -1;
+}
+.largest {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.factNote {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--fg-2);
+  letter-spacing: 0.02em;
+}
+.weekdays {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--line);
+}
+.weekBars {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.weekCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.weekDots {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 4px;
+}
+.weekDots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--surface-3);
+}
+.weekDots .on {
+  background: var(--fg);
+}
+.weekDots .peak {
+  background: var(--accent);
+}
+
+@media (max-width: 1020px) {
+  .structure,
+  .insights {
+    grid-column: span 12;
+  }
+  .kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 0;
+  }
+  .kpis > :nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+@media (max-width: 760px) {
+  .grid {
+    gap: 12px;
+  }
+  .legendRow {
+    grid-template-columns: auto auto 1fr auto auto;
+  }
+  .legendCount {
+    display: none;
+  }
+  .legendAmt {
+    min-width: 0;
+  }
+}

@@ -1,0 +1,40 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.label {
+  min-width: 120px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.custom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.date {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: 0;
+}
+.date:focus {
+  border-color: var(--fg);
+}
+.dash {
+  color: var(--fg-3);
+}

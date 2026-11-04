@@ -1,0 +1,34 @@
+.root {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.index {
+  color: var(--accent);
+}
+.title {
+  font-size: clamp(44px, 7vw, 76px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+@media (max-width: 760px) {
+  .root {
+    margin-bottom: 20px;
+  }
+}

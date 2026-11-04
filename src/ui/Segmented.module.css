@@ -1,0 +1,43 @@
+.root {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.block {
+  display: flex;
+}
+.block .item {
+  flex: 1;
+}
+.item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  white-space: nowrap;
+  transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+.sm .item {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 10px;
+}
+.item:hover {
+  color: var(--fg);
+}
+.checked,
+.checked:hover {
+  background: var(--fg);
+  color: var(--bg);
+}

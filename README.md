@@ -1,12 +1,68 @@
-# React + Vite
+# Coinkeeper
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Личные финансы без лишнего шума. Монохромный интерфейс с dot-matrix цифрами, моноширинными подписями и одним сигнальным красным — в духе индустриального дизайна.
 
-Currently, two official plugins are available:
+## Возможности
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Обзор** — баланс, доходы/расходы/итог за период с динамикой к прошлому периоду, dot-matrix график потока, последние операции, месячные бюджеты.
+- **Операции** — группировка по дням, поиск (`/`), фильтры по типу и категории, итоги по выборке, экспорт в CSV, отмена удаления.
+- **Аналитика** — норма сбережений, структура расходов/доходов (100 точек = 100%), средний расход в день, крупнейшая трата, расходы по дням недели.
+- **Категории** — иконки, цвета, необязательный месячный бюджет.
+- **Настройки** — тема (системная/светлая/тёмная), валюта (₸ $ € ₽), экспорт данных.
+- Периоды: неделя / месяц / год / всё время / свой диапазон, с навигацией назад. Период и фильтры хранятся в URL — ссылкой можно поделиться.
+- Горячие клавиши: `N` — новая операция, `/` — поиск, `Esc` — закрыть, `← →` — по графику.
+- Адаптивность: на телефоне — нижняя навигация, кнопка «+» и bottom sheet вместо модальных окон.
 
-## Expanding the ESLint configuration
+## Стек
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| | |
+|---|---|
+| UI | React 19, TypeScript (strict), CSS Modules + design tokens |
+| Данные | TanStack Query — кэш, оптимистичные обновления с откатом |
+| Роутинг | React Router 7, code-splitting вторичных экранов |
+| Сборка | Vite 8 (прокси `/api` → json-server) |
+| Тесты | Vitest + Testing Library (доменная логика + интеграционный тест входа) |
+| Бэкенд | json-server (мок) |
+| Шрифты | Doto (цифры), Inter, JetBrains Mono — self-hosted через Fontsource |
+
+## Запуск
+
+```bash
+npm install
+npm start          # API на :3001 + приложение на :5173
+```
+
+Или по отдельности: `npm run api` и `npm run dev`. Приложение ходит в API через `/api`, поэтому работает и с телефона в локальной сети (адрес покажет Vite).
+
+Демо-аккаунт с данными за 4 месяца:
+
+```bash
+npm run seed       # demo@coinkeeper.app / Demo1234
+```
+
+## Скрипты
+
+| Команда | |
+|---|---|
+| `npm run check` | typecheck + lint + тесты |
+| `npm run build` | production-сборка в `dist/` |
+| `npm test` | тесты один раз; `npm run test:watch` — в режиме наблюдения |
+
+## Структура
+
+```
+src/
+  app/         роуты и провайдеры
+  domain/      типы предметной области
+  lib/         чистые функции: даты, периоды, деньги, агрегаты, CSV, HTTP
+  features/    auth · transactions · categories · dashboard · analytics · settings
+  ui/          дизайн-система: Button, Field, Segmented, Panel, Dialog, Toast, графики
+  layout/      каркас приложения
+  styles/      токены и глобальные стили
+```
+
+## Заметки
+
+- **Аутентификация — мок.** json-server не умеет auth: пароль проверяется на клиенте и хранится в `db.json` открытым текстом. Для продакшена нужно заменить `src/features/auth/api.ts` на настоящий API — остальное приложение менять не придётся.
+- Старые записи (вложенный объект `category` в транзакции, иконки `LuShapes`) читаются как есть и мигрируют на `categoryId` при редактировании.
+- Фильтрация в json-server v1 идёт через `_where`: обычный `?userId=9450` приводится к числу и не находит строковые id.

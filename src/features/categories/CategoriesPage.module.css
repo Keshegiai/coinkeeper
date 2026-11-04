@@ -1,0 +1,104 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+.card {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  text-align: left;
+  transition: border-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+.card:hover {
+  border-color: var(--fg);
+}
+.card:active {
+  transform: scale(0.99);
+}
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+.icon::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--cat);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.code {
+  color: var(--fg-3);
+}
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+.name {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.meta {
+  font-size: 10px;
+}
+.budget {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.budgetLabel,
+.noBudget {
+  font-size: 10px;
+  color: var(--fg-3);
+}
+.noBudget {
+  padding-top: 22px;
+}
+.addCard {
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  background: transparent;
+  color: var(--fg-2);
+}
+.addCard:hover {
+  color: var(--fg);
+}
+.footnote {
+  margin-top: 24px;
+  color: var(--fg-3);
+  font-size: 10px;
+}
+.footnote a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

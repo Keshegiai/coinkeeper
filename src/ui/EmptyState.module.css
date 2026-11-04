@@ -1,0 +1,59 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 40px 16px;
+}
+.glyph {
+  margin-bottom: 6px;
+}
+.on {
+  fill: var(--fg);
+}
+.off {
+  fill: var(--surface-3);
+}
+.on:nth-child(13) {
+  fill: var(--accent);
+}
+.title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.text {
+  max-width: 34ch;
+  color: var(--fg-2);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.loader {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px 0;
+}
+.loader span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fg);
+  animation: blink 1s var(--ease-in-out) infinite;
+}
+.loader span:nth-child(3) {
+  background: var(--accent);
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
