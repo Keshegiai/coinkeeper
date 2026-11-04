@@ -1,0 +1,19 @@
+.meter {
+  display: grid;
+  gap: 3px;
+  height: 14px;
+}
+.cell {
+  border-radius: 2px;
+  background: var(--surface-3);
+  transition: background-color 200ms var(--ease-out);
+}
+.on {
+  background: var(--fg);
+}
+.warn .on:nth-last-child(-n + 4) {
+  background: var(--accent);
+}
+.over .on {
+  background: var(--accent);
+}

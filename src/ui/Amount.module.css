@@ -1,0 +1,37 @@
+.amount {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.18em;
+  white-space: nowrap;
+}
+.group {
+  margin-left: 0.22em;
+}
+.currency {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.42em;
+  color: var(--fg-2);
+  transform: translateY(-0.1em);
+}
+.sm {
+  font-size: 22px;
+}
+.md {
+  font-size: 34px;
+}
+.lg {
+  font-size: clamp(40px, 6vw, 56px);
+}
+.xl {
+  font-size: clamp(52px, 10vw, 104px);
+}
+.muted {
+  color: var(--fg-2);
+}
+.accent {
+  color: var(--accent);
+}
+.accent .currency {
+  color: var(--accent);
+}

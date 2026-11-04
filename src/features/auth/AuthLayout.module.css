@@ -1,0 +1,95 @@
+.page {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+}
+.art {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  margin: 12px;
+  padding: 36px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.field {
+  display: grid;
+  gap: 8px;
+  max-width: 560px;
+}
+.field span {
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+.off {
+  background: var(--surface-3);
+}
+.on {
+  background: var(--fg);
+  animation: flicker 4s steps(1) infinite;
+}
+.accentDot {
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+@keyframes flicker {
+  0%,
+  92% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.25;
+  }
+}
+.tagline {
+  font-size: clamp(48px, 6vw, 88px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+}
+.formSide {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 32px;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.mobileLogo {
+  visibility: hidden;
+}
+.formWrap {
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 32px 0;
+}
+.title {
+  font-size: clamp(48px, 6vw, 72px);
+  font-weight: 700;
+  line-height: 0.9;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  .art {
+    display: none;
+  }
+  .mobileLogo {
+    visibility: visible;
+  }
+  .formSide {
+    padding: 16px;
+  }
+}

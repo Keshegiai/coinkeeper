@@ -1,0 +1,36 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.mark {
+  display: grid;
+  grid-template-columns: repeat(2, 6px);
+  gap: 3px;
+}
+.mark i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg);
+}
+.mark i:nth-child(4) {
+  background: var(--accent);
+}
+.word {
+  font-family: var(--font-dot);
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.lg .word {
+  font-size: 28px;
+}
+.lg .mark {
+  grid-template-columns: repeat(2, 8px);
+}
+.lg .mark i {
+  width: 8px;
+  height: 8px;
+}

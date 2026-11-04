@@ -1,0 +1,101 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.profile {
+  justify-content: space-between;
+}
+.profile > button {
+  align-self: flex-start;
+}
+.user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 34px;
+}
+.userText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.userName {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 4px 0;
+}
+.row + .row {
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+}
+.rowTitle {
+  font-weight: 500;
+}
+.rowHint {
+  font-size: 13px;
+  color: var(--fg-2);
+  margin-top: 2px;
+}
+.shortcuts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.shortcuts li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--fg-2);
+}
+.shortcuts kbd {
+  min-width: 34px;
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 6px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg);
+}
+.version {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+  font-size: 18px;
+  color: var(--fg-3);
+}
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .shortcuts {
+    grid-template-columns: 1fr;
+  }
+}

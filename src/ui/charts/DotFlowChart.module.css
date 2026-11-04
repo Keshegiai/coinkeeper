@@ -1,0 +1,111 @@
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.plot {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  outline-offset: 6px;
+}
+.svg {
+  display: block;
+  overflow: visible;
+}
+.axis {
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.off {
+  fill: var(--surface-3);
+}
+.income {
+  fill: var(--fg);
+}
+.expense {
+  fill: var(--accent);
+}
+.col circle {
+  transition: opacity 140ms var(--ease-out);
+}
+.dim circle {
+  opacity: 0.35;
+}
+.tooltip {
+  position: absolute;
+  top: 0;
+  transform: translate(-50%, -8px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 150px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--inverse-bg);
+  color: var(--inverse-fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  pointer-events: none;
+  box-shadow: var(--shadow-pop);
+  z-index: 2;
+}
+.tooltip :global(.label) {
+  color: color-mix(in srgb, var(--inverse-fg) 60%, transparent);
+  margin-bottom: 4px;
+}
+.tipRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.keyIncome,
+.keyExpense {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--fg);
+}
+.tooltip .keyIncome {
+  background: var(--inverse-fg);
+}
+.keyExpense {
+  background: var(--accent);
+}
+.ticks {
+  position: relative;
+  height: 14px;
+}
+.tick {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 10px;
+  color: var(--fg-3);
+}
+.tick:first-child {
+  transform: none;
+  left: 0 !important;
+}
+.tick:last-child:not(:first-child) {
+  transform: none;
+  left: auto !important;
+  right: 0;
+}
+.legend {
+  display: flex;
+  gap: 16px;
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
